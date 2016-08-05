@@ -15,6 +15,7 @@ namespace Dslog
         public About()
         {
             InitializeComponent();
+            labelVersion.Text = "Version: " + FormMain.VERSION;
             ShowDialog();
         }
 

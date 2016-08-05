@@ -94,6 +94,7 @@
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
     <Compile Include="BinaryReader2.cs" />
+    <Compile Include="DSEVENTSReader.cs" />
     <Compile Include="DSLOGReader.cs" />
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>

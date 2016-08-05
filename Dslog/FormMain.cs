@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DSLOG_Reader;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -17,6 +18,8 @@ namespace Dslog
 {
     public partial class FormMain : Form
     {
+
+        public const string VERSION = "0.2.3";
         public FormMain()
         {
             InitializeComponent();
@@ -762,6 +765,7 @@ namespace Dslog
             try
             {
                 log = new DSLOGReader(path);
+                
                 menuStrip1.Items[menuStrip1.Items.Count - 2].Text = "Current File: " + path;
                 chartMain.ChartAreas[0].AxisX.Minimum = log.StartTime.ToOADate();
                 chartMain.ChartAreas[0].CursorX.IntervalOffset = log.StartTime.Millisecond % 20;
@@ -924,6 +928,11 @@ namespace Dslog
         private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/orangelight/dslog-reader/blob/master/Help.md");
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            DSEVENTSReader dsevent = new DSEVENTSReader(@"C:\Users\Alex\Desktop\dslogs\dsog\2016_06_25 11_49_16 Sat.dsevents");
         }
 
         
