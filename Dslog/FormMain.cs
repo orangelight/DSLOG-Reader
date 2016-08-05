@@ -599,6 +599,7 @@ namespace Dslog
         void addLogFilesToViewer(string path)
         {
             listViewDSLOGFolder.Items.Clear();
+            if (Directory.Exists(path)) { 
             DirectoryInfo dslogDir = new DirectoryInfo(path);
             listviewFolderPath = path;
             FileInfo[] Files = dslogDir.GetFiles("*.dslog");
@@ -614,6 +615,7 @@ namespace Dslog
             //sroll down to bottom (need to use timer cuz it's weird
             lastIndexSelected = -1;
             timerScrollToBottom.Start();
+            }
         }
 
       
@@ -644,107 +646,109 @@ namespace Dslog
         //Adds information to listview items when they scroll into view
         private void logUpdate_Tick(object sender, EventArgs e)
         {
-            int topIndex = listViewDSLOGFolder.TopItem.Index;
-            if (lastTop != topIndex)
+            if (listViewDSLOGFolder.Items.Count != 0)
             {
-                for (int inx = topIndex; inx < topIndex + listViewDSLOGFolder.Height / 18; inx++)
-                    if (inx < listViewDSLOGFolder.Items.Count)
-                    {
-                        //Check if we already added info
-                        if (listViewDSLOGFolder.Items[inx].SubItems.Count < 2)
+                int topIndex = listViewDSLOGFolder.TopItem.Index;
+                if (lastTop != topIndex)
+                {
+                    for (int inx = topIndex; inx < topIndex + listViewDSLOGFolder.Height / 18; inx++)
+                        if (inx < listViewDSLOGFolder.Items.Count)
                         {
-                            try
+                            //Check if we already added info
+                            if (listViewDSLOGFolder.Items[inx].SubItems.Count < 2)
                             {
-                                if (File.Exists(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dsevents")) 
+                                try
                                 {
-                                    FileInfo file = new FileInfo(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dsevents");
-                                    string txtF = File.ReadAllText(file.FullName);
+                                    if (File.Exists(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dsevents"))
+                                    {
+                                        FileInfo file = new FileInfo(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dsevents");
+                                        string txtF = File.ReadAllText(file.FullName);
 
-                                    DateTime sTime;
-                                    using (BinaryReader2 reader = new BinaryReader2(File.Open(file.FullName, FileMode.Open)))
-                                    {
-                                        reader.ReadInt32();
+                                        DateTime sTime;
+                                        using (BinaryReader2 reader = new BinaryReader2(File.Open(file.FullName, FileMode.Open)))
+                                        {
+                                            reader.ReadInt32();
 
-                                        sTime = FromLVTime(reader.ReadInt64(), reader.ReadUInt64());
-                                        listViewDSLOGFolder.Items[inx].SubItems.Add(sTime.ToString("MMM dd, yy hh:mm:ss tt"));
-                                        reader.Close();
-                                    }
+                                            sTime = FromLVTime(reader.ReadInt64(), reader.ReadUInt64());
+                                            listViewDSLOGFolder.Items[inx].SubItems.Add(sTime.ToString("MMM dd, yy hh:mm:ss tt"));
+                                            reader.Close();
+                                        }
 
-                                    listViewDSLOGFolder.Items[inx].SubItems.Add("" + ((new FileInfo(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog").Length - 19) / 35) / 50);
-                                    if (txtF.Contains("FMS Connected:   Qualification"))
-                                    {
-                                        listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   Qualification - ") + 33, 5).Split(':')[0]);
-                                        listViewDSLOGFolder.Items[inx].BackColor = Color.Khaki;
-                                    }
-                                    else if (txtF.Contains("FMS Connected:   Elimination"))
-                                    {
-                                        listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   Elimination - ") + 31, 5).Split(':')[0]);
-                                        listViewDSLOGFolder.Items[inx].BackColor = Color.LightCoral;
-                                    }
-                                    else if (txtF.Contains("FMS Connected:   Practice"))
-                                    {
-                                        listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   Practice - ") + 28, 5).Split(':')[0]);
-                                        listViewDSLOGFolder.Items[inx].BackColor = Color.LightGreen;
-                                    }
-                                    else if (txtF.Contains("FMS Connected:   None"))
-                                    {
-                                        listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   None - ") + 24, 5).Split(':')[0]);
-                                        listViewDSLOGFolder.Items[inx].BackColor = Color.LightSkyBlue;
+                                        listViewDSLOGFolder.Items[inx].SubItems.Add("" + ((new FileInfo(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog").Length - 19) / 35) / 50);
+                                        if (txtF.Contains("FMS Connected:   Qualification"))
+                                        {
+                                            listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   Qualification - ") + 33, 5).Split(':')[0]);
+                                            listViewDSLOGFolder.Items[inx].BackColor = Color.Khaki;
+                                        }
+                                        else if (txtF.Contains("FMS Connected:   Elimination"))
+                                        {
+                                            listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   Elimination - ") + 31, 5).Split(':')[0]);
+                                            listViewDSLOGFolder.Items[inx].BackColor = Color.LightCoral;
+                                        }
+                                        else if (txtF.Contains("FMS Connected:   Practice"))
+                                        {
+                                            listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   Practice - ") + 28, 5).Split(':')[0]);
+                                            listViewDSLOGFolder.Items[inx].BackColor = Color.LightGreen;
+                                        }
+                                        else if (txtF.Contains("FMS Connected:   None"))
+                                        {
+                                            listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   None - ") + 24, 5).Split(':')[0]);
+                                            listViewDSLOGFolder.Items[inx].BackColor = Color.LightSkyBlue;
+                                        }
+                                        else
+                                        {
+                                            listViewDSLOGFolder.Items[inx].SubItems.Add("");
+                                        }
+
+                                        //Gets time since right now
+                                        TimeSpan sub = DateTime.Now.Subtract(sTime);
+                                        listViewDSLOGFolder.Items[inx].SubItems.Add(sub.Days + "d " + sub.Hours + "h " + sub.Minutes + "m");
+
+                                        if (txtF.Contains("FMS Event Name: "))
+                                        {
+                                            string[] sArray = txtF.Split(new string[] { "Info" }, StringSplitOptions.None);
+                                            foreach (String ss in sArray)
+                                            {
+                                                if (ss.Contains("FMS Event Name: "))
+                                                {
+                                                    listViewDSLOGFolder.Items[inx].SubItems.Add(ss.Replace("FMS Event Name: ", ""));
+                                                    //listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Event Name: ") + 16, 8).Replace("Info", "").Replace("Inf", "").Replace("Joy", ""));
+                                                    break;
+                                                }
+                                            }
+
+                                        }
                                     }
                                     else
                                     {
-                                        listViewDSLOGFolder.Items[inx].SubItems.Add("");
-                                    }
-
-                                    //Gets time since right now
-                                    TimeSpan sub = DateTime.Now.Subtract(sTime);
-                                    listViewDSLOGFolder.Items[inx].SubItems.Add(sub.Days + "d " + sub.Hours + "h " + sub.Minutes + "m");
-
-                                    if (txtF.Contains("FMS Event Name: "))
-                                    {
-                                        string[] sArray = txtF.Split(new string[] { "Info" }, StringSplitOptions.None);
-                                        foreach (String ss in sArray) 
+                                        DateTime sTime;
+                                        using (BinaryReader2 reader = new BinaryReader2(File.Open(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog", FileMode.Open)))
                                         {
-                                            if (ss.Contains("FMS Event Name: "))
-                                            {
-                                                listViewDSLOGFolder.Items[inx].SubItems.Add(ss.Replace("FMS Event Name: ", ""));
-                                                //listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Event Name: ") + 16, 8).Replace("Info", "").Replace("Inf", "").Replace("Joy", ""));
-                                                break;
-                                            }
-                                        }
-                                        
-                                    }
-                                }
-                                else
-                                {
-                                    DateTime sTime;
-                                    using (BinaryReader2 reader = new BinaryReader2(File.Open(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog", FileMode.Open)))
-                                    {
-                                        reader.ReadInt32();
+                                            reader.ReadInt32();
 
-                                        sTime = FromLVTime(reader.ReadInt64(), reader.ReadUInt64());
-                                        listViewDSLOGFolder.Items[inx].SubItems.Add(sTime.ToString("MMM dd, yy hh:mm:ss tt"));
-                                        reader.Close();
+                                            sTime = FromLVTime(reader.ReadInt64(), reader.ReadUInt64());
+                                            listViewDSLOGFolder.Items[inx].SubItems.Add(sTime.ToString("MMM dd, yy hh:mm:ss tt"));
+                                            reader.Close();
+                                        }
+                                        listViewDSLOGFolder.Items[inx].SubItems.Add("" + ((new FileInfo(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog").Length - 19) / 35) / 50);
+                                        listViewDSLOGFolder.Items[inx].SubItems.Add("NO");
+                                        TimeSpan sub = DateTime.Now.Subtract(sTime);
+                                        listViewDSLOGFolder.Items[inx].SubItems.Add(sub.Days + "d " + sub.Hours + "h " + sub.Minutes + "m");
+                                        listViewDSLOGFolder.Items[inx].SubItems.Add("DSEVENT");
+
                                     }
-                                    listViewDSLOGFolder.Items[inx].SubItems.Add("" + ((new FileInfo(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog").Length - 19) / 35) / 50);
-                                    listViewDSLOGFolder.Items[inx].SubItems.Add("NO");
-                                    TimeSpan sub = DateTime.Now.Subtract(sTime);
-                                    listViewDSLOGFolder.Items[inx].SubItems.Add(sub.Days + "d " + sub.Hours + "h " + sub.Minutes + "m");
-                                    listViewDSLOGFolder.Items[inx].SubItems.Add("DSEVENT");
-                                    
+
                                 }
-                                
-                            }
-                            catch (Exception ex)
-                            {
-                                
+                                catch (Exception ex)
+                                {
+
+                                }
                             }
                         }
-                    }
-                lastTop = topIndex;
+                    lastTop = topIndex;
+                }
             }
         }
-
         #endregion
 
         //Import
