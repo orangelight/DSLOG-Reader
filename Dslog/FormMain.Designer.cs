@@ -60,7 +60,6 @@
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPage5 = new System.Windows.Forms.TabPage();
-            this.button1 = new System.Windows.Forms.Button();
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.timerScrollToBottom = new System.Windows.Forms.Timer(this.components);
             this.logUpdate = new System.Windows.Forms.Timer(this.components);
@@ -471,16 +470,6 @@
             this.tabPage5.Text = "Log Files";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(353, 18);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 10;
-            this.button1.Text = "DSEVENT";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // tabPage6
             // 
             this.tabPage6.Controls.Add(this.tabControlProbeExport);
@@ -687,7 +676,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1108, 567);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.tabControlMain);
             this.Controls.Add(this.chartMain);
             this.Controls.Add(this.menuStrip1);
@@ -774,7 +762,6 @@
         private System.Windows.Forms.ToolStripMenuItem resetZoomToolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem viewHelpToolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem2;
-        private System.Windows.Forms.Button button1;
     }
 }
 

@@ -19,7 +19,7 @@ namespace Dslog
     public partial class FormMain : Form
     {
 
-        public const string VERSION = "0.2.3";
+        public const string VERSION = "0.3.0";
         public FormMain()
         {
             InitializeComponent();
@@ -930,10 +930,7 @@ namespace Dslog
             System.Diagnostics.Process.Start("https://github.com/orangelight/dslog-reader/blob/master/Help.md");
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            DSEVENTSReader dsevent = new DSEVENTSReader(@"C:\Users\Alex\Desktop\dslogs\dsog\2016_06_25 11_49_16 Sat.dsevents");
-        }
+        
 
         
 

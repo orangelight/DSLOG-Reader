@@ -9,12 +9,33 @@ using System.Windows.Forms;
 
 namespace DSLOG_Reader
 {
+
+    struct InfoEntry
+    {
+        public readonly DateTime Time;
+        public readonly String Data;
+
+        public InfoEntry(DateTime time, string s)
+        {
+            Time = time;
+            Data = s;
+        }
+    }
     class DSEVENTSReader
     {
         public Int32 Version;
         public DateTime StartTime;
+        public List<InfoEntry> EntryList;
+        public List<DateTime> RadioLostEvents;
+        public List<DateTime> RadioSeenEvents;
+        public List<DateTime> DisconnectedEvent;
+
         public DSEVENTSReader(string path)
         {
+            EntryList = new List<InfoEntry>();
+            RadioLostEvents = new List<DateTime>();
+            RadioSeenEvents = new List<DateTime>();
+            DisconnectedEvent = new List<DateTime>();
             readFile(path);
         }
 
@@ -29,17 +50,19 @@ namespace DSLOG_Reader
                     if (Version == 3)
                     {
                         StartTime = FromLVTime(reader.ReadInt64(), reader.ReadUInt64());
-                        int i = 0;
                         while (reader.BaseStream.Position != reader.BaseStream.Length)
                         {
-                            DateTime time = FromLVTime(reader.ReadInt64(), reader.ReadUInt64());
+                             DateTime time = FromLVTime(reader.ReadInt64(), reader.ReadUInt64());
                             Int32 l = reader.ReadInt32();
-                            MessageBox.Show(time.ToString("mm:ss.fff") + " " + new string(reader.ReadChars(l)));
+                            string s = System.Text.Encoding.ASCII.GetString(reader.ReadBytes(l));
+                            EntryList.Add(new InfoEntry(time, s));
+                            if (s.StartsWith("Warning <Code> 44008")) ReadWarning44008(s, time);
+                            if (s.StartsWith("Warning <Code> 44004")) ReadWarning44004(s, time);
                         }
                     }
                     else
                     {
-                        MessageBox.Show("ERROR: dslog version not supported");
+                        MessageBox.Show("ERROR: dsevent version not supported");
                     }
                 }
 
@@ -55,8 +78,28 @@ namespace DSLOG_Reader
             var epoch = new DateTime(1904, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             epoch = epoch.AddSeconds(unixTime);
             epoch = epoch.AddHours(-4);
-
             return epoch.AddSeconds(((double)ummm / UInt64.MaxValue));
+        }
+
+        //Has radio lost and seen times
+        private void ReadWarning44008(string line, DateTime time)
+        {
+            string[] times = line.Split('<')[2].Substring(18).Split(',');
+            foreach (string s in times)
+            {
+                RadioLostEvents.Add(time.AddSeconds(-Double.Parse(s)));
+            }
+            times = line.Split('<')[3].Substring(18).Split(',');
+            foreach (string s in times)
+            {
+                RadioSeenEvents.Add(time.AddSeconds(-Double.Parse(s)));
+            }
+        }
+
+        //Lost coms with roborio
+        private void ReadWarning44004(string line, DateTime time)
+        {
+            DisconnectedEvent.Add(time);
         }
     }
 }
