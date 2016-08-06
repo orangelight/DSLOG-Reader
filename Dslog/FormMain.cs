@@ -19,7 +19,7 @@ namespace Dslog
     public partial class FormMain : Form
     {
 
-        public const string VERSION = "0.3.0";
+        public const string VERSION = "0.3.1";
         public FormMain()
         {
             InitializeComponent();
@@ -119,6 +119,13 @@ namespace Dslog
             chartMain.Series["Brownout"].ChartType = SeriesChartType.FastPoint;
             chartMain.Series["Brownout"].MarkerStyle = MarkerStyle.Circle;
             chartMain.Series["Brownout"].Color = Color.OrangeRed;
+
+            chartMain.Series.Add(new Series("Watchdog"));
+            chartMain.Series["Watchdog"].XValueType = ChartValueType.DateTime;
+            chartMain.Series["Watchdog"].YAxisType = AxisType.Primary;
+            chartMain.Series["Watchdog"].ChartType = SeriesChartType.FastPoint;
+            chartMain.Series["Watchdog"].MarkerStyle = MarkerStyle.Circle;
+            chartMain.Series["Watchdog"].Color = Color.FromArgb(249, 0, 255);
 
             for (int i = 0; i < 16; i++)
             {
@@ -264,6 +271,10 @@ namespace Dslog
             {
                 return name +": " + en.Brownout;
             }
+            else if (name.Equals("Watchdog"))
+            {
+                return name + ": " + en.Watchdog;
+            }
             return name+": idk??!?!?!?";
         }
 
@@ -289,6 +300,7 @@ namespace Dslog
             checkFromString("Robot Tele", checkBox1.Checked);
 
             checkFromString("Brownout", checkBox1.Checked);
+            checkFromString("Watchdog", checkBox1.Checked);
 
             checkFromString("Voltage", checkBox2.Checked);
             checkFromString("roboRIO CPU", checkBox2.Checked);
@@ -453,6 +465,10 @@ namespace Dslog
             {
                 return en.Brownout;
             }
+            else if (name.Equals("Watchdog"))
+            {
+                return en.Brownout;
+            }
             else return false;
         }
 
@@ -487,7 +503,7 @@ namespace Dslog
                         foreach (String header in headerList)
                         {
                             //Gets data from entry using the header name
-                            if (header.Contains("Robot") || header.Contains("DS") || header.Contains("Brownout"))  csv.Append(BoolNameToValue(header, en)+",");
+                            if (header.Contains("Robot") || header.Contains("DS") || header.Contains("Brownout") || header.Contains("Watch"))  csv.Append(BoolNameToValue(header, en)+",");
                             else csv.Append(VarNameToValue(header, en) + ",");
                             
                             if (checkBoxTotalCurrent.Checked) if (header.StartsWith("PDP")) totalA += en.getPDPChannel(int.Parse(header.Split(' ')[1]));
@@ -526,7 +542,7 @@ namespace Dslog
                         clipBoardText.Append(en.Time.ToString("HH:mm:ss.fff") + "\t");
                         foreach (String s in headerList)
                         {
-                            if (s.Contains("Robot") || s.Contains("DS") || s.Contains("Brownout")) clipBoardText.Append(BoolNameToValue(s, en)+ "\t");
+                            if (s.Contains("Robot") || s.Contains("DS") || s.Contains("Brownout") || s.Contains("Watch")) clipBoardText.Append(BoolNameToValue(s, en) + "\t");
                             else clipBoardText.Append(VarNameToValue(s, en) + "\t");
                            
                             if (checkBoxTotalCurrent.Checked) if (s.StartsWith("PDP")) totalA += en.getPDPChannel(int.Parse(s.Split(' ')[1]));
@@ -762,8 +778,7 @@ namespace Dslog
             clearGraph();
             chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset();
             log = null;
-            try
-            {
+            
                 log = new DSLOGReader(path);
                 
                 menuStrip1.Items[menuStrip1.Items.Count - 2].Text = "Current File: " + path;
@@ -840,6 +855,7 @@ namespace Dslog
                     if (en.RobotTele) chartMain.Series["Robot Tele"].Points.AddXY(en.Time.ToOADate(), 16.4);
 
                     if (en.Brownout) chartMain.Series["Brownout"].Points.AddXY(en.Time.ToOADate(), 15.6);
+                    if (en.Watchdog) chartMain.Series["Watchdog"].Points.AddXY(en.Time.ToOADate(), 15.4);
 
 
 
@@ -850,11 +866,7 @@ namespace Dslog
                 setColoumnLabelNumber();
                 tabPage4.Enabled = true;
                 chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("ERROR: Can't import file");
-            }
+            
         }
 
         //clears the graph of points
