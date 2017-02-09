@@ -19,7 +19,7 @@ namespace Dslog
     public partial class FormMain : Form
     {
 
-        public const string VERSION = "0.3.1";
+        public const string VERSION = "0.3.5";
         public FormMain()
         {
             InitializeComponent();
@@ -31,6 +31,7 @@ namespace Dslog
             menuStrip1.Items.Add(new ToolStripLabel("Current File: "));
             menuStrip1.Items.Add(new ToolStripLabel("Time Scale"));
             menuStrip1.Items[menuStrip1.Items.Count - 1].Alignment = ToolStripItemAlignment.Right;
+
             
         }
         DSLOGReader log;
@@ -127,6 +128,8 @@ namespace Dslog
             chartMain.Series["Watchdog"].MarkerStyle = MarkerStyle.Circle;
             chartMain.Series["Watchdog"].Color = Color.FromArgb(249, 0, 255);
 
+            
+
             for (int i = 0; i < 16; i++)
             {
                 chartMain.Series.Add(new Series("PDP " + i));
@@ -208,7 +211,7 @@ namespace Dslog
                     totalAL.AutoSize = true;
                     totalAL.Location = new Point(7, (24 * labelNum++) + 7);
                     labelInfoPanel.Controls.Add(totalAL);
-
+                    
                 }
             }
 
@@ -275,7 +278,7 @@ namespace Dslog
             {
                 return name + ": " + en.Watchdog;
             }
-            return name+": idk??!?!?!?";
+            return name+"";
         }
 
         #endregion
@@ -308,7 +311,7 @@ namespace Dslog
 
             checkFromString("Trip Time", checkBox3.Checked);
             checkFromString("Lost Packets", checkBox3.Checked);
-
+           
             for (int i = 0; i < 4; i++)
             {
                 checkFromString("PDP " + i, checkBox4.Checked);
@@ -684,12 +687,13 @@ namespace Dslog
                                         string txtF = File.ReadAllText(file.FullName);
 
                                         DateTime sTime;
-                                        using (BinaryReader2 reader = new BinaryReader2(File.Open(file.FullName, FileMode.Open)))
+                                        using (BinaryReader2 reader = new BinaryReader2(File.Open(file.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                                         {
                                             reader.ReadInt32();
 
                                             sTime = FromLVTime(reader.ReadInt64(), reader.ReadUInt64());
-                                            listViewDSLOGFolder.Items[inx].SubItems.Add(sTime.ToString("MMM dd, yy hh:mm:ss tt"));
+                                            sTime = sTime.ToLocalTime();
+                                            listViewDSLOGFolder.Items[inx].SubItems.Add(sTime.ToString("MMM dd, HH:mm:ss ddd"));
                                             reader.Close();
                                         }
 
@@ -721,6 +725,7 @@ namespace Dslog
 
                                         //Gets time since right now
                                         TimeSpan sub = DateTime.Now.Subtract(sTime);
+                                        if (sub.TotalSeconds < 0) sub = sub.Add(new TimeSpan(1, 0, 0));
                                         listViewDSLOGFolder.Items[inx].SubItems.Add(sub.Days + "d " + sub.Hours + "h " + sub.Minutes + "m");
 
                                         if (txtF.Contains("FMS Event Name: "))
@@ -846,26 +851,42 @@ namespace Dslog
                         }
                     }
 
-                    if (en.DSDisabled) chartMain.Series["DS Disabled"].Points.AddXY(en.Time.ToOADate(), 16);
-                    if (en.DSAuto) chartMain.Series["DS Auto"].Points.AddXY(en.Time.ToOADate(), 16);
-                    if (en.DSTele) chartMain.Series["DS Tele"].Points.AddXY(en.Time.ToOADate(), 16);
+                    if (en.DSDisabled) chartMain.Series["DS Disabled"].Points.AddXY(en.Time.ToOADate(), 15.9);
+                    if (en.DSAuto) chartMain.Series["DS Auto"].Points.AddXY(en.Time.ToOADate(), 15.9);
+                    if (en.DSTele) chartMain.Series["DS Tele"].Points.AddXY(en.Time.ToOADate(), 15.9);
 
                     if (en.RobotDisabled) chartMain.Series["Robot Disabled"].Points.AddXY(en.Time.ToOADate(), 16.8);
-                    if (en.RobotAuto) chartMain.Series["Robot Auto"].Points.AddXY(en.Time.ToOADate(), 16.4);
-                    if (en.RobotTele) chartMain.Series["Robot Tele"].Points.AddXY(en.Time.ToOADate(), 16.4);
+                    if (en.RobotAuto) chartMain.Series["Robot Auto"].Points.AddXY(en.Time.ToOADate(), 16.5);
+                    if (en.RobotTele) chartMain.Series["Robot Tele"].Points.AddXY(en.Time.ToOADate(), 16.2);
 
                     if (en.Brownout) chartMain.Series["Brownout"].Points.AddXY(en.Time.ToOADate(), 15.6);
-                    if (en.Watchdog) chartMain.Series["Watchdog"].Points.AddXY(en.Time.ToOADate(), 15.4);
+                    if (en.Watchdog) chartMain.Series["Watchdog"].Points.AddXY(en.Time.ToOADate(), 15.3);
 
 
 
 
                 }
+                addDSEVENTSPoints(path);
                 chartMain.ChartAreas[0].AxisX.Maximum = log.Entries.Last().Time.ToOADate();
                 menuStrip1.Items[menuStrip1.Items.Count - 1].Text = "Time Scale " + getTotalSecoundsInView() + " Sec";
                 setColoumnLabelNumber();
                 tabPage4.Enabled = true;
                 chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+            
+        }
+
+        void addDSEVENTSPoints(string path)
+        {
+            DSEVENTSReader dsevents = new DSEVENTSReader(path.Replace(".dslog", ".dsevents"));
+            
+            int inx = 0;
+            //listViewEvents.Items.Clear();
+            foreach (InfoEntry en in dsevents.EntryList)
+            {
+                listViewEvents.Items.Add(en.TimeData);
+                listViewEvents.Items[inx].SubItems.Add(en.Data);
+                inx++;
+            }
             
         }
 
@@ -942,10 +963,14 @@ namespace Dslog
             System.Diagnostics.Process.Start("https://github.com/orangelight/dslog-reader/blob/master/Help.md");
         }
 
-        
+        private void refreshPathToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            addLogFilesToViewer(@"C:\Users\Public\Documents\FRC\Log Files");
+        }
+
+
 
         
-
 
     }
 }

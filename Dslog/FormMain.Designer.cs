@@ -88,6 +88,13 @@
             this.helpToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.viewHelpToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.tabControlChart = new System.Windows.Forms.TabControl();
+            this.tabPageChart = new System.Windows.Forms.TabPage();
+            this.tabPageMessages = new System.Windows.Forms.TabPage();
+            this.listViewEvents = new System.Windows.Forms.ListView();
+            this.columnHeaderDSTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderEventText = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.refreshPathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.chartMain)).BeginInit();
             this.tabControlChartCheckBox.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -99,13 +106,13 @@
             this.tabPage5.SuspendLayout();
             this.tabPage6.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.tabControlChart.SuspendLayout();
+            this.tabPageChart.SuspendLayout();
+            this.tabPageMessages.SuspendLayout();
             this.SuspendLayout();
             // 
             // chartMain
             // 
-            this.chartMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.chartMain.BackColor = System.Drawing.SystemColors.Control;
             chartArea1.AxisX.IntervalAutoMode = System.Windows.Forms.DataVisualization.Charting.IntervalAutoMode.VariableCount;
             chartArea1.AxisX.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
@@ -156,10 +163,11 @@
             chartArea1.CursorX.IsUserSelectionEnabled = true;
             chartArea1.Name = "ChartArea1";
             this.chartMain.ChartAreas.Add(chartArea1);
-            this.chartMain.Location = new System.Drawing.Point(336, 25);
+            this.chartMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chartMain.Location = new System.Drawing.Point(3, 3);
             this.chartMain.Margin = new System.Windows.Forms.Padding(2);
             this.chartMain.Name = "chartMain";
-            this.chartMain.Size = new System.Drawing.Size(757, 531);
+            this.chartMain.Size = new System.Drawing.Size(722, 498);
             this.chartMain.TabIndex = 2;
             this.chartMain.Text = "chart1";
             this.chartMain.CursorPositionChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.chartMain_CursorPositionChanged);
@@ -385,7 +393,7 @@
             // 
             this.columnTime.DisplayIndex = 0;
             this.columnTime.Text = "Time";
-            this.columnTime.Width = 130;
+            this.columnTime.Width = 120;
             // 
             // columnSeconds
             // 
@@ -614,7 +622,8 @@
             // 
             this.fileToolStripMenuItem2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadLogToolStripMenuItem1,
-            this.fileToolStripMenuItem3});
+            this.fileToolStripMenuItem3,
+            this.refreshPathToolStripMenuItem});
             this.fileToolStripMenuItem2.Name = "fileToolStripMenuItem2";
             this.fileToolStripMenuItem2.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem2.Text = "File";
@@ -622,14 +631,14 @@
             // loadLogToolStripMenuItem1
             // 
             this.loadLogToolStripMenuItem1.Name = "loadLogToolStripMenuItem1";
-            this.loadLogToolStripMenuItem1.Size = new System.Drawing.Size(147, 22);
+            this.loadLogToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.loadLogToolStripMenuItem1.Text = "Load Log";
             this.loadLogToolStripMenuItem1.Click += new System.EventHandler(this.loadLogToolStripMenuItem_Click);
             // 
             // fileToolStripMenuItem3
             // 
             this.fileToolStripMenuItem3.Name = "fileToolStripMenuItem3";
-            this.fileToolStripMenuItem3.Size = new System.Drawing.Size(147, 22);
+            this.fileToolStripMenuItem3.Size = new System.Drawing.Size(152, 22);
             this.fileToolStripMenuItem3.Text = "Log Files Path";
             this.fileToolStripMenuItem3.Click += new System.EventHandler(this.changeLogFilePathToolStripMenuItem_Click);
             // 
@@ -671,13 +680,81 @@
             this.aboutToolStripMenuItem2.Text = "About";
             this.aboutToolStripMenuItem2.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
+            // tabControlChart
+            // 
+            this.tabControlChart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControlChart.Controls.Add(this.tabPageChart);
+            this.tabControlChart.Controls.Add(this.tabPageMessages);
+            this.tabControlChart.Location = new System.Drawing.Point(360, 25);
+            this.tabControlChart.Name = "tabControlChart";
+            this.tabControlChart.SelectedIndex = 0;
+            this.tabControlChart.Size = new System.Drawing.Size(736, 530);
+            this.tabControlChart.TabIndex = 14;
+            // 
+            // tabPageChart
+            // 
+            this.tabPageChart.Controls.Add(this.chartMain);
+            this.tabPageChart.Location = new System.Drawing.Point(4, 22);
+            this.tabPageChart.Name = "tabPageChart";
+            this.tabPageChart.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageChart.Size = new System.Drawing.Size(728, 504);
+            this.tabPageChart.TabIndex = 0;
+            this.tabPageChart.Text = "Graph";
+            this.tabPageChart.UseVisualStyleBackColor = true;
+            // 
+            // tabPageMessages
+            // 
+            this.tabPageMessages.Controls.Add(this.listViewEvents);
+            this.tabPageMessages.Location = new System.Drawing.Point(4, 22);
+            this.tabPageMessages.Name = "tabPageMessages";
+            this.tabPageMessages.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageMessages.Size = new System.Drawing.Size(728, 504);
+            this.tabPageMessages.TabIndex = 1;
+            this.tabPageMessages.Text = "Events";
+            this.tabPageMessages.UseVisualStyleBackColor = true;
+            // 
+            // listViewEvents
+            // 
+            this.listViewEvents.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderDSTime,
+            this.columnHeaderEventText});
+            this.listViewEvents.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewEvents.FullRowSelect = true;
+            this.listViewEvents.GridLines = true;
+            this.listViewEvents.Location = new System.Drawing.Point(3, 3);
+            this.listViewEvents.Name = "listViewEvents";
+            this.listViewEvents.OwnerDraw = true;
+            this.listViewEvents.Size = new System.Drawing.Size(722, 498);
+            this.listViewEvents.TabIndex = 0;
+            this.listViewEvents.UseCompatibleStateImageBehavior = false;
+            this.listViewEvents.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeaderDSTime
+            // 
+            this.columnHeaderDSTime.Text = "DS Time";
+            this.columnHeaderDSTime.Width = 90;
+            // 
+            // columnHeaderEventText
+            // 
+            this.columnHeaderEventText.Text = "Event Message Text";
+            this.columnHeaderEventText.Width = 700;
+            // 
+            // refreshPathToolStripMenuItem
+            // 
+            this.refreshPathToolStripMenuItem.Name = "refreshPathToolStripMenuItem";
+            this.refreshPathToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.refreshPathToolStripMenuItem.Text = "Refresh Path";
+            this.refreshPathToolStripMenuItem.Click += new System.EventHandler(this.refreshPathToolStripMenuItem_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1108, 567);
+            this.Controls.Add(this.tabControlChart);
             this.Controls.Add(this.tabControlMain);
-            this.Controls.Add(this.chartMain);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
@@ -698,6 +775,9 @@
             this.tabPage6.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.tabControlChart.ResumeLayout(false);
+            this.tabPageChart.ResumeLayout(false);
+            this.tabPageMessages.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -762,6 +842,13 @@
         private System.Windows.Forms.ToolStripMenuItem resetZoomToolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem viewHelpToolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem2;
+        private System.Windows.Forms.TabControl tabControlChart;
+        private System.Windows.Forms.TabPage tabPageChart;
+        private System.Windows.Forms.TabPage tabPageMessages;
+        private System.Windows.Forms.ListView listViewEvents;
+        private System.Windows.Forms.ColumnHeader columnHeaderDSTime;
+        private System.Windows.Forms.ColumnHeader columnHeaderEventText;
+        private System.Windows.Forms.ToolStripMenuItem refreshPathToolStripMenuItem;
     }
 }
 

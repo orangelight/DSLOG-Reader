@@ -67,7 +67,7 @@ namespace Dslog
             if (File.Exists(path))
             {
                 
-                using (BinaryReader2 reader = new BinaryReader2(File.Open(path, FileMode.Open)))
+                using (BinaryReader2 reader = new BinaryReader2(File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                 {
                     Version = reader.ReadInt32();
                     if (Version == 3)

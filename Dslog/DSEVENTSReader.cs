@@ -14,11 +14,13 @@ namespace DSLOG_Reader
     {
         public readonly DateTime Time;
         public readonly String Data;
+        public readonly String TimeData;
 
         public InfoEntry(DateTime time, string s)
         {
             Time = time;
             Data = s;
+            TimeData = time.ToString("h:mm:ss fff tt");
         }
     }
     class DSEVENTSReader
@@ -44,7 +46,7 @@ namespace DSLOG_Reader
             if (File.Exists(path))
             {
 
-                using (BinaryReader2 reader = new BinaryReader2(File.Open(path, FileMode.Open)))
+                using (BinaryReader2 reader = new BinaryReader2(File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                 {
                     Version = reader.ReadInt32();
                     if (Version == 3)
