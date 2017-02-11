@@ -83,6 +83,7 @@
             this.fileToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.loadLogToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.fileToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.refreshPathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.resetZoomToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -91,10 +92,12 @@
             this.tabControlChart = new System.Windows.Forms.TabControl();
             this.tabPageChart = new System.Windows.Forms.TabPage();
             this.tabPageMessages = new System.Windows.Forms.TabPage();
+            this.EventsSearchBox = new System.Windows.Forms.TextBox();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.listViewEvents = new System.Windows.Forms.ListView();
             this.columnHeaderDSTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderEventText = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.refreshPathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.columnOATIME = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.chartMain)).BeginInit();
             this.tabControlChartCheckBox.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -631,16 +634,23 @@
             // loadLogToolStripMenuItem1
             // 
             this.loadLogToolStripMenuItem1.Name = "loadLogToolStripMenuItem1";
-            this.loadLogToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.loadLogToolStripMenuItem1.Size = new System.Drawing.Size(147, 22);
             this.loadLogToolStripMenuItem1.Text = "Load Log";
             this.loadLogToolStripMenuItem1.Click += new System.EventHandler(this.loadLogToolStripMenuItem_Click);
             // 
             // fileToolStripMenuItem3
             // 
             this.fileToolStripMenuItem3.Name = "fileToolStripMenuItem3";
-            this.fileToolStripMenuItem3.Size = new System.Drawing.Size(152, 22);
+            this.fileToolStripMenuItem3.Size = new System.Drawing.Size(147, 22);
             this.fileToolStripMenuItem3.Text = "Log Files Path";
             this.fileToolStripMenuItem3.Click += new System.EventHandler(this.changeLogFilePathToolStripMenuItem_Click);
+            // 
+            // refreshPathToolStripMenuItem
+            // 
+            this.refreshPathToolStripMenuItem.Name = "refreshPathToolStripMenuItem";
+            this.refreshPathToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.refreshPathToolStripMenuItem.Text = "Refresh Path";
+            this.refreshPathToolStripMenuItem.Click += new System.EventHandler(this.refreshPathToolStripMenuItem_Click);
             // 
             // viewToolStripMenuItem2
             // 
@@ -706,6 +716,8 @@
             // 
             // tabPageMessages
             // 
+            this.tabPageMessages.Controls.Add(this.EventsSearchBox);
+            this.tabPageMessages.Controls.Add(this.richTextBox1);
             this.tabPageMessages.Controls.Add(this.listViewEvents);
             this.tabPageMessages.Location = new System.Drawing.Point(4, 22);
             this.tabPageMessages.Name = "tabPageMessages";
@@ -715,38 +727,59 @@
             this.tabPageMessages.Text = "Events";
             this.tabPageMessages.UseVisualStyleBackColor = true;
             // 
+            // EventsSearchBox
+            // 
+            this.EventsSearchBox.Location = new System.Drawing.Point(3, 3);
+            this.EventsSearchBox.Name = "EventsSearchBox";
+            this.EventsSearchBox.Size = new System.Drawing.Size(266, 20);
+            this.EventsSearchBox.TabIndex = 2;
+            this.EventsSearchBox.TextChanged += new System.EventHandler(this.EventsSearchBox_TextChanged);
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.richTextBox1.Location = new System.Drawing.Point(3, 397);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(722, 104);
+            this.richTextBox1.TabIndex = 1;
+            this.richTextBox1.Text = "";
+            // 
             // listViewEvents
             // 
+            this.listViewEvents.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listViewEvents.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeaderDSTime,
-            this.columnHeaderEventText});
-            this.listViewEvents.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.columnHeaderEventText,
+            this.columnOATIME});
             this.listViewEvents.FullRowSelect = true;
             this.listViewEvents.GridLines = true;
-            this.listViewEvents.Location = new System.Drawing.Point(3, 3);
+            this.listViewEvents.HideSelection = false;
+            this.listViewEvents.Location = new System.Drawing.Point(3, 24);
+            this.listViewEvents.MultiSelect = false;
             this.listViewEvents.Name = "listViewEvents";
-            this.listViewEvents.OwnerDraw = true;
-            this.listViewEvents.Size = new System.Drawing.Size(722, 498);
+            this.listViewEvents.Size = new System.Drawing.Size(722, 367);
             this.listViewEvents.TabIndex = 0;
             this.listViewEvents.UseCompatibleStateImageBehavior = false;
             this.listViewEvents.View = System.Windows.Forms.View.Details;
+            this.listViewEvents.SelectedIndexChanged += new System.EventHandler(this.listViewEvents_SelectedIndexChanged);
+            this.listViewEvents.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listViewEvents_MouseDoubleClick);
             // 
             // columnHeaderDSTime
             // 
             this.columnHeaderDSTime.Text = "DS Time";
-            this.columnHeaderDSTime.Width = 90;
+            this.columnHeaderDSTime.Width = 95;
             // 
             // columnHeaderEventText
             // 
             this.columnHeaderEventText.Text = "Event Message Text";
             this.columnHeaderEventText.Width = 700;
             // 
-            // refreshPathToolStripMenuItem
+            // columnOATIME
             // 
-            this.refreshPathToolStripMenuItem.Name = "refreshPathToolStripMenuItem";
-            this.refreshPathToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.refreshPathToolStripMenuItem.Text = "Refresh Path";
-            this.refreshPathToolStripMenuItem.Click += new System.EventHandler(this.refreshPathToolStripMenuItem_Click);
+            this.columnOATIME.Text = "";
+            this.columnOATIME.Width = 0;
             // 
             // FormMain
             // 
@@ -778,6 +811,7 @@
             this.tabControlChart.ResumeLayout(false);
             this.tabPageChart.ResumeLayout(false);
             this.tabPageMessages.ResumeLayout(false);
+            this.tabPageMessages.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -849,6 +883,9 @@
         private System.Windows.Forms.ColumnHeader columnHeaderDSTime;
         private System.Windows.Forms.ColumnHeader columnHeaderEventText;
         private System.Windows.Forms.ToolStripMenuItem refreshPathToolStripMenuItem;
+        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.TextBox EventsSearchBox;
+        private System.Windows.Forms.ColumnHeader columnOATIME;
     }
 }
 

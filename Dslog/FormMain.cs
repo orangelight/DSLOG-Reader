@@ -19,7 +19,7 @@ namespace Dslog
     public partial class FormMain : Form
     {
 
-        public const string VERSION = "0.3.5";
+        public const string VERSION = "0.4.0";
         public FormMain()
         {
             InitializeComponent();
@@ -31,7 +31,6 @@ namespace Dslog
             menuStrip1.Items.Add(new ToolStripLabel("Current File: "));
             menuStrip1.Items.Add(new ToolStripLabel("Time Scale"));
             menuStrip1.Items[menuStrip1.Items.Count - 1].Alignment = ToolStripItemAlignment.Right;
-
             
         }
         DSLOGReader log;
@@ -183,38 +182,43 @@ namespace Dslog
             {
                 if (!Double.IsNaN(e.NewPosition))
                 {
-                    labelInfoPanel.Controls.Clear();
-                    //Get x value form probe
-                    DateTime xValue = DateTime.FromOADate(e.NewPosition);
-                    //get entry from x value
-                    Entry en = log.Entries.ElementAt((int)(xValue.Subtract(log.StartTime).TotalMilliseconds / 20));
-                    int labelNum = 0;
-                    double totalA = 0;
-                    for (int seriesNum = 0; seriesNum < chartMain.Series.Count; seriesNum++)
-                    {
-                        if (chartMain.Series[seriesNum].Enabled)
-                        {
-                            Label seriesLabel = new Label();
-                            seriesLabel.Text = varToLabel(chartMain.Series[seriesNum].Name, en);
-                            seriesLabel.Visible = true;
-                            seriesLabel.AutoSize = true;
-                            seriesLabel.Location = new Point(7, (24 * labelNum++) + 7);
-                            labelInfoPanel.Controls.Add(seriesLabel);
-                            //Add pdp series to total current
-                            if (chartMain.Series[seriesNum].Name.StartsWith("PDP")) totalA += en.getPDPChannel(int.Parse(chartMain.Series[seriesNum].Name.Split(' ')[1]));
-                        }
-                    }
-
-                    Label totalAL = new Label();
-                    totalAL.Text = "Total Current: " + totalA + "A";
-                    totalAL.Visible = true;
-                    totalAL.AutoSize = true;
-                    totalAL.Location = new Point(7, (24 * labelNum++) + 7);
-                    labelInfoPanel.Controls.Add(totalAL);
+                    probe(e.NewPosition);
                     
                 }
             }
 
+        }
+
+        private void probe(double pos)
+        {
+            labelInfoPanel.Controls.Clear();
+            //Get x value form probe
+            DateTime xValue = DateTime.FromOADate(pos);
+            //get entry from x value
+            Entry en = log.Entries.ElementAt((int)(xValue.Subtract(log.StartTime).TotalMilliseconds / 20));
+            int labelNum = 0;
+            double totalA = 0;
+            for (int seriesNum = 0; seriesNum < chartMain.Series.Count; seriesNum++)
+            {
+                if (chartMain.Series[seriesNum].Enabled)
+                {
+                    Label seriesLabel = new Label();
+                    seriesLabel.Text = varToLabel(chartMain.Series[seriesNum].Name, en);
+                    seriesLabel.Visible = true;
+                    seriesLabel.AutoSize = true;
+                    seriesLabel.Location = new Point(7, (24 * labelNum++) + 7);
+                    labelInfoPanel.Controls.Add(seriesLabel);
+                    //Add pdp series to total current
+                    if (chartMain.Series[seriesNum].Name.StartsWith("PDP")) totalA += en.getPDPChannel(int.Parse(chartMain.Series[seriesNum].Name.Split(' ')[1]));
+                }
+            }
+
+            Label totalAL = new Label();
+            totalAL.Text = "Total Current: " + totalA + "A";
+            totalAL.Visible = true;
+            totalAL.AutoSize = true;
+            totalAL.Location = new Point(7, (24 * labelNum++) + 7);
+            labelInfoPanel.Controls.Add(totalAL);
         }
 
         string varToLabel(String name, Entry en)
@@ -635,23 +639,23 @@ namespace Dslog
                 
             }
             //sroll down to bottom (need to use timer cuz it's weird
-            lastIndexSelected = -1;
+            lastIndexSelectedFiles = -1;
             timerScrollToBottom.Start();
             }
         }
 
       
         //last Index Selected so we don't load the file again
-        int lastIndexSelected = 0;
+        int lastIndexSelectedFiles = 0;
 
         //import file when selection changes
         private void listViewDSLOGFolder_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (listViewDSLOGFolder.SelectedItems.Count != 0)
             {
-                if (listViewDSLOGFolder.SelectedItems[0].Index != lastIndexSelected)
+                if (listViewDSLOGFolder.SelectedItems[0].Index != lastIndexSelectedFiles)
                 {
-                    lastIndexSelected = listViewDSLOGFolder.SelectedItems[0].Index;
+                    lastIndexSelectedFiles = listViewDSLOGFolder.SelectedItems[0].Index;
                     importLog(listviewFolderPath + "\\" + listViewDSLOGFolder.SelectedItems[0].Text + ".dslog");
                 }
             }
@@ -692,7 +696,6 @@ namespace Dslog
                                             reader.ReadInt32();
 
                                             sTime = FromLVTime(reader.ReadInt64(), reader.ReadUInt64());
-                                            sTime = sTime.ToLocalTime();
                                             listViewDSLOGFolder.Items[inx].SubItems.Add(sTime.ToString("MMM dd, HH:mm:ss ddd"));
                                             reader.Close();
                                         }
@@ -725,7 +728,7 @@ namespace Dslog
 
                                         //Gets time since right now
                                         TimeSpan sub = DateTime.Now.Subtract(sTime);
-                                        if (sub.TotalSeconds < 0) sub = sub.Add(new TimeSpan(1, 0, 0));
+                                        //sTime = sTime.Subtract(new TimeSpan(2, 0, 0));
                                         listViewDSLOGFolder.Items[inx].SubItems.Add(sub.Days + "d " + sub.Hours + "h " + sub.Minutes + "m");
 
                                         if (txtF.Contains("FMS Event Name: "))
@@ -872,20 +875,25 @@ namespace Dslog
                 setColoumnLabelNumber();
                 tabPage4.Enabled = true;
                 chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+                lastIndexSelectedEvents = -1;
+                richTextBox1.Clear();
             
         }
-
+        private DSEVENTSReader Dsevents;
         void addDSEVENTSPoints(string path)
         {
             DSEVENTSReader dsevents = new DSEVENTSReader(path.Replace(".dslog", ".dsevents"));
-            
-            int inx = 0;
-            //listViewEvents.Items.Clear();
+            Dsevents = dsevents;
+            listViewEvents.Items.Clear();
             foreach (InfoEntry en in dsevents.EntryList)
             {
-                listViewEvents.Items.Add(en.TimeData);
-                listViewEvents.Items[inx].SubItems.Add(en.Data);
-                inx++;
+                ListViewItem item = new ListViewItem();
+                item.Text = en.TimeData;
+                item.SubItems.Add(en.Data);
+                if (en.Data.Contains("ERROR") || en.Data.Contains("<flags> 1")) item.BackColor = Color.LightCoral;
+                else if (en.Data.Contains("Warning") || en.Data.Contains("<flags> 2")) item.BackColor = Color.Khaki;
+                item.SubItems.Add("" + en.Time.ToOADate());
+                listViewEvents.Items.Add(item);
             }
             
         }
@@ -933,7 +941,7 @@ namespace Dslog
         {
             var epoch = new DateTime(1904, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             epoch = epoch.AddSeconds(unixTime);
-            epoch = epoch.AddHours(-4);
+            epoch = epoch.AddHours(-5);
 
             return epoch.AddSeconds(((double)ummm / UInt64.MaxValue));
         }
@@ -967,8 +975,77 @@ namespace Dslog
         {
             addLogFilesToViewer(@"C:\Users\Public\Documents\FRC\Log Files");
         }
+        int lastIndexSelectedEvents = -1;
+        private void listViewEvents_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listViewEvents.SelectedItems.Count != 0)
+            {
+                if (listViewEvents.SelectedItems[0].Index != lastIndexSelectedEvents)
+                {
+                    lastIndexSelectedEvents = listViewEvents.SelectedItems[0].Index;
+                    richTextBox1.Text = listViewEvents.SelectedItems[0].SubItems[1].Text;
+                }
+            }
+        }
 
+        private void testToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            chartMain.ChartAreas[0].CursorX.SetCursorPosition(DateTime.FromOADate(chartMain.ChartAreas[0].CursorX.Position).AddSeconds(1).ToOADate());
+        }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (log != null)
+            {
+                if (!Double.IsNaN(chartMain.ChartAreas[0].CursorX.Position))
+                {
+                    if (keyData == Keys.Left)
+                    {
+                        //(((getTotalSecoundsInView() / 300d) < .002) ? .002 : (getTotalSecoundsInView() / 300d))
+                        chartMain.ChartAreas[0].CursorX.SetCursorPosition(DateTime.FromOADate(chartMain.ChartAreas[0].CursorX.Position).AddSeconds(-(((getTotalSecoundsInView() / 300d) < .02) ? .02 : (getTotalSecoundsInView() / 250d))).ToOADate());
+                        probe(chartMain.ChartAreas[0].CursorX.Position);
+                        return true;
+                    }
+                    if (keyData == Keys.Right)
+                    {
+                        chartMain.ChartAreas[0].CursorX.SetCursorPosition(DateTime.FromOADate(chartMain.ChartAreas[0].CursorX.Position).AddSeconds((((getTotalSecoundsInView() / 300d) < .02) ? .02 : (getTotalSecoundsInView() / 250d))).ToOADate());
+                        probe(chartMain.ChartAreas[0].CursorX.Position);
+                        return true;
+                    }
+                }
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void listViewEvents_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            chartMain.ChartAreas[0].CursorX.SetCursorPosition(Double.Parse(listViewEvents.SelectedItems[0].SubItems[2].Text));
+            tabControlChart.SelectTab(0);
+        }
+
+        private void EventsSearchBox_TextChanged(object sender, EventArgs e)
+        {
+            if (Dsevents != null)
+            {
+                for (int i = 0; i < listViewEvents.Items.Count; i++)
+                {
+                    listViewEvents.Items.RemoveAt(i);
+                }
+                    foreach (InfoEntry en in Dsevents.EntryList)
+                    {
+                        if (en.Data.ToLower().Contains(EventsSearchBox.Text.ToLower()))
+                        {
+                            ListViewItem item = new ListViewItem();
+                            item.Text = en.TimeData;
+                            item.SubItems.Add(en.Data);
+                            if (en.Data.Contains("ERROR") || en.Data.Contains("<flags> 1")) item.BackColor = Color.LightCoral;
+                            else if (en.Data.Contains("Warning") || en.Data.Contains("<flags> 2")) item.BackColor = Color.Khaki;
+                            item.SubItems.Add(""+en.Time.ToOADate());
+                            listViewEvents.Items.Add(item);
+                        }
+                    }
+            }
+        }
 
         
 

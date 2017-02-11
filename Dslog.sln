@@ -8,13 +8,26 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Viao|Any CPU = Viao|Any CPU
+		Viao|x64 = Viao|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F9D55105-56CC-472B-A0F5-CADB8F8BC179}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F9D55105-56CC-472B-A0F5-CADB8F8BC179}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9D55105-56CC-472B-A0F5-CADB8F8BC179}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{F9D55105-56CC-472B-A0F5-CADB8F8BC179}.Debug|x64.ActiveCfg = Debug|x64
+		{F9D55105-56CC-472B-A0F5-CADB8F8BC179}.Debug|x64.Build.0 = Debug|x64
 		{F9D55105-56CC-472B-A0F5-CADB8F8BC179}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9D55105-56CC-472B-A0F5-CADB8F8BC179}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9D55105-56CC-472B-A0F5-CADB8F8BC179}.Release|x64.ActiveCfg = Release|x64
+		{F9D55105-56CC-472B-A0F5-CADB8F8BC179}.Release|x64.Build.0 = Release|x64
+		{F9D55105-56CC-472B-A0F5-CADB8F8BC179}.Viao|Any CPU.ActiveCfg = Viao|Any CPU
+		{F9D55105-56CC-472B-A0F5-CADB8F8BC179}.Viao|Any CPU.Deploy.0 = Viao|Any CPU
+		{F9D55105-56CC-472B-A0F5-CADB8F8BC179}.Viao|x64.ActiveCfg = Viao|x64
+		{F9D55105-56CC-472B-A0F5-CADB8F8BC179}.Viao|x64.Build.0 = Viao|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
