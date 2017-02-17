@@ -58,8 +58,8 @@ namespace DSLOG_Reader
                             Int32 l = reader.ReadInt32();
                             string s = System.Text.Encoding.ASCII.GetString(reader.ReadBytes(l));
                             EntryList.Add(new InfoEntry(time, s));
-                            if (s.StartsWith("Warning <Code> 44008")) ReadWarning44008(s, time);
-                            if (s.StartsWith("Warning <Code> 44004")) ReadWarning44004(s, time);
+                            //if (s.StartsWith("Warning <Code> 44008")) ReadWarning44008(s, time);
+                            //if (s.StartsWith("Warning <Code> 44004")) ReadWarning44004(s, time);
                         }
                     }
                     else

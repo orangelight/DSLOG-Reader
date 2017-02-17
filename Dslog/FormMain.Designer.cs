@@ -42,8 +42,6 @@
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.labelInfoPanel = new System.Windows.Forms.Panel();
             this.buttonExport = new System.Windows.Forms.Button();
             this.labelColumns = new System.Windows.Forms.Label();
             this.checkBoxTotalCurrent = new System.Windows.Forms.CheckBox();
@@ -61,6 +59,7 @@
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.GraphRichTextBox = new System.Windows.Forms.RichTextBox();
             this.timerScrollToBottom = new System.Windows.Forms.Timer(this.components);
             this.logUpdate = new System.Windows.Forms.Timer(this.components);
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -89,21 +88,20 @@
             this.helpToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.viewHelpToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.tabControlChart = new System.Windows.Forms.TabControl();
             this.tabPageChart = new System.Windows.Forms.TabPage();
             this.tabPageMessages = new System.Windows.Forms.TabPage();
-            this.EventsSearchBox = new System.Windows.Forms.TextBox();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.EventRichTextBox = new System.Windows.Forms.RichTextBox();
             this.listViewEvents = new System.Windows.Forms.ListView();
             this.columnHeaderDSTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderEventText = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnOATIME = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.GraphCorsorLine = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.chartMain)).BeginInit();
             this.tabControlChartCheckBox.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.tabControlProbeExport.SuspendLayout();
-            this.tabPage3.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.tabControlMain.SuspendLayout();
             this.tabPage5.SuspendLayout();
@@ -148,7 +146,7 @@
             chartArea1.AxisY.MaximumAutoSize = 100F;
             chartArea1.AxisY.Minimum = 0D;
             chartArea1.AxisY.Title = "Battery Voltage";
-            chartArea1.AxisY.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea1.AxisY.TitleFont = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
             chartArea1.AxisY.TitleForeColor = System.Drawing.Color.DarkGoldenrod;
             chartArea1.AxisY2.Interval = 10D;
             chartArea1.AxisY2.MajorGrid.Enabled = false;
@@ -164,18 +162,20 @@
             chartArea1.CursorX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
             chartArea1.CursorX.IsUserEnabled = true;
             chartArea1.CursorX.IsUserSelectionEnabled = true;
+            chartArea1.CursorX.LineWidth = 2;
             chartArea1.Name = "ChartArea1";
             this.chartMain.ChartAreas.Add(chartArea1);
             this.chartMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chartMain.Location = new System.Drawing.Point(3, 3);
             this.chartMain.Margin = new System.Windows.Forms.Padding(2);
             this.chartMain.Name = "chartMain";
-            this.chartMain.Size = new System.Drawing.Size(722, 498);
+            this.chartMain.Size = new System.Drawing.Size(734, 498);
             this.chartMain.TabIndex = 2;
             this.chartMain.Text = "chart1";
             this.chartMain.CursorPositionChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.chartMain_CursorPositionChanged);
             this.chartMain.AxisViewChanging += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.chartMain_AxisViewChanging);
             this.chartMain.AxisViewChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.chartMain_AxisViewChanged);
+            this.chartMain.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chartMain_MouseMove);
             // 
             // tabControlChartCheckBox
             // 
@@ -183,10 +183,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControlChartCheckBox.Controls.Add(this.tabPage1);
             this.tabControlChartCheckBox.Controls.Add(this.tabPage2);
-            this.tabControlChartCheckBox.Location = new System.Drawing.Point(173, 6);
+            this.tabControlChartCheckBox.Location = new System.Drawing.Point(173, 3);
             this.tabControlChartCheckBox.Name = "tabControlChartCheckBox";
             this.tabControlChartCheckBox.SelectedIndex = 0;
-            this.tabControlChartCheckBox.Size = new System.Drawing.Size(159, 493);
+            this.tabControlChartCheckBox.Size = new System.Drawing.Size(162, 385);
             this.tabControlChartCheckBox.TabIndex = 3;
             // 
             // tabPage1
@@ -202,7 +202,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(151, 467);
+            this.tabPage1.Size = new System.Drawing.Size(154, 359);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Groups";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -210,9 +210,9 @@
             // checkBox7
             // 
             this.checkBox7.AutoSize = true;
-            this.checkBox7.Location = new System.Drawing.Point(7, 151);
+            this.checkBox7.Location = new System.Drawing.Point(7, 152);
             this.checkBox7.Name = "checkBox7";
-            this.checkBox7.Size = new System.Drawing.Size(114, 17);
+            this.checkBox7.Size = new System.Drawing.Size(117, 17);
             this.checkBox7.TabIndex = 6;
             this.checkBox7.Text = "Power (12-15) 40A";
             this.checkBox7.UseVisualStyleBackColor = true;
@@ -223,7 +223,7 @@
             this.checkBox6.AutoSize = true;
             this.checkBox6.Location = new System.Drawing.Point(7, 127);
             this.checkBox6.Name = "checkBox6";
-            this.checkBox6.Size = new System.Drawing.Size(108, 17);
+            this.checkBox6.Size = new System.Drawing.Size(111, 17);
             this.checkBox6.TabIndex = 5;
             this.checkBox6.Text = "Power (8-11) 30A";
             this.checkBox6.UseVisualStyleBackColor = true;
@@ -234,7 +234,7 @@
             this.checkBox5.AutoSize = true;
             this.checkBox5.Location = new System.Drawing.Point(7, 103);
             this.checkBox5.Name = "checkBox5";
-            this.checkBox5.Size = new System.Drawing.Size(102, 17);
+            this.checkBox5.Size = new System.Drawing.Size(105, 17);
             this.checkBox5.TabIndex = 4;
             this.checkBox5.Text = "Power (4-7) 30A";
             this.checkBox5.UseVisualStyleBackColor = true;
@@ -245,7 +245,7 @@
             this.checkBox4.AutoSize = true;
             this.checkBox4.Location = new System.Drawing.Point(7, 79);
             this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(102, 17);
+            this.checkBox4.Size = new System.Drawing.Size(105, 17);
             this.checkBox4.TabIndex = 3;
             this.checkBox4.Text = "Power (0-3) 40A";
             this.checkBox4.UseVisualStyleBackColor = true;
@@ -258,7 +258,7 @@
             this.checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox3.Location = new System.Drawing.Point(7, 55);
             this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(60, 17);
+            this.checkBox3.Size = new System.Drawing.Size(63, 17);
             this.checkBox3.TabIndex = 2;
             this.checkBox3.Text = "Comms";
             this.checkBox3.UseVisualStyleBackColor = true;
@@ -269,7 +269,7 @@
             this.checkBox2.AutoSize = true;
             this.checkBox2.Checked = true;
             this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox2.Location = new System.Drawing.Point(7, 31);
+            this.checkBox2.Location = new System.Drawing.Point(7, 30);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(52, 17);
             this.checkBox2.TabIndex = 1;
@@ -282,9 +282,9 @@
             this.checkBox1.AutoSize = true;
             this.checkBox1.Checked = true;
             this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(7, 7);
+            this.checkBox1.Location = new System.Drawing.Point(7, 8);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(85, 17);
+            this.checkBox1.Size = new System.Drawing.Size(91, 17);
             this.checkBox1.TabIndex = 0;
             this.checkBox1.Text = "Robot Mode";
             this.checkBox1.UseVisualStyleBackColor = true;
@@ -296,36 +296,16 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(151, 467);
+            this.tabPage2.Size = new System.Drawing.Size(154, 359);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Plots";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.labelInfoPanel);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox1.Location = new System.Drawing.Point(3, 3);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(147, 461);
-            this.groupBox1.TabIndex = 4;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Info";
-            // 
-            // labelInfoPanel
-            // 
-            this.labelInfoPanel.AutoScroll = true;
-            this.labelInfoPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelInfoPanel.Location = new System.Drawing.Point(3, 16);
-            this.labelInfoPanel.Name = "labelInfoPanel";
-            this.labelInfoPanel.Size = new System.Drawing.Size(141, 442);
-            this.labelInfoPanel.TabIndex = 0;
-            // 
             // buttonExport
             // 
-            this.buttonExport.Location = new System.Drawing.Point(6, 69);
+            this.buttonExport.Location = new System.Drawing.Point(6, 68);
             this.buttonExport.Name = "buttonExport";
-            this.buttonExport.Size = new System.Drawing.Size(141, 22);
+            this.buttonExport.Size = new System.Drawing.Size(141, 23);
             this.buttonExport.TabIndex = 6;
             this.buttonExport.Text = "Export";
             this.buttonExport.UseVisualStyleBackColor = true;
@@ -336,16 +316,16 @@
             this.labelColumns.AutoSize = true;
             this.labelColumns.Location = new System.Drawing.Point(3, 26);
             this.labelColumns.Name = "labelColumns";
-            this.labelColumns.Size = new System.Drawing.Size(89, 13);
+            this.labelColumns.Size = new System.Drawing.Size(94, 13);
             this.labelColumns.TabIndex = 11;
             this.labelColumns.Text = "Total  Columns: 0";
             // 
             // checkBoxTotalCurrent
             // 
             this.checkBoxTotalCurrent.AutoSize = true;
-            this.checkBoxTotalCurrent.Location = new System.Drawing.Point(6, 6);
+            this.checkBoxTotalCurrent.Location = new System.Drawing.Point(6, 8);
             this.checkBoxTotalCurrent.Name = "checkBoxTotalCurrent";
-            this.checkBoxTotalCurrent.Size = new System.Drawing.Size(109, 17);
+            this.checkBoxTotalCurrent.Size = new System.Drawing.Size(116, 17);
             this.checkBoxTotalCurrent.TabIndex = 7;
             this.checkBoxTotalCurrent.Text = "Add Total Current";
             this.checkBoxTotalCurrent.UseVisualStyleBackColor = true;
@@ -366,6 +346,7 @@
             // 
             // listViewDSLOGFolder
             // 
+            this.listViewDSLOGFolder.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.listViewDSLOGFolder.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnName,
             this.columnTime,
@@ -396,7 +377,7 @@
             // 
             this.columnTime.DisplayIndex = 0;
             this.columnTime.Text = "Time";
-            this.columnTime.Width = 120;
+            this.columnTime.Width = 123;
             // 
             // columnSeconds
             // 
@@ -408,7 +389,7 @@
             // 
             this.columnMatchNum.DisplayIndex = 2;
             this.columnMatchNum.Text = "Match #";
-            this.columnMatchNum.Width = 53;
+            this.columnMatchNum.Width = 55;
             // 
             // columnTimeAgo
             // 
@@ -427,19 +408,19 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.tabControlProbeExport.Controls.Add(this.tabPage3);
             this.tabControlProbeExport.Controls.Add(this.tabPage4);
-            this.tabControlProbeExport.Location = new System.Drawing.Point(6, 6);
+            this.tabControlProbeExport.Location = new System.Drawing.Point(3, 3);
             this.tabControlProbeExport.Name = "tabControlProbeExport";
             this.tabControlProbeExport.SelectedIndex = 0;
-            this.tabControlProbeExport.Size = new System.Drawing.Size(161, 493);
+            this.tabControlProbeExport.Size = new System.Drawing.Size(170, 385);
             this.tabControlProbeExport.TabIndex = 11;
             // 
             // tabPage3
             // 
-            this.tabPage3.Controls.Add(this.groupBox1);
+            this.tabPage3.AutoScroll = true;
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(153, 467);
+            this.tabPage3.Size = new System.Drawing.Size(162, 359);
             this.tabPage3.TabIndex = 0;
             this.tabPage3.Text = "Probe";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -453,7 +434,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(153, 467);
+            this.tabPage4.Size = new System.Drawing.Size(162, 359);
             this.tabPage4.TabIndex = 1;
             this.tabPage4.Text = "Export";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -483,6 +464,7 @@
             // 
             // tabPage6
             // 
+            this.tabPage6.Controls.Add(this.GraphRichTextBox);
             this.tabPage6.Controls.Add(this.tabControlProbeExport);
             this.tabPage6.Controls.Add(this.tabControlChartCheckBox);
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
@@ -492,6 +474,16 @@
             this.tabPage6.TabIndex = 1;
             this.tabPage6.Text = "Graph";
             this.tabPage6.UseVisualStyleBackColor = true;
+            // 
+            // GraphRichTextBox
+            // 
+            this.GraphRichTextBox.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.GraphRichTextBox.Location = new System.Drawing.Point(3, 391);
+            this.GraphRichTextBox.Name = "GraphRichTextBox";
+            this.GraphRichTextBox.ReadOnly = true;
+            this.GraphRichTextBox.Size = new System.Drawing.Size(332, 110);
+            this.GraphRichTextBox.TabIndex = 12;
+            this.GraphRichTextBox.Text = "";
             // 
             // timerScrollToBottom
             // 
@@ -614,10 +606,11 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem2,
             this.viewToolStripMenuItem2,
-            this.helpToolStripMenuItem2});
+            this.helpToolStripMenuItem2,
+            this.toolStripTextBox1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1108, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1108, 27);
             this.menuStrip1.TabIndex = 13;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -628,7 +621,7 @@
             this.fileToolStripMenuItem3,
             this.refreshPathToolStripMenuItem});
             this.fileToolStripMenuItem2.Name = "fileToolStripMenuItem2";
-            this.fileToolStripMenuItem2.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem2.Size = new System.Drawing.Size(37, 23);
             this.fileToolStripMenuItem2.Text = "File";
             // 
             // loadLogToolStripMenuItem1
@@ -657,7 +650,7 @@
             this.viewToolStripMenuItem2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.resetZoomToolStripMenuItem2});
             this.viewToolStripMenuItem2.Name = "viewToolStripMenuItem2";
-            this.viewToolStripMenuItem2.Size = new System.Drawing.Size(44, 20);
+            this.viewToolStripMenuItem2.Size = new System.Drawing.Size(44, 23);
             this.viewToolStripMenuItem2.Text = "View";
             // 
             // resetZoomToolStripMenuItem2
@@ -673,7 +666,7 @@
             this.viewHelpToolStripMenuItem2,
             this.aboutToolStripMenuItem2});
             this.helpToolStripMenuItem2.Name = "helpToolStripMenuItem2";
-            this.helpToolStripMenuItem2.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem2.Size = new System.Drawing.Size(44, 23);
             this.helpToolStripMenuItem2.Text = "Help";
             // 
             // viewHelpToolStripMenuItem2
@@ -690,6 +683,16 @@
             this.aboutToolStripMenuItem2.Text = "About";
             this.aboutToolStripMenuItem2.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
+            // toolStripTextBox1
+            // 
+            this.toolStripTextBox1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripTextBox1.AutoSize = false;
+            this.toolStripTextBox1.BackColor = System.Drawing.SystemColors.Window;
+            this.toolStripTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.toolStripTextBox1.Name = "toolStripTextBox1";
+            this.toolStripTextBox1.Size = new System.Drawing.Size(250, 23);
+            this.toolStripTextBox1.TextChanged += new System.EventHandler(this.toolStripTextBox1_TextChanged);
+            // 
             // tabControlChart
             // 
             this.tabControlChart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -700,55 +703,48 @@
             this.tabControlChart.Location = new System.Drawing.Point(360, 25);
             this.tabControlChart.Name = "tabControlChart";
             this.tabControlChart.SelectedIndex = 0;
-            this.tabControlChart.Size = new System.Drawing.Size(736, 530);
+            this.tabControlChart.Size = new System.Drawing.Size(748, 530);
             this.tabControlChart.TabIndex = 14;
             // 
             // tabPageChart
             // 
+            this.tabPageChart.BackColor = System.Drawing.Color.Transparent;
             this.tabPageChart.Controls.Add(this.chartMain);
             this.tabPageChart.Location = new System.Drawing.Point(4, 22);
             this.tabPageChart.Name = "tabPageChart";
             this.tabPageChart.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageChart.Size = new System.Drawing.Size(728, 504);
+            this.tabPageChart.Size = new System.Drawing.Size(740, 504);
             this.tabPageChart.TabIndex = 0;
             this.tabPageChart.Text = "Graph";
-            this.tabPageChart.UseVisualStyleBackColor = true;
             // 
             // tabPageMessages
             // 
-            this.tabPageMessages.Controls.Add(this.EventsSearchBox);
-            this.tabPageMessages.Controls.Add(this.richTextBox1);
+            this.tabPageMessages.Controls.Add(this.EventRichTextBox);
             this.tabPageMessages.Controls.Add(this.listViewEvents);
             this.tabPageMessages.Location = new System.Drawing.Point(4, 22);
             this.tabPageMessages.Name = "tabPageMessages";
             this.tabPageMessages.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageMessages.Size = new System.Drawing.Size(728, 504);
+            this.tabPageMessages.Size = new System.Drawing.Size(740, 504);
             this.tabPageMessages.TabIndex = 1;
             this.tabPageMessages.Text = "Events";
             this.tabPageMessages.UseVisualStyleBackColor = true;
             // 
-            // EventsSearchBox
+            // EventRichTextBox
             // 
-            this.EventsSearchBox.Location = new System.Drawing.Point(3, 3);
-            this.EventsSearchBox.Name = "EventsSearchBox";
-            this.EventsSearchBox.Size = new System.Drawing.Size(266, 20);
-            this.EventsSearchBox.TabIndex = 2;
-            this.EventsSearchBox.TextChanged += new System.EventHandler(this.EventsSearchBox_TextChanged);
-            // 
-            // richTextBox1
-            // 
-            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.richTextBox1.Location = new System.Drawing.Point(3, 397);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(722, 104);
-            this.richTextBox1.TabIndex = 1;
-            this.richTextBox1.Text = "";
+            this.EventRichTextBox.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.EventRichTextBox.Location = new System.Drawing.Point(3, 396);
+            this.EventRichTextBox.Name = "EventRichTextBox";
+            this.EventRichTextBox.ReadOnly = true;
+            this.EventRichTextBox.Size = new System.Drawing.Size(734, 105);
+            this.EventRichTextBox.TabIndex = 1;
+            this.EventRichTextBox.Text = "";
             // 
             // listViewEvents
             // 
             this.listViewEvents.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.listViewEvents.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.listViewEvents.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeaderDSTime,
             this.columnHeaderEventText,
@@ -756,10 +752,10 @@
             this.listViewEvents.FullRowSelect = true;
             this.listViewEvents.GridLines = true;
             this.listViewEvents.HideSelection = false;
-            this.listViewEvents.Location = new System.Drawing.Point(3, 24);
+            this.listViewEvents.Location = new System.Drawing.Point(3, 8);
             this.listViewEvents.MultiSelect = false;
             this.listViewEvents.Name = "listViewEvents";
-            this.listViewEvents.Size = new System.Drawing.Size(722, 367);
+            this.listViewEvents.Size = new System.Drawing.Size(722, 383);
             this.listViewEvents.TabIndex = 0;
             this.listViewEvents.UseCompatibleStateImageBehavior = false;
             this.listViewEvents.View = System.Windows.Forms.View.Details;
@@ -774,21 +770,29 @@
             // columnHeaderEventText
             // 
             this.columnHeaderEventText.Text = "Event Message Text";
-            this.columnHeaderEventText.Width = 700;
+            this.columnHeaderEventText.Width = 1000;
             // 
             // columnOATIME
             // 
             this.columnOATIME.Text = "";
             this.columnOATIME.Width = 0;
             // 
+            // GraphCorsorLine
+            // 
+            this.GraphCorsorLine.Enabled = true;
+            this.GraphCorsorLine.Interval = 500;
+            this.GraphCorsorLine.Tick += new System.EventHandler(this.GraphCorsorLine_Tick);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1108, 567);
+            this.BackColor = System.Drawing.SystemColors.Control;
+            this.ClientSize = new System.Drawing.Size(1108, 568);
             this.Controls.Add(this.tabControlChart);
             this.Controls.Add(this.tabControlMain);
             this.Controls.Add(this.menuStrip1);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(770, 260);
@@ -798,9 +802,7 @@
             this.tabControlChartCheckBox.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
             this.tabControlProbeExport.ResumeLayout(false);
-            this.tabPage3.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
             this.tabControlMain.ResumeLayout(false);
@@ -811,7 +813,6 @@
             this.tabControlChart.ResumeLayout(false);
             this.tabPageChart.ResumeLayout(false);
             this.tabPageMessages.ResumeLayout(false);
-            this.tabPageMessages.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -823,8 +824,6 @@
         private System.Windows.Forms.TabControl tabControlChartCheckBox;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Panel labelInfoPanel;
         private System.Windows.Forms.CheckBox checkBox7;
         private System.Windows.Forms.CheckBox checkBox6;
         private System.Windows.Forms.CheckBox checkBox5;
@@ -883,9 +882,11 @@
         private System.Windows.Forms.ColumnHeader columnHeaderDSTime;
         private System.Windows.Forms.ColumnHeader columnHeaderEventText;
         private System.Windows.Forms.ToolStripMenuItem refreshPathToolStripMenuItem;
-        private System.Windows.Forms.RichTextBox richTextBox1;
-        private System.Windows.Forms.TextBox EventsSearchBox;
+        private System.Windows.Forms.RichTextBox EventRichTextBox;
         private System.Windows.Forms.ColumnHeader columnOATIME;
+        private System.Windows.Forms.Timer GraphCorsorLine;
+        private System.Windows.Forms.RichTextBox GraphRichTextBox;
+        private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
     }
 }
 

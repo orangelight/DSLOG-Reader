@@ -19,7 +19,7 @@ namespace Dslog
     public partial class FormMain : Form
     {
 
-        public const string VERSION = "0.4.0";
+        public const string VERSION = "0.5.48";
         public FormMain()
         {
             InitializeComponent();
@@ -139,6 +139,13 @@ namespace Dslog
                 chartMain.Series["PDP " + i].Enabled = false;
             }
 
+            chartMain.Series.Add(new Series("Messages"));
+            chartMain.Series["Messages"].XValueType = ChartValueType.DateTime;
+            chartMain.Series["Messages"].YAxisType = AxisType.Primary;
+            chartMain.Series["Messages"].ChartType = SeriesChartType.Point;
+            chartMain.Series["Messages"].MarkerStyle = MarkerStyle.Circle;
+            chartMain.Series["Messages"].Color = Color.Gainsboro;
+
             //Checkboxs
             addSeriesPlotCheckBoxs();
         }
@@ -182,6 +189,9 @@ namespace Dslog
             {
                 if (!Double.IsNaN(e.NewPosition))
                 {
+                    chartMain.ChartAreas[0].CursorX.LineColor = Color.Red;
+                    GraphCorsorLine.Stop();
+                    GraphCorsorLine.Start();
                     probe(e.NewPosition);
                     
                 }
@@ -191,13 +201,22 @@ namespace Dslog
 
         private void probe(double pos)
         {
-            labelInfoPanel.Controls.Clear();
+            
+            tabPage3.Controls.Clear();
             //Get x value form probe
             DateTime xValue = DateTime.FromOADate(pos);
             //get entry from x value
             Entry en = log.Entries.ElementAt((int)(xValue.Subtract(log.StartTime).TotalMilliseconds / 20));
             int labelNum = 0;
             double totalA = 0;
+            
+            Label timeLabel = new Label();
+            timeLabel.Text = "Time: "+DateTime.FromOADate(chartMain.ChartAreas[0].CursorX.Position).ToString("HH:mm:ss.fff");
+            timeLabel.Visible = true;
+            timeLabel.AutoSize = true;
+            timeLabel.Location = new Point(7, (24 * labelNum++) + 7);
+            tabPage3.Controls.Add(timeLabel);
+
             for (int seriesNum = 0; seriesNum < chartMain.Series.Count; seriesNum++)
             {
                 if (chartMain.Series[seriesNum].Enabled)
@@ -207,9 +226,21 @@ namespace Dslog
                     seriesLabel.Visible = true;
                     seriesLabel.AutoSize = true;
                     seriesLabel.Location = new Point(7, (24 * labelNum++) + 7);
-                    labelInfoPanel.Controls.Add(seriesLabel);
+                    tabPage3.Controls.Add(seriesLabel);
                     //Add pdp series to total current
-                    if (chartMain.Series[seriesNum].Name.StartsWith("PDP")) totalA += en.getPDPChannel(int.Parse(chartMain.Series[seriesNum].Name.Split(' ')[1]));
+                    if (chartMain.Series[seriesNum].Name.StartsWith("PDP"))
+                    {
+                        int channel = Int32.Parse(chartMain.Series[seriesNum].Name.Replace("PDP ", ""));
+                        if (channel <= 3 || channel >= 12)
+                        {
+                            if (en.getPDPChannel(int.Parse(chartMain.Series[seriesNum].Name.Split(' ')[1])) >= 40) seriesLabel.BackColor = Color.LightCoral;
+                        }
+                        else
+                        {
+                            if (en.getPDPChannel(int.Parse(chartMain.Series[seriesNum].Name.Split(' ')[1])) >= 30) seriesLabel.BackColor = Color.LightCoral;
+                        }
+                        totalA += en.getPDPChannel(int.Parse(chartMain.Series[seriesNum].Name.Split(' ')[1]));
+                    }
                 }
             }
 
@@ -218,7 +249,7 @@ namespace Dslog
             totalAL.Visible = true;
             totalAL.AutoSize = true;
             totalAL.Location = new Point(7, (24 * labelNum++) + 7);
-            labelInfoPanel.Controls.Add(totalAL);
+            tabPage3.Controls.Add(totalAL);
         }
 
         string varToLabel(String name, Entry en)
@@ -624,6 +655,7 @@ namespace Dslog
         //Adds items to listview (info will be added when item is in view)
         void addLogFilesToViewer(string path)
         {
+           
             listViewDSLOGFolder.Items.Clear();
             if (Directory.Exists(path)) { 
             DirectoryInfo dslogDir = new DirectoryInfo(path);
@@ -677,6 +709,7 @@ namespace Dslog
                 int topIndex = listViewDSLOGFolder.TopItem.Index;
                 if (lastTop != topIndex)
                 {
+                    
                     for (int inx = topIndex; inx < topIndex + listViewDSLOGFolder.Height / 18; inx++)
                         if (inx < listViewDSLOGFolder.Items.Count)
                         {
@@ -773,6 +806,7 @@ namespace Dslog
                             }
                         }
                     lastTop = topIndex;
+                    
                 }
             }
         }
@@ -823,7 +857,7 @@ namespace Dslog
                             //the bar graphs are too much so we have to do this
                             if (packetnum % 4 == 0)
                             {
-                                chartMain.Series["Lost Packets"].Points.AddXY(en.Time.ToOADate(), en.LostPackets * 100);
+                                chartMain.Series["Lost Packets"].Points.AddXY(en.Time.ToOADate(), (en.LostPackets < 1) ? en.LostPackets * 100 : 100);
                             }
                             else
                             {
@@ -831,7 +865,7 @@ namespace Dslog
                             }
                             packetnum++;
                         }
-                        if (log.Entries.ElementAt(w - 1).Voltage != en.Voltage || log.Entries.ElementAt(w + 1).Voltage != en.Voltage)
+                        if ((log.Entries.ElementAt(w - 1).Voltage != en.Voltage || log.Entries.ElementAt(w + 1).Voltage != en.Voltage) && en.Voltage < 17)
                         {
                             chartMain.Series["Voltage"].Points.AddXY(en.Time.ToOADate(), en.Voltage);
                         }
@@ -865,10 +899,13 @@ namespace Dslog
                     if (en.Brownout) chartMain.Series["Brownout"].Points.AddXY(en.Time.ToOADate(), 15.6);
                     if (en.Watchdog) chartMain.Series["Watchdog"].Points.AddXY(en.Time.ToOADate(), 15.3);
 
-
+                
 
 
                 }
+                listViewEvents.Items.Clear();
+                Dsevents = null;
+                EventsDict = null;
                 addDSEVENTSPoints(path);
                 chartMain.ChartAreas[0].AxisX.Maximum = log.Entries.Last().Time.ToOADate();
                 menuStrip1.Items[menuStrip1.Items.Count - 1].Text = "Time Scale " + getTotalSecoundsInView() + " Sec";
@@ -876,26 +913,96 @@ namespace Dslog
                 tabPage4.Enabled = true;
                 chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset();
                 lastIndexSelectedEvents = -1;
-                richTextBox1.Clear();
+                EventRichTextBox.Clear();
             
         }
         private DSEVENTSReader Dsevents;
+        private Dictionary<Double, String> EventsDict;
         void addDSEVENTSPoints(string path)
         {
             DSEVENTSReader dsevents = new DSEVENTSReader(path.Replace(".dslog", ".dsevents"));
             Dsevents = dsevents;
-            listViewEvents.Items.Clear();
+            EventsDict = new Dictionary<double, string>();
+            for (int i = 0; i < listViewEvents.Items.Count; i++)
+            {
+                listViewEvents.Items.RemoveAt(0);
+            }
             foreach (InfoEntry en in dsevents.EntryList)
             {
+                DataPoint po = new DataPoint(en.Time.ToOADate(), 15.2);
+                po.MarkerSize = 6;
                 ListViewItem item = new ListViewItem();
                 item.Text = en.TimeData;
                 item.SubItems.Add(en.Data);
-                if (en.Data.Contains("ERROR") || en.Data.Contains("<flags> 1")) item.BackColor = Color.LightCoral;
-                else if (en.Data.Contains("Warning") || en.Data.Contains("<flags> 2")) item.BackColor = Color.Khaki;
+                if (en.Data.Contains("ERROR") || en.Data.Contains("<flags> 1"))
+                {
+                    item.BackColor = Color.Red;
+                    po.Color = Color.Red;
+                    
+                    po.YValues[0] = 14.9;
+                }
+                else if (en.Data.Contains("<Code> 44004 "))
+                {
+                    item.BackColor = Color.SandyBrown;
+                    po.Color = Color.SandyBrown;
+                    po.MarkerStyle = MarkerStyle.Square;
+                    po.YValues[0] = 14.9;
+                }
+                else if (en.Data.Contains("<Code> 44008 "))
+                {
+                    try
+                    {
+                        double[] arrayLost = Array.ConvertAll(en.Data.Split(new string[] { " <radioSeenEvents>  " }, StringSplitOptions.None)[0].Split('>')[2].Split(','), Double.Parse);
+                        foreach (double d in arrayLost)
+                        {
+                            DateTime newTime = en.Time.AddSeconds(-d);
+                            DataPoint pRL = new DataPoint(newTime.ToOADate(), 14.9);
+                            pRL.Color = Color.Yellow;
+                            pRL.MarkerSize = 6;
+                            pRL.MarkerStyle = MarkerStyle.Square;
+                            pRL.YValues[0] = 14.9;
+                            chartMain.Series["Messages"].Points.Add(pRL);
+                            EventsDict[newTime.ToOADate()] = "Radio Lost";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                    try
+                    {
+                        double[] arraySeen = Array.ConvertAll(en.Data.Split(new string[] { " <radioSeenEvents>  " }, StringSplitOptions.None)[1].Split('<')[0].Split(','), Double.Parse);
+                        foreach (double d in arraySeen)
+                        {
+                            DateTime newTime = en.Time.AddSeconds(-d);
+                            DataPoint pRL = new DataPoint(newTime.ToOADate(), 14.9);
+                            pRL.Color = Color.Lime;
+                            pRL.MarkerSize = 6;
+                            pRL.MarkerStyle = MarkerStyle.Square;
+                            pRL.YValues[0] = 14.9;
+                            chartMain.Series["Messages"].Points.Add(pRL);
+                            EventsDict[newTime.ToOADate()] = "Radio Seen";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                    item.BackColor = Color.Khaki;
+                    po.Color = Color.Khaki;
+                    po.YValues[0] = 14.9;
+                }
+                else if (en.Data.Contains("Warning") || en.Data.Contains("<flags> 2"))
+                {
+                    item.BackColor = Color.Khaki;
+                    po.Color = Color.Khaki;
+                    po.YValues[0] = 14.9;
+                }
                 item.SubItems.Add("" + en.Time.ToOADate());
                 listViewEvents.Items.Add(item);
+                chartMain.Series["Messages"].Points.Add(po);
+                EventsDict[en.Time.ToOADate()] = en.Data;
             }
-            
         }
 
         //clears the graph of points
@@ -973,7 +1080,7 @@ namespace Dslog
 
         private void refreshPathToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            addLogFilesToViewer(@"C:\Users\Public\Documents\FRC\Log Files");
+            addLogFilesToViewer(listviewFolderPath);
         }
         int lastIndexSelectedEvents = -1;
         private void listViewEvents_SelectedIndexChanged(object sender, EventArgs e)
@@ -983,7 +1090,7 @@ namespace Dslog
                 if (listViewEvents.SelectedItems[0].Index != lastIndexSelectedEvents)
                 {
                     lastIndexSelectedEvents = listViewEvents.SelectedItems[0].Index;
-                    richTextBox1.Text = listViewEvents.SelectedItems[0].SubItems[1].Text;
+                    EventRichTextBox.Text = listViewEvents.SelectedItems[0].SubItems[1].Text;
                 }
             }
         }
@@ -1004,12 +1111,18 @@ namespace Dslog
                         //(((getTotalSecoundsInView() / 300d) < .002) ? .002 : (getTotalSecoundsInView() / 300d))
                         chartMain.ChartAreas[0].CursorX.SetCursorPosition(DateTime.FromOADate(chartMain.ChartAreas[0].CursorX.Position).AddSeconds(-(((getTotalSecoundsInView() / 300d) < .02) ? .02 : (getTotalSecoundsInView() / 250d))).ToOADate());
                         probe(chartMain.ChartAreas[0].CursorX.Position);
+                        chartMain.ChartAreas[0].CursorX.LineColor = Color.Red;
+                        GraphCorsorLine.Stop();
+                        GraphCorsorLine.Start();
                         return true;
                     }
                     if (keyData == Keys.Right)
                     {
                         chartMain.ChartAreas[0].CursorX.SetCursorPosition(DateTime.FromOADate(chartMain.ChartAreas[0].CursorX.Position).AddSeconds((((getTotalSecoundsInView() / 300d) < .02) ? .02 : (getTotalSecoundsInView() / 250d))).ToOADate());
                         probe(chartMain.ChartAreas[0].CursorX.Position);
+                        chartMain.ChartAreas[0].CursorX.LineColor = Color.Red;
+                        GraphCorsorLine.Stop();
+                        GraphCorsorLine.Start();
                         return true;
                     }
                 }
@@ -1020,31 +1133,202 @@ namespace Dslog
         private void listViewEvents_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             chartMain.ChartAreas[0].CursorX.SetCursorPosition(Double.Parse(listViewEvents.SelectedItems[0].SubItems[2].Text));
+            probe(chartMain.ChartAreas[0].CursorX.Position);
             tabControlChart.SelectTab(0);
         }
+        int lastCharCount = 0;
+        
+        bool lineRed = true;
+        private void GraphCorsorLine_Tick(object sender, EventArgs e)
+        {
+            if (lineRed)
+            {
+                chartMain.ChartAreas[0].CursorX.LineColor = Color.Transparent;
+                GraphCorsorLine.Interval = 500;
+                lineRed = false;
+            }
+            else
+            {
+                chartMain.ChartAreas[0].CursorX.LineColor = Color.Red;
+                lineRed = true;
+                GraphCorsorLine.Interval = 500;
+            }
+        }
+        Point? prevPosition = null;
+        private void chartMain_MouseMove(object sender, MouseEventArgs e)
+        {
+            var pos = e.Location;
+            if (prevPosition.HasValue && pos == prevPosition.Value) return;
+            prevPosition = pos;
+            var results = chartMain.HitTest(pos.X, pos.Y, false, ChartElementType.DataPoint);
+            foreach (var result in results)
+            {
+                if (result.ChartElementType == ChartElementType.DataPoint)
+                {
+                    var prop = result.Object as DataPoint;
+                    if (prop != null)
+                    {
+                        if (prop.YValues[0] == 15.2 || prop.YValues[0] == 14.9)
+                        {
+                            var pointXPixel = result.ChartArea.AxisX.ValueToPixelPosition(prop.XValue);
+                            var pointYPixel = result.ChartArea.AxisY.ValueToPixelPosition(prop.YValues[0]);
 
-        private void EventsSearchBox_TextChanged(object sender, EventArgs e)
+                            // check if the cursor is really close to the point (2 pixels around the point)
+                            if (Math.Abs(pos.X - pointXPixel) < 25 &&
+                                Math.Abs(pos.Y - pointYPixel) < 25)
+                            {
+                                try
+                                {
+                                    String data = EventsDict[prop.XValue];
+                                    if (data.Contains("ERROR") || data.Contains("<flags> 1"))
+                                    {
+                                        GraphRichTextBox.BackColor = Color.LightCoral;
+                                    }
+                                    else if (data.Contains("<Code> 44004 "))
+                                    {
+                                        GraphRichTextBox.BackColor = Color.SandyBrown;
+                                        
+                                    }
+                                    else if (data.Equals("Radio Seen"))
+                                    {
+                                        GraphRichTextBox.BackColor = Color.Lime;
+                                    }
+                                    else if (data.Equals("Radio Lost"))
+                                    {
+                                        GraphRichTextBox.BackColor = Color.Yellow;
+                                    }
+                                    else if (data.Contains("Warning") || data.Contains("<flags> 2"))
+                                    {
+                                        GraphRichTextBox.BackColor = Color.Khaki;
+                                    }
+                                    else
+                                    {
+                                        GraphRichTextBox.BackColor = SystemColors.Window;
+                                    }
+                                    GraphRichTextBox.Text = EventsDict[prop.XValue];
+
+                                }
+                                catch (KeyNotFoundException ex)
+                                {
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void toolStripTextBox1_TextChanged(object sender, EventArgs e)
         {
             if (Dsevents != null)
             {
-                for (int i = 0; i < listViewEvents.Items.Count; i++)
+                //lastCharCount >= EventsSearchBox.Text.Length
+                listViewEvents.BeginUpdate();
+                //lastCharCount >= toolStripTextBox1.Text.Length
+                if (true)
                 {
-                    listViewEvents.Items.RemoveAt(i);
-                }
+                    ClearPointsQuick(chartMain.Series["Messages"]);
+                    for (int i = 0; i < listViewEvents.Items.Count; i++)
+                    {
+                        listViewEvents.Items.RemoveAt(0);
+                        --i;
+                    }
                     foreach (InfoEntry en in Dsevents.EntryList)
                     {
-                        if (en.Data.ToLower().Contains(EventsSearchBox.Text.ToLower()))
+                        if (en.Data.ToLower().Contains(toolStripTextBox1.Text.ToLower()))
                         {
+                            DataPoint po = new DataPoint(en.Time.ToOADate(), 15.2);
                             ListViewItem item = new ListViewItem();
+                            po.MarkerSize = 6;
                             item.Text = en.TimeData;
                             item.SubItems.Add(en.Data);
-                            if (en.Data.Contains("ERROR") || en.Data.Contains("<flags> 1")) item.BackColor = Color.LightCoral;
-                            else if (en.Data.Contains("Warning") || en.Data.Contains("<flags> 2")) item.BackColor = Color.Khaki;
-                            item.SubItems.Add(""+en.Time.ToOADate());
+                            if (en.Data.Contains("ERROR") || en.Data.Contains("<flags> 1") || en.Data.Contains("Error") )
+                            {
+                                item.BackColor = Color.Red;
+                                po.Color = Color.Red;
+                                po.YValues[0] = 14.9;
+                            }
+                            else if (en.Data.Contains("<Code> 44004 "))
+                            {
+                                item.BackColor = Color.SandyBrown;
+                                po.Color = Color.SandyBrown;
+                                po.YValues[0] = 14.9;
+                                po.MarkerStyle = MarkerStyle.Square;
+                            }
+                            else if (en.Data.Contains("<Code> 44008 "))
+                            {
+
+                                try
+                                {
+                                    double[] arrayLost = Array.ConvertAll(en.Data.Split(new string[] { " <radioSeenEvents>  " }, StringSplitOptions.None)[0].Split('>')[2].Split(','), Double.Parse);
+                                    foreach (double d in arrayLost)
+                                    {
+                                        DateTime newTime = en.Time.AddSeconds(-d);
+                                        DataPoint pRL = new DataPoint(newTime.ToOADate(), 14.9);
+                                        pRL.Color = Color.Yellow;
+                                        pRL.MarkerSize = 6;
+                                        pRL.MarkerStyle = MarkerStyle.Square;
+                                        pRL.YValues[0] = 14.9;
+                                        chartMain.Series["Messages"].Points.Add(pRL);
+                                        EventsDict[newTime.ToOADate()] = "Radio Lost";
+                                    }
+                                }
+                                catch (FormatException ex)
+                                {
+
+                                }
+                                try
+                                {
+                                    double[] arraySeen = Array.ConvertAll(en.Data.Split(new string[] { " <radioSeenEvents>  " }, StringSplitOptions.None)[1].Split('<')[0].Split(','), Double.Parse);
+                                    foreach (double d in arraySeen)
+                                    {
+                                        DateTime newTime = en.Time.AddSeconds(-d);
+                                        DataPoint pRL = new DataPoint(newTime.ToOADate(), 14.9);
+                                        pRL.Color = Color.Lime;
+                                        pRL.MarkerSize = 6;
+                                        pRL.MarkerStyle = MarkerStyle.Square;
+                                        pRL.YValues[0] = 14.9;
+                                        chartMain.Series["Messages"].Points.Add(pRL);
+                                        EventsDict[newTime.ToOADate()] = "Radio Seen";
+                                    }
+                                }
+                                catch (FormatException ex)
+                                {
+
+                                }
+                                item.BackColor = Color.Khaki;
+                                po.Color = Color.Khaki;
+                                po.YValues[0] = 14.9;
+                            }
+                            else if (en.Data.Contains("Warning") || en.Data.Contains("<flags> 2"))
+                            {
+                                item.BackColor = Color.Khaki;
+                                po.Color = Color.Khaki;
+                                po.YValues[0] = 14.9;
+                            }
+                            item.SubItems.Add("" + en.Time.ToOADate());
                             listViewEvents.Items.Add(item);
+                            chartMain.Series["Messages"].Points.Add(po);
                         }
                     }
+                }
+                //else
+                //{
+
+                //    for (int i = 0; i < listViewEvents.Items.Count; i++)
+                //    {
+                //        if (!listViewEvents.Items[i].SubItems[1].Text.ToLower().Contains(toolStripTextBox1.Text.ToLower()))
+                //        {
+                //            chartMain.Series["Messages"].Points.RemoveAt(i);
+                //            listViewEvents.Items.RemoveAt(i);
+                //            i--;
+                //        }
+                //    }
+                //}
+                lastCharCount = toolStripTextBox1.Text.Length;
             }
+            listViewEvents.EndUpdate();
         }
 
         
