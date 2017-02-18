@@ -28,16 +28,10 @@ namespace DSLOG_Reader
         public Int32 Version;
         public DateTime StartTime;
         public List<InfoEntry> EntryList;
-        public List<DateTime> RadioLostEvents;
-        public List<DateTime> RadioSeenEvents;
-        public List<DateTime> DisconnectedEvent;
 
         public DSEVENTSReader(string path)
         {
             EntryList = new List<InfoEntry>();
-            RadioLostEvents = new List<DateTime>();
-            RadioSeenEvents = new List<DateTime>();
-            DisconnectedEvent = new List<DateTime>();
             readFile(path);
         }
 
@@ -81,27 +75,6 @@ namespace DSLOG_Reader
             epoch = epoch.AddSeconds(unixTime);
             epoch = epoch.AddHours(-4);
             return epoch.AddSeconds(((double)ummm / UInt64.MaxValue));
-        }
-
-        //Has radio lost and seen times
-        private void ReadWarning44008(string line, DateTime time)
-        {
-            string[] times = line.Split('<')[2].Substring(18).Split(',');
-            foreach (string s in times)
-            {
-                RadioLostEvents.Add(time.AddSeconds(-Double.Parse(s)));
-            }
-            times = line.Split('<')[3].Substring(18).Split(',');
-            foreach (string s in times)
-            {
-                RadioSeenEvents.Add(time.AddSeconds(-Double.Parse(s)));
-            }
-        }
-
-        //Lost coms with roborio
-        private void ReadWarning44004(string line, DateTime time)
-        {
-            DisconnectedEvent.Add(time);
         }
     }
 }
