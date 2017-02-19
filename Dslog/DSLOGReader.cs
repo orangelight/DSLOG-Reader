@@ -12,10 +12,10 @@ namespace Dslog
     struct Entry
     {
         public readonly double TripTime,LostPackets, Voltage, RoboRioCPU, CANUtil, WifidB, Bandwith, PDPResistance, PDPVoltage, PDPTemperature;
-        private readonly bool[] statusFlags;
+        public readonly bool[] statusFlags;
         public readonly bool Brownout, Watchdog, DSTele, DSAuto, DSDisabled, RobotTele, RobotAuto, RobotDisabled;
         public readonly int PDPID;
-        private readonly double[] pdpValues;
+        public readonly double[] pdpValues;
         public readonly DateTime Time;
         
         public Entry(double trip, double packets, double vol, double rrCPU, bool[] flags, double can, double dB, double band, int pdp, double[] pdpV, double res, double volS, double temp, DateTime time)
@@ -62,11 +62,10 @@ namespace Dslog
             readFile(path);
         }
 
-        private void readFile(string path) 
+        protected virtual void readFile(string path) 
         {
             if (File.Exists(path))
             {
-                
                 using (BinaryReader2 reader = new BinaryReader2(File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                 {
                     Version = reader.ReadInt32();
@@ -92,7 +91,7 @@ namespace Dslog
             }
         }
 
-        private DateTime FromLVTime(long unixTime, UInt64 ummm)
+        protected DateTime FromLVTime(long unixTime, UInt64 ummm)
         {
             var epoch = new DateTime(1904, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             epoch = epoch.AddSeconds(unixTime);
@@ -103,47 +102,47 @@ namespace Dslog
 
         //Import methods
         #region
-        private double TripTimeToDouble(byte b)
+        protected double TripTimeToDouble(byte b)
         {
             return (double)b * 0.5d;
         }
 
-        private double PacketLossToDouble(sbyte b)
+        protected double PacketLossToDouble(sbyte b)
         {
             return (double)(b * 4) * .01;
         }
 
-        private double VoltageToDouble(UInt16 i)
+        protected double VoltageToDouble(UInt16 i)
         {
             return (double)i * .00390625d;
         }
 
-        private double RoboRioCPUToDouble(byte b)
+        protected double RoboRioCPUToDouble(byte b)
         {
             return ((double)b * 0.5d) * .01d;
         }
 
-        private bool[] StatusFlagsToBooleanArray(byte b)
+        protected bool[] StatusFlagsToBooleanArray(byte b)
         {
             byte[] bytes = { b };
             return bytes.SelectMany(GetBits).ToArray();
         }
 
-        private double CANUtilToDouble(byte b)
+        protected double CANUtilToDouble(byte b)
         {
             return ((double)b * 0.5d) * .01d;
         }
 
-        private double WifidBToDouble(byte b)
+        protected double WifidBToDouble(byte b)
         {
             return ((double)b * 0.5d) * .01d;
         }
 
-        private double BandwidthToDouble(UInt16 i)
+        protected double BandwidthToDouble(UInt16 i)
         {
             return (double)i * .00390625d;
         }
-        private double[] PDPValuesToArrayList(byte[] ba)
+        protected double[] PDPValuesToArrayList(byte[] ba)
         {
             double[] d = new double[16];
             for (int s = 0; s < 5; s++)
@@ -187,7 +186,7 @@ namespace Dslog
             return d;
         }
 
-        private IEnumerable<bool> GetBits(byte b)
+        protected IEnumerable<bool> GetBits(byte b)
         {
             for (int i = 0; i < 8; i++)
             {

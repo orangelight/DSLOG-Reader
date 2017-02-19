@@ -19,7 +19,7 @@ namespace Dslog
     public partial class FormMain : Form
     {
 
-        public const string VERSION = "0.5.8";
+        public const string VERSION = "0.7.2";
         public FormMain()
         {
             InitializeComponent();
@@ -787,10 +787,9 @@ namespace Dslog
                                     {
                                         //No DSEVENT file
                                         DateTime sTime;
-                                        using (BinaryReader2 reader = new BinaryReader2(File.Open(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog", FileMode.Open)))
+                                        using (BinaryReader2 reader = new BinaryReader2(File.Open(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                                         {
                                             reader.ReadInt32();
-
                                             sTime = FromLVTime(reader.ReadInt64(), reader.ReadUInt64());
                                             listViewDSLOGFolder.Items[inx].SubItems.Add(sTime.ToString("MMM dd, HH:mm:ss ddd"));
                                             reader.Close();
@@ -834,10 +833,33 @@ namespace Dslog
         //Imports log from path
         void importLog(string path)
         {
+            if (log != null)
+            {
+                if (log is DSLOGStreamer) ((DSLOGStreamer)log).Close();
+            }
+            timerStream.Stop();
             clearGraph();
             chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+            Boolean stream = false;
+            //check if file is open by ds
+            try
+            {
+                File.OpenRead(path).Close();
+            }
+            catch (IOException ex)
+            {
+                stream = true;
+            }
             log = null;
-            log = new DSLOGReader(path);
+            if (!stream)
+            {
+                log = new DSLOGReader(path);
+            }
+            else
+            {
+                log = new DSLOGStreamer(path);
+            }
+            
             menuStrip1.Items[menuStrip1.Items.Count - 2].Text = "Current File: " + path;
             chartMain.ChartAreas[0].AxisX.Minimum = log.StartTime.ToOADate();
             chartMain.ChartAreas[0].CursorX.IntervalOffset = log.StartTime.Millisecond % 20;
@@ -921,7 +943,9 @@ namespace Dslog
             tabPage4.Enabled = true;
             chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset();
             lastIndexSelectedEvents = -1;
+            lastNumQueue = 0;
             EventRichTextBox.Clear();
+            if (stream) timerStream.Start();
             
         }
         
@@ -1213,6 +1237,99 @@ namespace Dslog
                 return SystemColors.Window;
             }
         }
+        int lastNumQueue = 0;
+        private void timerStream_Tick(object sender, EventArgs e)
+        {
+            DSLOGStreamer StreamDS = (DSLOGStreamer)log;
+            if (StreamDS.Queue.Count-lastNumQueue >= 2)
+            {
+                if (lastNumQueue != 0)
+                {
+                    chartMain.Series["Trip Time"].Points.RemoveAt(chartMain.Series["Trip Time"].Points.Count - 1);
+                    chartMain.Series["Voltage"].Points.RemoveAt(chartMain.Series["Voltage"].Points.Count - 1);
+                    chartMain.Series["Lost Packets"].Points.RemoveAt(chartMain.Series["Lost Packets"].Points.Count - 1);
+                    chartMain.Series["roboRIO CPU"].Points.RemoveAt(chartMain.Series["roboRIO CPU"].Points.Count - 1);
+                    chartMain.Series["CAN"].Points.RemoveAt(chartMain.Series["CAN"].Points.Count - 1);
+                    for (int i = 0; i < 16; i++)
+                    {
+                        chartMain.Series["PDP " + i].Points.RemoveAt(chartMain.Series["PDP " + i].Points.Count-1);
+                    }
+                }
+                int packetnum = 0;
+                for (int w = lastNumQueue; w < StreamDS.Queue.Count; w++)
+                {
+                    Entry en = StreamDS.Queue.ElementAt(w);
+                    //Adds points to first and last x values
+                    if (w == StreamDS.Queue.Count-1 || w ==0)
+                    {
+                        chartMain.Series["Trip Time"].Points.AddXY(en.Time.ToOADate(), en.TripTime);
+                        chartMain.Series["Voltage"].Points.AddXY(en.Time.ToOADate(), en.Voltage);
+                        chartMain.Series["Lost Packets"].Points.AddXY(en.Time.ToOADate(), en.LostPackets * 100);
+                        chartMain.Series["roboRIO CPU"].Points.AddXY(en.Time.ToOADate(), en.RoboRioCPU * 100);
+                        chartMain.Series["CAN"].Points.AddXY(en.Time.ToOADate(), en.CANUtil * 100);
+                        for (int i = 0; i < 16; i++)
+                        {
+                            chartMain.Series["PDP " + i].Points.AddXY(en.Time.ToOADate(), en.getPDPChannel(i));
+                        }
+                    }
+                    else
+                    {
+                        //Checks if value is differnt around it so we don't plot everypoint
+                        if (StreamDS.Queue.ElementAt(w - 1).TripTime != en.TripTime || StreamDS.Queue.ElementAt(w + 1).TripTime != en.TripTime)
+                        {
+                            chartMain.Series["Trip Time"].Points.AddXY(en.Time.ToOADate(), en.TripTime);
+                        }
+                        if ((StreamDS.Queue.ElementAt(w - 1).LostPackets != en.LostPackets || StreamDS.Queue.ElementAt(w + 1).LostPackets != en.LostPackets) || StreamDS.Queue.ElementAt(w - 1).LostPackets != 0)
+                        {
+                            //the bar graphs are too much so we have to do this
+                            if (packetnum % 4 == 0)
+                            {
+                                chartMain.Series["Lost Packets"].Points.AddXY(en.Time.ToOADate(), (en.LostPackets < 1) ? en.LostPackets * 100 : 100);
+                            }
+                            else
+                            {
+                                chartMain.Series["Lost Packets"].Points.AddXY(en.Time.ToOADate(), 0);
+                            }
+                            packetnum++;
+                        }
+                        if ((StreamDS.Queue.ElementAt(w - 1).Voltage != en.Voltage || StreamDS.Queue.ElementAt(w + 1).Voltage != en.Voltage) && en.Voltage < 17)
+                        {
+                            chartMain.Series["Voltage"].Points.AddXY(en.Time.ToOADate(), en.Voltage);
+                        }
+                        if (StreamDS.Queue.ElementAt(w - 1).RoboRioCPU != en.RoboRioCPU || StreamDS.Queue.ElementAt(w + 1).RoboRioCPU != en.RoboRioCPU)
+                        {
+                            chartMain.Series["roboRIO CPU"].Points.AddXY(en.Time.ToOADate(), en.RoboRioCPU * 100);
+                        }
+                        if (StreamDS.Queue.ElementAt(w - 1).CANUtil != en.CANUtil || StreamDS.Queue.ElementAt(w + 1).CANUtil != en.CANUtil)
+                        {
+                            chartMain.Series["CAN"].Points.AddXY(en.Time.ToOADate(), en.CANUtil * 100);
+                        }
+                        for (int i = 0; i < 16; i++)
+                        {
+                            if (StreamDS.Queue.ElementAt(w - 1).getPDPChannel(i) != en.getPDPChannel(i) || StreamDS.Queue.ElementAt(w + 1).getPDPChannel(i) != en.getPDPChannel(i))
+                            {
+                                chartMain.Series["PDP " + i].Points.AddXY(en.Time.ToOADate(), en.getPDPChannel(i));
+                            }
+                        }
+                    }
+
+                    if (en.DSDisabled) chartMain.Series["DS Disabled"].Points.AddXY(en.Time.ToOADate(), 15.9);
+                    if (en.DSAuto) chartMain.Series["DS Auto"].Points.AddXY(en.Time.ToOADate(), 15.9);
+                    if (en.DSTele) chartMain.Series["DS Tele"].Points.AddXY(en.Time.ToOADate(), 15.9);
+
+                    if (en.RobotDisabled) chartMain.Series["Robot Disabled"].Points.AddXY(en.Time.ToOADate(), 16.8);
+                    if (en.RobotAuto) chartMain.Series["Robot Auto"].Points.AddXY(en.Time.ToOADate(), 16.5);
+                    if (en.RobotTele) chartMain.Series["Robot Tele"].Points.AddXY(en.Time.ToOADate(), 16.2);
+
+                    if (en.Brownout) chartMain.Series["Brownout"].Points.AddXY(en.Time.ToOADate(), 15.6);
+                    if (en.Watchdog) chartMain.Series["Watchdog"].Points.AddXY(en.Time.ToOADate(), 15.3);
+                }
+                chartMain.ChartAreas[0].AxisX.Maximum = StreamDS.Queue.Last().Time.ToOADate();
+            }
+            lastNumQueue = StreamDS.Queue.Count;
+        }
+
+
 
     }
 }
