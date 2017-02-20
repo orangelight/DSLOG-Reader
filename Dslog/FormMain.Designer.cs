@@ -85,6 +85,7 @@
             this.refreshPathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.resetZoomToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.autoScrollToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.viewHelpToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -175,7 +176,7 @@
             this.chartMain.Name = "chartMain";
             this.chartMain.Size = new System.Drawing.Size(734, 498);
             this.chartMain.TabIndex = 2;
-            this.chartMain.Text = "chart1";
+            this.chartMain.Text = "chart2";
             this.chartMain.CursorPositionChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.chartMain_CursorPositionChanged);
             this.chartMain.AxisViewChanging += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.chartMain_AxisViewChanging);
             this.chartMain.AxisViewChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.chartMain_AxisViewChanged);
@@ -652,7 +653,8 @@
             // viewToolStripMenuItem2
             // 
             this.viewToolStripMenuItem2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.resetZoomToolStripMenuItem2});
+            this.resetZoomToolStripMenuItem2,
+            this.autoScrollToolStripMenuItem});
             this.viewToolStripMenuItem2.Name = "viewToolStripMenuItem2";
             this.viewToolStripMenuItem2.Size = new System.Drawing.Size(44, 23);
             this.viewToolStripMenuItem2.Text = "View";
@@ -660,9 +662,19 @@
             // resetZoomToolStripMenuItem2
             // 
             this.resetZoomToolStripMenuItem2.Name = "resetZoomToolStripMenuItem2";
-            this.resetZoomToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
+            this.resetZoomToolStripMenuItem2.Size = new System.Drawing.Size(137, 22);
             this.resetZoomToolStripMenuItem2.Text = "Reset Zoom";
             this.resetZoomToolStripMenuItem2.Click += new System.EventHandler(this.resetZoomToolStripMenuItem_Click);
+            // 
+            // autoScrollToolStripMenuItem
+            // 
+            this.autoScrollToolStripMenuItem.Checked = true;
+            this.autoScrollToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.autoScrollToolStripMenuItem.Enabled = false;
+            this.autoScrollToolStripMenuItem.Name = "autoScrollToolStripMenuItem";
+            this.autoScrollToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.autoScrollToolStripMenuItem.Text = "AutoScroll";
+            this.autoScrollToolStripMenuItem.Click += new System.EventHandler(this.autoScrollToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem2
             // 
@@ -693,6 +705,7 @@
             this.toolStripTextBox1.AutoSize = false;
             this.toolStripTextBox1.BackColor = System.Drawing.SystemColors.Window;
             this.toolStripTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.toolStripTextBox1.Margin = new System.Windows.Forms.Padding(0);
             this.toolStripTextBox1.Name = "toolStripTextBox1";
             this.toolStripTextBox1.Size = new System.Drawing.Size(250, 23);
             this.toolStripTextBox1.TextChanged += new System.EventHandler(this.toolStripTextBox1_TextChanged);
@@ -789,7 +802,7 @@
             // 
             // timerStream
             // 
-            this.timerStream.Interval = 200;
+            this.timerStream.Interval = 250;
             this.timerStream.Tick += new System.EventHandler(this.timerStream_Tick);
             // 
             // FormMain
@@ -807,6 +820,7 @@
             this.MinimumSize = new System.Drawing.Size(770, 260);
             this.Name = "FormMain";
             this.Text = "DSLOG Reader";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.chartMain)).EndInit();
             this.tabControlChartCheckBox.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
@@ -897,6 +911,7 @@
         private System.Windows.Forms.RichTextBox GraphRichTextBox;
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
         private System.Windows.Forms.Timer timerStream;
+        private System.Windows.Forms.ToolStripMenuItem autoScrollToolStripMenuItem;
     }
 }
 

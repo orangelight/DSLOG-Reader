@@ -10,6 +10,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -192,7 +193,7 @@ namespace Dslog
                     setCursorLineRed();
                     probe(e.NewPosition);
                     
-                }
+                } 
             }
 
         }
@@ -636,7 +637,7 @@ namespace Dslog
         //Make sure people don't zoom out of view
         private void chartMain_AxisViewChanging(object sender, ViewEventArgs e)
         {
-            if (!Double.IsNaN(e.NewPosition) && log != null)
+            if (!Double.IsNaN(e.NewPosition) && log != null && !Double.IsNaN(e.NewSize))
             {
                 if (((int)(DateTime.FromOADate(e.NewPosition + e.NewSize).Subtract(log.StartTime).TotalMilliseconds / 20)) > log.Entries.Count)
                 {
@@ -782,6 +783,14 @@ namespace Dslog
                                             }
 
                                         }
+                                        try
+                                        {
+                                            File.OpenRead(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog").Close();
+                                        }
+                                        catch (IOException ex)
+                                        {
+                                            listViewDSLOGFolder.Items[inx].BackColor = Color.Lime;
+                                        }
                                     }
                                     else
                                     {
@@ -800,6 +809,14 @@ namespace Dslog
                                         listViewDSLOGFolder.Items[inx].SubItems.Add(sub.Days + "d " + sub.Hours + "h " + sub.Minutes + "m");
                                         listViewDSLOGFolder.Items[inx].SubItems.Add("DSEVENT");
                                         listViewDSLOGFolder.Items[inx].BackColor = SystemColors.ControlDark;
+                                        try
+                                        {
+                                            File.OpenRead(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog").Close();
+                                        }
+                                        catch (IOException ex)
+                                        {
+                                            listViewDSLOGFolder.Items[inx].BackColor = Color.Lime;
+                                        }
                                     }
 
                                 }
@@ -840,6 +857,7 @@ namespace Dslog
             timerStream.Stop();
             clearGraph();
             chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+            menuStrip1.BackColor = SystemColors.Control;
             Boolean stream = false;
             //check if file is open by ds
             try
@@ -850,13 +868,17 @@ namespace Dslog
             {
                 stream = true;
             }
+           
             log = null;
             if (!stream)
             {
+                autoScrollToolStripMenuItem.Enabled = false;
                 log = new DSLOGReader(path);
             }
             else
             {
+                autoScrollToolStripMenuItem.Enabled = true;
+                autoScrollToolStripMenuItem.Checked = true;
                 log = new DSLOGStreamer(path);
             }
             
@@ -1240,9 +1262,15 @@ namespace Dslog
         int lastNumQueue = 0;
         private void timerStream_Tick(object sender, EventArgs e)
         {
+            
+                
+            
+                
+            
             DSLOGStreamer StreamDS = (DSLOGStreamer)log;
             if (StreamDS.Queue.Count-lastNumQueue >= 2)
             {
+                menuStrip1.BackColor = Color.Lime;
                 if (lastNumQueue != 0)
                 {
                     chartMain.Series["Trip Time"].Points.RemoveAt(chartMain.Series["Trip Time"].Points.Count - 1);
@@ -1324,11 +1352,46 @@ namespace Dslog
                     if (en.Brownout) chartMain.Series["Brownout"].Points.AddXY(en.Time.ToOADate(), 15.6);
                     if (en.Watchdog) chartMain.Series["Watchdog"].Points.AddXY(en.Time.ToOADate(), 15.3);
                 }
+                menuStrip1.Items[menuStrip1.Items.Count - 1].Text = "Time Scale " + getTotalSecoundsInView() + " Sec";
                 chartMain.ChartAreas[0].AxisX.Maximum = StreamDS.Queue.Last().Time.ToOADate();
+                
+                //chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+                //double pos = chartMain.ChartAreas[0].AxisX.ScaleView.Position;
+                if (autoScrollToolStripMenuItem.Checked) chartMain.ChartAreas[0].AxisX.ScaleView.Scroll(StreamDS.Queue.Last().Time.ToOADate());
+                new Thread(menuColorBack).Start();
+                //chartMain.ChartAreas[0].AxisX.ScaleView.Scroll(pos);
             }
             lastNumQueue = StreamDS.Queue.Count;
+            
+            //timerMenuColor.Start();
         }
 
+        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (log != null)
+            {
+                timerStream.Stop();
+                if (log is DSLOGStreamer) ((DSLOGStreamer)log).Close();
+            }
+        }
+
+        private void autoScrollToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            autoScrollToolStripMenuItem.Checked = !autoScrollToolStripMenuItem.Checked;
+        }
+
+        private void menuColorBack()
+        {
+            Thread.Sleep(200);
+            try
+            {
+                menuStrip1.Invoke(new MethodInvoker(delegate { menuStrip1.BackColor = SystemColors.Control; }));
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
 
 
     }
