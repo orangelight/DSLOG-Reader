@@ -39,10 +39,7 @@ namespace DSLOG_Reader
                         Thread t = new Thread(stream);
                         t.Start();
                     }
-                    else
-                    {
-                        MessageBox.Show("ERROR: dslog version not supported");
-                    }
+                   
                 
 
             }

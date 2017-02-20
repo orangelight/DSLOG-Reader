@@ -782,67 +782,78 @@ namespace Dslog
                         if (File.Exists(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dsevents"))
                         {
                             DSEVENTSReader dsevents = new DSEVENTSReader(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dsevents");
-                            DateTime sTime = dsevents.StartTime;
-                            listViewDSLOGFolder.Items[inx].SubItems.Add(sTime.ToString("MMM dd, HH:mm:ss ddd"));
-                            StringBuilder sb = new StringBuilder();
-                            foreach (InfoEntry en in dsevents.EntryList)
+                            if (dsevents.Version == 3)
                             {
-                                sb.Append(en.Data);
-                            }
+                                DateTime sTime = dsevents.StartTime;
+                                listViewDSLOGFolder.Items[inx].SubItems.Add(sTime.ToString("MMM dd, HH:mm:ss ddd"));
+                                StringBuilder sb = new StringBuilder();
+                                foreach (InfoEntry en in dsevents.EntryList)
+                                {
+                                    sb.Append(en.Data);
+                                }
 
-                            String txtF = sb.ToString();
-                            listViewDSLOGFolder.Items[inx].SubItems.Add("" + ((new FileInfo(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog").Length - 19) / 35) / 50);
-                            if (txtF.Contains("FMS Connected:   Qualification"))
-                            {
-                                listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   Qualification - ") + 33, 5).Split(':')[0]);
-                                listViewDSLOGFolder.Items[inx].BackColor = Color.Khaki;
-                            }
-                            else if (txtF.Contains("FMS Connected:   Elimination"))
-                            {
-                                listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   Elimination - ") + 31, 5).Split(':')[0]);
-                                listViewDSLOGFolder.Items[inx].BackColor = Color.LightCoral;
-                            }
-                            else if (txtF.Contains("FMS Connected:   Practice"))
-                            {
-                                listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   Practice - ") + 28, 5).Split(':')[0]);
-                                listViewDSLOGFolder.Items[inx].BackColor = Color.LightGreen;
-                            }
-                            else if (txtF.Contains("FMS Connected:   None"))
-                            {
-                                listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   None - ") + 24, 5).Split(':')[0]);
-                                listViewDSLOGFolder.Items[inx].BackColor = Color.LightSkyBlue;
+                                String txtF = sb.ToString();
+                                listViewDSLOGFolder.Items[inx].SubItems.Add("" + ((new FileInfo(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog").Length - 19) / 35) / 50);
+                                if (txtF.Contains("FMS Connected:   Qualification"))
+                                {
+                                    listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   Qualification - ") + 33, 5).Split(':')[0]);
+                                    listViewDSLOGFolder.Items[inx].BackColor = Color.Khaki;
+                                }
+                                else if (txtF.Contains("FMS Connected:   Elimination"))
+                                {
+                                    listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   Elimination - ") + 31, 5).Split(':')[0]);
+                                    listViewDSLOGFolder.Items[inx].BackColor = Color.LightCoral;
+                                }
+                                else if (txtF.Contains("FMS Connected:   Practice"))
+                                {
+                                    listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   Practice - ") + 28, 5).Split(':')[0]);
+                                    listViewDSLOGFolder.Items[inx].BackColor = Color.LightGreen;
+                                }
+                                else if (txtF.Contains("FMS Connected:   None"))
+                                {
+                                    listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   None - ") + 24, 5).Split(':')[0]);
+                                    listViewDSLOGFolder.Items[inx].BackColor = Color.LightSkyBlue;
+                                }
+                                else
+                                {
+                                    listViewDSLOGFolder.Items[inx].SubItems.Add("");
+                                }
+
+                                //Gets time since right now
+                                TimeSpan sub = DateTime.Now.Subtract(sTime);
+                                //sTime = sTime.Subtract(new TimeSpan(2, 0, 0));
+                                listViewDSLOGFolder.Items[inx].SubItems.Add(sub.Days + "d " + sub.Hours + "h " + sub.Minutes + "m");
+
+                                if (txtF.Contains("FMS Event Name: "))
+                                {
+                                    string[] sArray = txtF.Split(new string[] { "Info" }, StringSplitOptions.None);
+                                    foreach (String ss in sArray)
+                                    {
+                                        if (ss.Contains("FMS Event Name: "))
+                                        {
+                                            listViewDSLOGFolder.Items[inx].SubItems.Add(ss.Replace("FMS Event Name: ", ""));
+                                            //listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Event Name: ") + 16, 8).Replace("Info", "").Replace("Inf", "").Replace("Joy", ""));
+                                            break;
+                                        }
+                                    }
+
+                                }
+                                try
+                                {
+                                    File.OpenRead(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog").Close();
+                                }
+                                catch (IOException ex)
+                                {
+                                    listViewDSLOGFolder.Items[inx].BackColor = Color.Lime;
+                                }
                             }
                             else
                             {
+                                listViewDSLOGFolder.Items[inx].BackColor = SystemColors.ControlDark;
+                                listViewDSLOGFolder.Items[inx].SubItems.Add("VERSION");
+                                listViewDSLOGFolder.Items[inx].SubItems.Add("NOT");
                                 listViewDSLOGFolder.Items[inx].SubItems.Add("");
-                            }
-
-                            //Gets time since right now
-                            TimeSpan sub = DateTime.Now.Subtract(sTime);
-                            //sTime = sTime.Subtract(new TimeSpan(2, 0, 0));
-                            listViewDSLOGFolder.Items[inx].SubItems.Add(sub.Days + "d " + sub.Hours + "h " + sub.Minutes + "m");
-
-                            if (txtF.Contains("FMS Event Name: "))
-                            {
-                                string[] sArray = txtF.Split(new string[] { "Info" }, StringSplitOptions.None);
-                                foreach (String ss in sArray)
-                                {
-                                    if (ss.Contains("FMS Event Name: "))
-                                    {
-                                        listViewDSLOGFolder.Items[inx].SubItems.Add(ss.Replace("FMS Event Name: ", ""));
-                                        //listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Event Name: ") + 16, 8).Replace("Info", "").Replace("Inf", "").Replace("Joy", ""));
-                                        break;
-                                    }
-                                }
-
-                            }
-                            try
-                            {
-                                File.OpenRead(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog").Close();
-                            }
-                            catch (IOException ex)
-                            {
-                                listViewDSLOGFolder.Items[inx].BackColor = Color.Lime;
+                                listViewDSLOGFolder.Items[inx].SubItems.Add("SUPPORTED");
                             }
                         }
                         else
@@ -861,7 +872,7 @@ namespace Dslog
                             TimeSpan sub = DateTime.Now.Subtract(sTime);
                             listViewDSLOGFolder.Items[inx].SubItems.Add(sub.Days + "d " + sub.Hours + "h " + sub.Minutes + "m");
                             listViewDSLOGFolder.Items[inx].SubItems.Add("DSEVENT");
-                            listViewDSLOGFolder.Items[inx].BackColor = SystemColors.ControlDark;
+                            
                             try
                             {
                                 File.OpenRead(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog").Close();
@@ -933,93 +944,99 @@ namespace Dslog
                     autoScrollToolStripMenuItem.Checked = true;
                     log = new DSLOGStreamer(path);
                 }
-
-                menuStrip1.Items[menuStrip1.Items.Count - 2].Text = "Current File: " + path;
-                chartMain.ChartAreas[0].AxisX.Minimum = log.StartTime.ToOADate();
-                chartMain.ChartAreas[0].CursorX.IntervalOffset = log.StartTime.Millisecond % 20;
-                //for lost packets
-                int packetnum = 0;
-
-                for (int w = 0; w < log.Entries.Count; w++)
+                if (log.Version == 3)
                 {
-                    Entry en = log.Entries.ElementAt(w);
-                    //Adds points to first and last x values
-                    if (w == 0 || w == log.Entries.Count - 1)
+                    menuStrip1.Items[menuStrip1.Items.Count - 2].Text = "Current File: " + path;
+                    chartMain.ChartAreas[0].AxisX.Minimum = log.StartTime.ToOADate();
+                    chartMain.ChartAreas[0].CursorX.IntervalOffset = log.StartTime.Millisecond % 20;
+                    //for lost packets
+                    int packetnum = 0;
+
+                    for (int w = 0; w < log.Entries.Count; w++)
                     {
-                        chartMain.Series["Trip Time"].Points.AddXY(en.Time.ToOADate(), en.TripTime);
-                        chartMain.Series["Voltage"].Points.AddXY(en.Time.ToOADate(), en.Voltage);
-                        chartMain.Series["Lost Packets"].Points.AddXY(en.Time.ToOADate(), en.LostPackets * 100);
-                        chartMain.Series["roboRIO CPU"].Points.AddXY(en.Time.ToOADate(), en.RoboRioCPU * 100);
-                        chartMain.Series["CAN"].Points.AddXY(en.Time.ToOADate(), en.CANUtil * 100);
-                        for (int i = 0; i < 16; i++)
-                        {
-                            chartMain.Series["PDP " + i].Points.AddXY(en.Time.ToOADate(), en.getPDPChannel(i));
-                        }
-                    }
-                    else
-                    {
-                        //Checks if value is differnt around it so we don't plot everypoint
-                        if (log.Entries.ElementAt(w - 1).TripTime != en.TripTime || log.Entries.ElementAt(w + 1).TripTime != en.TripTime)
+                        Entry en = log.Entries.ElementAt(w);
+                        //Adds points to first and last x values
+                        if (w == 0 || w == log.Entries.Count - 1)
                         {
                             chartMain.Series["Trip Time"].Points.AddXY(en.Time.ToOADate(), en.TripTime);
-                        }
-                        if ((log.Entries.ElementAt(w - 1).LostPackets != en.LostPackets || log.Entries.ElementAt(w + 1).LostPackets != en.LostPackets) || log.Entries.ElementAt(w - 1).LostPackets != 0)
-                        {
-                            //the bar graphs are too much so we have to do this
-                            if (packetnum % 4 == 0)
-                            {
-                                chartMain.Series["Lost Packets"].Points.AddXY(en.Time.ToOADate(), (en.LostPackets < 1) ? en.LostPackets * 100 : 100);
-                            }
-                            else
-                            {
-                                chartMain.Series["Lost Packets"].Points.AddXY(en.Time.ToOADate(), 0);
-                            }
-                            packetnum++;
-                        }
-                        if ((log.Entries.ElementAt(w - 1).Voltage != en.Voltage || log.Entries.ElementAt(w + 1).Voltage != en.Voltage) && en.Voltage < 17)
-                        {
                             chartMain.Series["Voltage"].Points.AddXY(en.Time.ToOADate(), en.Voltage);
-                        }
-                        if (log.Entries.ElementAt(w - 1).RoboRioCPU != en.RoboRioCPU || log.Entries.ElementAt(w + 1).RoboRioCPU != en.RoboRioCPU)
-                        {
+                            chartMain.Series["Lost Packets"].Points.AddXY(en.Time.ToOADate(), en.LostPackets * 100);
                             chartMain.Series["roboRIO CPU"].Points.AddXY(en.Time.ToOADate(), en.RoboRioCPU * 100);
-                        }
-                        if (log.Entries.ElementAt(w - 1).CANUtil != en.CANUtil || log.Entries.ElementAt(w + 1).CANUtil != en.CANUtil)
-                        {
                             chartMain.Series["CAN"].Points.AddXY(en.Time.ToOADate(), en.CANUtil * 100);
-                        }
-                        for (int i = 0; i < 16; i++)
-                        {
-                            if (log.Entries.ElementAt(w - 1).getPDPChannel(i) != en.getPDPChannel(i) || log.Entries.ElementAt(w + 1).getPDPChannel(i) != en.getPDPChannel(i))
+                            for (int i = 0; i < 16; i++)
                             {
                                 chartMain.Series["PDP " + i].Points.AddXY(en.Time.ToOADate(), en.getPDPChannel(i));
                             }
                         }
+                        else
+                        {
+                            //Checks if value is differnt around it so we don't plot everypoint
+                            if (log.Entries.ElementAt(w - 1).TripTime != en.TripTime || log.Entries.ElementAt(w + 1).TripTime != en.TripTime)
+                            {
+                                chartMain.Series["Trip Time"].Points.AddXY(en.Time.ToOADate(), en.TripTime);
+                            }
+                            if ((log.Entries.ElementAt(w - 1).LostPackets != en.LostPackets || log.Entries.ElementAt(w + 1).LostPackets != en.LostPackets) || log.Entries.ElementAt(w - 1).LostPackets != 0)
+                            {
+                                //the bar graphs are too much so we have to do this
+                                if (packetnum % 4 == 0)
+                                {
+                                    chartMain.Series["Lost Packets"].Points.AddXY(en.Time.ToOADate(), (en.LostPackets < 1) ? en.LostPackets * 100 : 100);
+                                }
+                                else
+                                {
+                                    chartMain.Series["Lost Packets"].Points.AddXY(en.Time.ToOADate(), 0);
+                                }
+                                packetnum++;
+                            }
+                            if ((log.Entries.ElementAt(w - 1).Voltage != en.Voltage || log.Entries.ElementAt(w + 1).Voltage != en.Voltage) && en.Voltage < 17)
+                            {
+                                chartMain.Series["Voltage"].Points.AddXY(en.Time.ToOADate(), en.Voltage);
+                            }
+                            if (log.Entries.ElementAt(w - 1).RoboRioCPU != en.RoboRioCPU || log.Entries.ElementAt(w + 1).RoboRioCPU != en.RoboRioCPU)
+                            {
+                                chartMain.Series["roboRIO CPU"].Points.AddXY(en.Time.ToOADate(), en.RoboRioCPU * 100);
+                            }
+                            if (log.Entries.ElementAt(w - 1).CANUtil != en.CANUtil || log.Entries.ElementAt(w + 1).CANUtil != en.CANUtil)
+                            {
+                                chartMain.Series["CAN"].Points.AddXY(en.Time.ToOADate(), en.CANUtil * 100);
+                            }
+                            for (int i = 0; i < 16; i++)
+                            {
+                                if (log.Entries.ElementAt(w - 1).getPDPChannel(i) != en.getPDPChannel(i) || log.Entries.ElementAt(w + 1).getPDPChannel(i) != en.getPDPChannel(i))
+                                {
+                                    chartMain.Series["PDP " + i].Points.AddXY(en.Time.ToOADate(), en.getPDPChannel(i));
+                                }
+                            }
+                        }
+
+                        if (en.DSDisabled) chartMain.Series["DS Disabled"].Points.AddXY(en.Time.ToOADate(), 15.9);
+                        if (en.DSAuto) chartMain.Series["DS Auto"].Points.AddXY(en.Time.ToOADate(), 15.9);
+                        if (en.DSTele) chartMain.Series["DS Tele"].Points.AddXY(en.Time.ToOADate(), 15.9);
+
+                        if (en.RobotDisabled) chartMain.Series["Robot Disabled"].Points.AddXY(en.Time.ToOADate(), 16.8);
+                        if (en.RobotAuto) chartMain.Series["Robot Auto"].Points.AddXY(en.Time.ToOADate(), 16.5);
+                        if (en.RobotTele) chartMain.Series["Robot Tele"].Points.AddXY(en.Time.ToOADate(), 16.2);
+
+                        if (en.Brownout) chartMain.Series["Brownout"].Points.AddXY(en.Time.ToOADate(), 15.6);
+                        if (en.Watchdog) chartMain.Series["Watchdog"].Points.AddXY(en.Time.ToOADate(), 15.3);
                     }
-
-                    if (en.DSDisabled) chartMain.Series["DS Disabled"].Points.AddXY(en.Time.ToOADate(), 15.9);
-                    if (en.DSAuto) chartMain.Series["DS Auto"].Points.AddXY(en.Time.ToOADate(), 15.9);
-                    if (en.DSTele) chartMain.Series["DS Tele"].Points.AddXY(en.Time.ToOADate(), 15.9);
-
-                    if (en.RobotDisabled) chartMain.Series["Robot Disabled"].Points.AddXY(en.Time.ToOADate(), 16.8);
-                    if (en.RobotAuto) chartMain.Series["Robot Auto"].Points.AddXY(en.Time.ToOADate(), 16.5);
-                    if (en.RobotTele) chartMain.Series["Robot Tele"].Points.AddXY(en.Time.ToOADate(), 16.2);
-
-                    if (en.Brownout) chartMain.Series["Brownout"].Points.AddXY(en.Time.ToOADate(), 15.6);
-                    if (en.Watchdog) chartMain.Series["Watchdog"].Points.AddXY(en.Time.ToOADate(), 15.3);
+                    Dsevents = null;
+                    EventsDict = null;
+                    readDSEVENTS(path);
+                    chartMain.ChartAreas[0].AxisX.Maximum = log.Entries.Last().Time.ToOADate();
+                    menuStrip1.Items[menuStrip1.Items.Count - 1].Text = "Time Scale " + getTotalSecoundsInView() + " Sec";
+                    setColoumnLabelNumber();
+                    tabPage4.Enabled = true;
+                    chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+                    lastIndexSelectedEvents = -1;
+                    lastNumQueue = 0;
+                    EventRichTextBox.Clear();
+                    if (stream) timerStream.Start();
                 }
-                Dsevents = null;
-                EventsDict = null;
-                readDSEVENTS(path);
-                chartMain.ChartAreas[0].AxisX.Maximum = log.Entries.Last().Time.ToOADate();
-                menuStrip1.Items[menuStrip1.Items.Count - 1].Text = "Time Scale " + getTotalSecoundsInView() + " Sec";
-                setColoumnLabelNumber();
-                tabPage4.Enabled = true;
-                chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset();
-                lastIndexSelectedEvents = -1;
-                lastNumQueue = 0;
-                EventRichTextBox.Clear();
-                if (stream) timerStream.Start();
+                else
+                {
+                    MessageBox.Show("ERROR: dslog version not supported");
+                }
             }
             
         }

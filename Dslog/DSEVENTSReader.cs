@@ -56,17 +56,10 @@ namespace DSLOG_Reader
                             //if (s.StartsWith("Warning <Code> 44004")) ReadWarning44004(s, time);
                         }
                     }
-                    else
-                    {
-                        MessageBox.Show("ERROR: dsevent version not supported");
-                    }
+                   
                 }
-
             }
-            else
-            {
-
-            }
+          
         }
 
         private DateTime FromLVTime(long unixTime, UInt64 ummm)
