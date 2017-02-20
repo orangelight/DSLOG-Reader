@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,10 +21,13 @@ namespace Dslog
     public partial class FormMain : Form
     {
 
-        public const string VERSION = "0.7.2";
+        public static string VERSION;
+        
         public FormMain()
         {
             InitializeComponent();
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            VERSION = AssemblyName.GetAssemblyName(assembly.Location).Version.ToString();
             addSeries();
             this.DoubleBuffered = true;
             //Select csv in exportBox
@@ -35,6 +39,7 @@ namespace Dslog
             
         }
         DSLOGReader log;
+        
         Color[] pdpColors = { Color.FromArgb(255, 113, 113), Color.FromArgb(255, 198, 89), Color.FromArgb(152, 255, 136), Color.FromArgb(136, 154, 255), Color.FromArgb(255, 52, 42), Color.FromArgb(255, 176, 42), Color.FromArgb(0, 255, 9), Color.FromArgb(0, 147, 255), Color.FromArgb(180, 8, 0), Color.FromArgb(239, 139,0), Color.FromArgb(46,220,0), Color.FromArgb(57,42,255),Color.FromArgb(180,8,0), Color.FromArgb(200,132, 0), Color.FromArgb(42,159,0), Color.FromArgb(0,47,239) };
         
 
@@ -677,8 +682,29 @@ namespace Dslog
             //sroll down to bottom (need to use timer cuz it's weird
             lastIndexSelectedFiles = -1;
             timerScrollToBottom.Start();
+
+            fileCreatedWatcher(path);
             }
         }
+
+        private void fileCreatedWatcher(String path)
+        {
+            FileSystemWatcher watcher = new FileSystemWatcher();
+            watcher.Path = path;
+            watcher.Filter = "*.dslog*";
+            watcher.Created += new FileSystemEventHandler(OnChanged);
+            watcher.EnableRaisingEvents = true;
+        }
+
+        private void OnChanged(object sender, FileSystemEventArgs e)
+        {
+            ListViewItem item = new ListViewItem();
+            item.Text = e.Name.Replace(".dslog", "");
+            listViewDSLOGFolder.Invoke(new MethodInvoker(delegate { listViewDSLOGFolder.Items.Add(item); }));
+            listViewDSLOGFolder.Invoke(new MethodInvoker(delegate { addItemFileInfo(listViewDSLOGFolder.Items.Count - 1); }));
+        }
+
+        
 
         private void refreshPathToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -719,114 +745,138 @@ namespace Dslog
                 {
                     
                     for (int inx = topIndex; inx < topIndex + listViewDSLOGFolder.Height / 18; inx++)
-                        if (inx < listViewDSLOGFolder.Items.Count)
+                    {
+                        addItemFileInfo(inx);
+                    }
+                    lastTop = topIndex;
+                }
+                for (int inx = topIndex; inx < topIndex + listViewDSLOGFolder.Height / 18; inx++)
+                {
+                    if (inx < listViewDSLOGFolder.Items.Count)
+                    {
+                        if (listViewDSLOGFolder.Items[inx].BackColor.Equals(Color.Lime))
                         {
-                            //Check if we already added info
-                            if (listViewDSLOGFolder.Items[inx].SubItems.Count < 2)
+                            try
                             {
-                                try
-                                {
-                                    if (File.Exists(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dsevents"))
-                                    {
-                                        DSEVENTSReader dsevents = new DSEVENTSReader(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dsevents");
-                                        DateTime sTime = dsevents.StartTime;
-                                        listViewDSLOGFolder.Items[inx].SubItems.Add(sTime.ToString("MMM dd, HH:mm:ss ddd"));
-                                        StringBuilder sb = new StringBuilder();
-                                        foreach (InfoEntry en in dsevents.EntryList)
-                                        {
-                                            sb.Append(en.Data);
-                                        }
-                                        
-                                        String txtF = sb.ToString();
-                                        listViewDSLOGFolder.Items[inx].SubItems.Add("" + ((new FileInfo(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog").Length - 19) / 35) / 50);
-                                        if (txtF.Contains("FMS Connected:   Qualification"))
-                                        {
-                                            listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   Qualification - ") + 33, 5).Split(':')[0]);
-                                            listViewDSLOGFolder.Items[inx].BackColor = Color.Khaki;
-                                        }
-                                        else if (txtF.Contains("FMS Connected:   Elimination"))
-                                        {
-                                            listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   Elimination - ") + 31, 5).Split(':')[0]);
-                                            listViewDSLOGFolder.Items[inx].BackColor = Color.LightCoral;
-                                        }
-                                        else if (txtF.Contains("FMS Connected:   Practice"))
-                                        {
-                                            listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   Practice - ") + 28, 5).Split(':')[0]);
-                                            listViewDSLOGFolder.Items[inx].BackColor = Color.LightGreen;
-                                        }
-                                        else if (txtF.Contains("FMS Connected:   None"))
-                                        {
-                                            listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   None - ") + 24, 5).Split(':')[0]);
-                                            listViewDSLOGFolder.Items[inx].BackColor = Color.LightSkyBlue;
-                                        }
-                                        else
-                                        {
-                                            listViewDSLOGFolder.Items[inx].SubItems.Add("");
-                                        }
-
-                                        //Gets time since right now
-                                        TimeSpan sub = DateTime.Now.Subtract(sTime);
-                                        //sTime = sTime.Subtract(new TimeSpan(2, 0, 0));
-                                        listViewDSLOGFolder.Items[inx].SubItems.Add(sub.Days + "d " + sub.Hours + "h " + sub.Minutes + "m");
-
-                                        if (txtF.Contains("FMS Event Name: "))
-                                        {
-                                            string[] sArray = txtF.Split(new string[] { "Info" }, StringSplitOptions.None);
-                                            foreach (String ss in sArray)
-                                            {
-                                                if (ss.Contains("FMS Event Name: "))
-                                                {
-                                                    listViewDSLOGFolder.Items[inx].SubItems.Add(ss.Replace("FMS Event Name: ", ""));
-                                                    //listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Event Name: ") + 16, 8).Replace("Info", "").Replace("Inf", "").Replace("Joy", ""));
-                                                    break;
-                                                }
-                                            }
-
-                                        }
-                                        try
-                                        {
-                                            File.OpenRead(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog").Close();
-                                        }
-                                        catch (IOException ex)
-                                        {
-                                            listViewDSLOGFolder.Items[inx].BackColor = Color.Lime;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        //No DSEVENT file
-                                        DateTime sTime;
-                                        using (BinaryReader2 reader = new BinaryReader2(File.Open(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
-                                        {
-                                            reader.ReadInt32();
-                                            sTime = FromLVTime(reader.ReadInt64(), reader.ReadUInt64());
-                                            listViewDSLOGFolder.Items[inx].SubItems.Add(sTime.ToString("MMM dd, HH:mm:ss ddd"));
-                                            reader.Close();
-                                        }
-                                        listViewDSLOGFolder.Items[inx].SubItems.Add("" + ((new FileInfo(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog").Length - 19) / 35) / 50);
-                                        listViewDSLOGFolder.Items[inx].SubItems.Add("NO");
-                                        TimeSpan sub = DateTime.Now.Subtract(sTime);
-                                        listViewDSLOGFolder.Items[inx].SubItems.Add(sub.Days + "d " + sub.Hours + "h " + sub.Minutes + "m");
-                                        listViewDSLOGFolder.Items[inx].SubItems.Add("DSEVENT");
-                                        listViewDSLOGFolder.Items[inx].BackColor = SystemColors.ControlDark;
-                                        try
-                                        {
-                                            File.OpenRead(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog").Close();
-                                        }
-                                        catch (IOException ex)
-                                        {
-                                            listViewDSLOGFolder.Items[inx].BackColor = Color.Lime;
-                                        }
-                                    }
-
-                                }
-                                catch (Exception ex)
-                                {
-
-                                }
+                                File.OpenRead(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog").Close();
+                                listViewDSLOGFolder.Items[inx].BackColor = SystemColors.Window;
+                            }
+                            catch (IOException ex)
+                            {
+                                //listViewDSLOGFolder.Items[inx].BackColor = Color.Lime;
                             }
                         }
-                    lastTop = topIndex;
+                    }
+                }
+            }
+        }
+
+        private void addItemFileInfo(int inx) {
+            if (inx < listViewDSLOGFolder.Items.Count)
+            {
+                //Check if we already added info
+                if (listViewDSLOGFolder.Items[inx].SubItems.Count < 2)
+                {
+                    try
+                    {
+                        if (File.Exists(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dsevents"))
+                        {
+                            DSEVENTSReader dsevents = new DSEVENTSReader(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dsevents");
+                            DateTime sTime = dsevents.StartTime;
+                            listViewDSLOGFolder.Items[inx].SubItems.Add(sTime.ToString("MMM dd, HH:mm:ss ddd"));
+                            StringBuilder sb = new StringBuilder();
+                            foreach (InfoEntry en in dsevents.EntryList)
+                            {
+                                sb.Append(en.Data);
+                            }
+
+                            String txtF = sb.ToString();
+                            listViewDSLOGFolder.Items[inx].SubItems.Add("" + ((new FileInfo(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog").Length - 19) / 35) / 50);
+                            if (txtF.Contains("FMS Connected:   Qualification"))
+                            {
+                                listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   Qualification - ") + 33, 5).Split(':')[0]);
+                                listViewDSLOGFolder.Items[inx].BackColor = Color.Khaki;
+                            }
+                            else if (txtF.Contains("FMS Connected:   Elimination"))
+                            {
+                                listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   Elimination - ") + 31, 5).Split(':')[0]);
+                                listViewDSLOGFolder.Items[inx].BackColor = Color.LightCoral;
+                            }
+                            else if (txtF.Contains("FMS Connected:   Practice"))
+                            {
+                                listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   Practice - ") + 28, 5).Split(':')[0]);
+                                listViewDSLOGFolder.Items[inx].BackColor = Color.LightGreen;
+                            }
+                            else if (txtF.Contains("FMS Connected:   None"))
+                            {
+                                listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Connected:   None - ") + 24, 5).Split(':')[0]);
+                                listViewDSLOGFolder.Items[inx].BackColor = Color.LightSkyBlue;
+                            }
+                            else
+                            {
+                                listViewDSLOGFolder.Items[inx].SubItems.Add("");
+                            }
+
+                            //Gets time since right now
+                            TimeSpan sub = DateTime.Now.Subtract(sTime);
+                            //sTime = sTime.Subtract(new TimeSpan(2, 0, 0));
+                            listViewDSLOGFolder.Items[inx].SubItems.Add(sub.Days + "d " + sub.Hours + "h " + sub.Minutes + "m");
+
+                            if (txtF.Contains("FMS Event Name: "))
+                            {
+                                string[] sArray = txtF.Split(new string[] { "Info" }, StringSplitOptions.None);
+                                foreach (String ss in sArray)
+                                {
+                                    if (ss.Contains("FMS Event Name: "))
+                                    {
+                                        listViewDSLOGFolder.Items[inx].SubItems.Add(ss.Replace("FMS Event Name: ", ""));
+                                        //listViewDSLOGFolder.Items[inx].SubItems.Add(txtF.Substring(txtF.IndexOf("FMS Event Name: ") + 16, 8).Replace("Info", "").Replace("Inf", "").Replace("Joy", ""));
+                                        break;
+                                    }
+                                }
+
+                            }
+                            try
+                            {
+                                File.OpenRead(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog").Close();
+                            }
+                            catch (IOException ex)
+                            {
+                                listViewDSLOGFolder.Items[inx].BackColor = Color.Lime;
+                            }
+                        }
+                        else
+                        {
+                            //No DSEVENT file
+                            DateTime sTime;
+                            using (BinaryReader2 reader = new BinaryReader2(File.Open(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+                            {
+                                reader.ReadInt32();
+                                sTime = FromLVTime(reader.ReadInt64(), reader.ReadUInt64());
+                                listViewDSLOGFolder.Items[inx].SubItems.Add(sTime.ToString("MMM dd, HH:mm:ss ddd"));
+                                reader.Close();
+                            }
+                            listViewDSLOGFolder.Items[inx].SubItems.Add("" + ((new FileInfo(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog").Length - 19) / 35) / 50);
+                            listViewDSLOGFolder.Items[inx].SubItems.Add("NO");
+                            TimeSpan sub = DateTime.Now.Subtract(sTime);
+                            listViewDSLOGFolder.Items[inx].SubItems.Add(sub.Days + "d " + sub.Hours + "h " + sub.Minutes + "m");
+                            listViewDSLOGFolder.Items[inx].SubItems.Add("DSEVENT");
+                            listViewDSLOGFolder.Items[inx].BackColor = SystemColors.ControlDark;
+                            try
+                            {
+                                File.OpenRead(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog").Close();
+                            }
+                            catch (IOException ex)
+                            {
+                                listViewDSLOGFolder.Items[inx].BackColor = Color.Lime;
+                            }
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
                 }
             }
         }
@@ -850,124 +900,127 @@ namespace Dslog
         //Imports log from path
         void importLog(string path)
         {
-            if (log != null)
+            if (File.Exists(path))
             {
-                if (log is DSLOGStreamer) ((DSLOGStreamer)log).Close();
-            }
-            timerStream.Stop();
-            clearGraph();
-            chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset();
-            menuStrip1.BackColor = SystemColors.Control;
-            Boolean stream = false;
-            //check if file is open by ds
-            try
-            {
-                File.OpenRead(path).Close();
-            }
-            catch (IOException ex)
-            {
-                stream = true;
-            }
-           
-            log = null;
-            if (!stream)
-            {
-                autoScrollToolStripMenuItem.Enabled = false;
-                log = new DSLOGReader(path);
-            }
-            else
-            {
-                autoScrollToolStripMenuItem.Enabled = true;
-                autoScrollToolStripMenuItem.Checked = true;
-                log = new DSLOGStreamer(path);
-            }
-            
-            menuStrip1.Items[menuStrip1.Items.Count - 2].Text = "Current File: " + path;
-            chartMain.ChartAreas[0].AxisX.Minimum = log.StartTime.ToOADate();
-            chartMain.ChartAreas[0].CursorX.IntervalOffset = log.StartTime.Millisecond % 20;
-            //for lost packets
-            int packetnum = 0;
-
-            for (int w = 0; w < log.Entries.Count; w++)
-            {
-                Entry en = log.Entries.ElementAt(w);
-                //Adds points to first and last x values
-                if (w == 0 || w == log.Entries.Count - 1)
+                if (log != null)
                 {
-                    chartMain.Series["Trip Time"].Points.AddXY(en.Time.ToOADate(), en.TripTime);
-                    chartMain.Series["Voltage"].Points.AddXY(en.Time.ToOADate(), en.Voltage);
-                    chartMain.Series["Lost Packets"].Points.AddXY(en.Time.ToOADate(), en.LostPackets * 100);
-                    chartMain.Series["roboRIO CPU"].Points.AddXY(en.Time.ToOADate(), en.RoboRioCPU * 100);
-                    chartMain.Series["CAN"].Points.AddXY(en.Time.ToOADate(), en.CANUtil * 100);
-                    for (int i = 0; i < 16; i++)
-                    {
-                        chartMain.Series["PDP " + i].Points.AddXY(en.Time.ToOADate(), en.getPDPChannel(i));
-                    }
+                    if (log is DSLOGStreamer) ((DSLOGStreamer)log).Close();
+                }
+                timerStream.Stop();
+                clearGraph();
+                chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+                menuStrip1.BackColor = SystemColors.Control;
+                Boolean stream = false;
+                //check if file is open by ds
+                try
+                {
+                    File.OpenRead(path).Close();
+                }
+                catch (IOException ex)
+                {
+                    stream = true;
+                }
+
+                log = null;
+                if (!stream)
+                {
+                    autoScrollToolStripMenuItem.Enabled = false;
+                    log = new DSLOGReader(path);
                 }
                 else
                 {
-                    //Checks if value is differnt around it so we don't plot everypoint
-                    if (log.Entries.ElementAt(w - 1).TripTime != en.TripTime || log.Entries.ElementAt(w + 1).TripTime != en.TripTime)
+                    autoScrollToolStripMenuItem.Enabled = true;
+                    autoScrollToolStripMenuItem.Checked = true;
+                    log = new DSLOGStreamer(path);
+                }
+
+                menuStrip1.Items[menuStrip1.Items.Count - 2].Text = "Current File: " + path;
+                chartMain.ChartAreas[0].AxisX.Minimum = log.StartTime.ToOADate();
+                chartMain.ChartAreas[0].CursorX.IntervalOffset = log.StartTime.Millisecond % 20;
+                //for lost packets
+                int packetnum = 0;
+
+                for (int w = 0; w < log.Entries.Count; w++)
+                {
+                    Entry en = log.Entries.ElementAt(w);
+                    //Adds points to first and last x values
+                    if (w == 0 || w == log.Entries.Count - 1)
                     {
                         chartMain.Series["Trip Time"].Points.AddXY(en.Time.ToOADate(), en.TripTime);
-                    }
-                    if ((log.Entries.ElementAt(w - 1).LostPackets != en.LostPackets || log.Entries.ElementAt(w + 1).LostPackets != en.LostPackets) || log.Entries.ElementAt(w - 1).LostPackets != 0)
-                    {
-                        //the bar graphs are too much so we have to do this
-                        if (packetnum % 4 == 0)
-                        {
-                            chartMain.Series["Lost Packets"].Points.AddXY(en.Time.ToOADate(), (en.LostPackets < 1) ? en.LostPackets * 100 : 100);
-                        }
-                        else
-                        {
-                            chartMain.Series["Lost Packets"].Points.AddXY(en.Time.ToOADate(), 0);
-                        }
-                        packetnum++;
-                    }
-                    if ((log.Entries.ElementAt(w - 1).Voltage != en.Voltage || log.Entries.ElementAt(w + 1).Voltage != en.Voltage) && en.Voltage < 17)
-                    {
                         chartMain.Series["Voltage"].Points.AddXY(en.Time.ToOADate(), en.Voltage);
-                    }
-                    if (log.Entries.ElementAt(w - 1).RoboRioCPU != en.RoboRioCPU || log.Entries.ElementAt(w + 1).RoboRioCPU != en.RoboRioCPU)
-                    {
+                        chartMain.Series["Lost Packets"].Points.AddXY(en.Time.ToOADate(), en.LostPackets * 100);
                         chartMain.Series["roboRIO CPU"].Points.AddXY(en.Time.ToOADate(), en.RoboRioCPU * 100);
-                    }
-                    if (log.Entries.ElementAt(w - 1).CANUtil != en.CANUtil || log.Entries.ElementAt(w + 1).CANUtil != en.CANUtil)
-                    {
                         chartMain.Series["CAN"].Points.AddXY(en.Time.ToOADate(), en.CANUtil * 100);
-                    }
-                    for (int i = 0; i < 16; i++)
-                    {
-                        if (log.Entries.ElementAt(w - 1).getPDPChannel(i) != en.getPDPChannel(i) || log.Entries.ElementAt(w + 1).getPDPChannel(i) != en.getPDPChannel(i))
+                        for (int i = 0; i < 16; i++)
                         {
                             chartMain.Series["PDP " + i].Points.AddXY(en.Time.ToOADate(), en.getPDPChannel(i));
                         }
                     }
+                    else
+                    {
+                        //Checks if value is differnt around it so we don't plot everypoint
+                        if (log.Entries.ElementAt(w - 1).TripTime != en.TripTime || log.Entries.ElementAt(w + 1).TripTime != en.TripTime)
+                        {
+                            chartMain.Series["Trip Time"].Points.AddXY(en.Time.ToOADate(), en.TripTime);
+                        }
+                        if ((log.Entries.ElementAt(w - 1).LostPackets != en.LostPackets || log.Entries.ElementAt(w + 1).LostPackets != en.LostPackets) || log.Entries.ElementAt(w - 1).LostPackets != 0)
+                        {
+                            //the bar graphs are too much so we have to do this
+                            if (packetnum % 4 == 0)
+                            {
+                                chartMain.Series["Lost Packets"].Points.AddXY(en.Time.ToOADate(), (en.LostPackets < 1) ? en.LostPackets * 100 : 100);
+                            }
+                            else
+                            {
+                                chartMain.Series["Lost Packets"].Points.AddXY(en.Time.ToOADate(), 0);
+                            }
+                            packetnum++;
+                        }
+                        if ((log.Entries.ElementAt(w - 1).Voltage != en.Voltage || log.Entries.ElementAt(w + 1).Voltage != en.Voltage) && en.Voltage < 17)
+                        {
+                            chartMain.Series["Voltage"].Points.AddXY(en.Time.ToOADate(), en.Voltage);
+                        }
+                        if (log.Entries.ElementAt(w - 1).RoboRioCPU != en.RoboRioCPU || log.Entries.ElementAt(w + 1).RoboRioCPU != en.RoboRioCPU)
+                        {
+                            chartMain.Series["roboRIO CPU"].Points.AddXY(en.Time.ToOADate(), en.RoboRioCPU * 100);
+                        }
+                        if (log.Entries.ElementAt(w - 1).CANUtil != en.CANUtil || log.Entries.ElementAt(w + 1).CANUtil != en.CANUtil)
+                        {
+                            chartMain.Series["CAN"].Points.AddXY(en.Time.ToOADate(), en.CANUtil * 100);
+                        }
+                        for (int i = 0; i < 16; i++)
+                        {
+                            if (log.Entries.ElementAt(w - 1).getPDPChannel(i) != en.getPDPChannel(i) || log.Entries.ElementAt(w + 1).getPDPChannel(i) != en.getPDPChannel(i))
+                            {
+                                chartMain.Series["PDP " + i].Points.AddXY(en.Time.ToOADate(), en.getPDPChannel(i));
+                            }
+                        }
+                    }
+
+                    if (en.DSDisabled) chartMain.Series["DS Disabled"].Points.AddXY(en.Time.ToOADate(), 15.9);
+                    if (en.DSAuto) chartMain.Series["DS Auto"].Points.AddXY(en.Time.ToOADate(), 15.9);
+                    if (en.DSTele) chartMain.Series["DS Tele"].Points.AddXY(en.Time.ToOADate(), 15.9);
+
+                    if (en.RobotDisabled) chartMain.Series["Robot Disabled"].Points.AddXY(en.Time.ToOADate(), 16.8);
+                    if (en.RobotAuto) chartMain.Series["Robot Auto"].Points.AddXY(en.Time.ToOADate(), 16.5);
+                    if (en.RobotTele) chartMain.Series["Robot Tele"].Points.AddXY(en.Time.ToOADate(), 16.2);
+
+                    if (en.Brownout) chartMain.Series["Brownout"].Points.AddXY(en.Time.ToOADate(), 15.6);
+                    if (en.Watchdog) chartMain.Series["Watchdog"].Points.AddXY(en.Time.ToOADate(), 15.3);
                 }
-
-                if (en.DSDisabled) chartMain.Series["DS Disabled"].Points.AddXY(en.Time.ToOADate(), 15.9);
-                if (en.DSAuto) chartMain.Series["DS Auto"].Points.AddXY(en.Time.ToOADate(), 15.9);
-                if (en.DSTele) chartMain.Series["DS Tele"].Points.AddXY(en.Time.ToOADate(), 15.9);
-
-                if (en.RobotDisabled) chartMain.Series["Robot Disabled"].Points.AddXY(en.Time.ToOADate(), 16.8);
-                if (en.RobotAuto) chartMain.Series["Robot Auto"].Points.AddXY(en.Time.ToOADate(), 16.5);
-                if (en.RobotTele) chartMain.Series["Robot Tele"].Points.AddXY(en.Time.ToOADate(), 16.2);
-
-                if (en.Brownout) chartMain.Series["Brownout"].Points.AddXY(en.Time.ToOADate(), 15.6);
-                if (en.Watchdog) chartMain.Series["Watchdog"].Points.AddXY(en.Time.ToOADate(), 15.3);
+                Dsevents = null;
+                EventsDict = null;
+                readDSEVENTS(path);
+                chartMain.ChartAreas[0].AxisX.Maximum = log.Entries.Last().Time.ToOADate();
+                menuStrip1.Items[menuStrip1.Items.Count - 1].Text = "Time Scale " + getTotalSecoundsInView() + " Sec";
+                setColoumnLabelNumber();
+                tabPage4.Enabled = true;
+                chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+                lastIndexSelectedEvents = -1;
+                lastNumQueue = 0;
+                EventRichTextBox.Clear();
+                if (stream) timerStream.Start();
             }
-            Dsevents = null;
-            EventsDict = null;
-            readDSEVENTS(path);
-            chartMain.ChartAreas[0].AxisX.Maximum = log.Entries.Last().Time.ToOADate();
-            menuStrip1.Items[menuStrip1.Items.Count - 1].Text = "Time Scale " + getTotalSecoundsInView() + " Sec";
-            setColoumnLabelNumber();
-            tabPage4.Enabled = true;
-            chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset();
-            lastIndexSelectedEvents = -1;
-            lastNumQueue = 0;
-            EventRichTextBox.Clear();
-            if (stream) timerStream.Start();
             
         }
         
@@ -1262,11 +1315,6 @@ namespace Dslog
         int lastNumQueue = 0;
         private void timerStream_Tick(object sender, EventArgs e)
         {
-            
-                
-            
-                
-            
             DSLOGStreamer StreamDS = (DSLOGStreamer)log;
             if (StreamDS.Queue.Count-lastNumQueue >= 2)
             {
