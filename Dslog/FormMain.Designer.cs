@@ -802,7 +802,7 @@
             // 
             // timerStream
             // 
-            this.timerStream.Interval = 250;
+            this.timerStream.Interval = 200;
             this.timerStream.Tick += new System.EventHandler(this.timerStream_Tick);
             // 
             // FormMain

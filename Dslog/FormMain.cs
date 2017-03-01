@@ -36,6 +36,7 @@ namespace Dslog
             menuStrip1.Items.Add(new ToolStripLabel("Current File: "));
             menuStrip1.Items.Add(new ToolStripLabel("Time Scale"));
             menuStrip1.Items[menuStrip1.Items.Count - 1].Alignment = ToolStripItemAlignment.Right;
+            timeoutStop = new Stopwatch();
             
         }
         DSLOGReader log;
@@ -80,57 +81,58 @@ namespace Dslog
             chartMain.Series.Add(new Series("DS Disabled"));
             chartMain.Series["DS Disabled"].XValueType = ChartValueType.DateTime;
             chartMain.Series["DS Disabled"].YAxisType = AxisType.Primary;
-            chartMain.Series["DS Disabled"].ChartType = SeriesChartType.FastPoint;
-            chartMain.Series["DS Disabled"].MarkerStyle = MarkerStyle.Circle;
+            chartMain.Series["DS Disabled"].ChartType = SeriesChartType.Line;
+            //chartMain.Series["DS Disabled"].MarkerStyle = MarkerStyle.Circle;
+            chartMain.Series["DS Disabled"].BorderWidth = 5;
             chartMain.Series["DS Disabled"].Color = Color.DarkGray;
 
             chartMain.Series.Add(new Series("DS Auto"));
             chartMain.Series["DS Auto"].XValueType = ChartValueType.DateTime;
             chartMain.Series["DS Auto"].YAxisType = AxisType.Primary;
-            chartMain.Series["DS Auto"].ChartType = SeriesChartType.FastPoint;
-            chartMain.Series["DS Auto"].MarkerStyle = MarkerStyle.Circle;
+            chartMain.Series["DS Auto"].ChartType = SeriesChartType.Line;
+            chartMain.Series["DS Auto"].BorderWidth = 5;
             chartMain.Series["DS Auto"].Color = Color.Lime;
 
             chartMain.Series.Add(new Series("DS Tele"));
             chartMain.Series["DS Tele"].XValueType = ChartValueType.DateTime;
             chartMain.Series["DS Tele"].YAxisType = AxisType.Primary;
-            chartMain.Series["DS Tele"].ChartType = SeriesChartType.FastPoint;
-            chartMain.Series["DS Tele"].MarkerStyle = MarkerStyle.Circle;
+            chartMain.Series["DS Tele"].ChartType = SeriesChartType.Line;
+            chartMain.Series["DS Tele"].BorderWidth = 5;
             chartMain.Series["DS Tele"].Color = Color.Cyan;
 
             chartMain.Series.Add(new Series("Robot Disabled"));
             chartMain.Series["Robot Disabled"].XValueType = ChartValueType.DateTime;
             chartMain.Series["Robot Disabled"].YAxisType = AxisType.Primary;
-            chartMain.Series["Robot Disabled"].ChartType = SeriesChartType.FastPoint;
-            chartMain.Series["Robot Disabled"].MarkerStyle = MarkerStyle.Circle;
+            chartMain.Series["Robot Disabled"].ChartType = SeriesChartType.Line;
+            chartMain.Series["Robot Disabled"].BorderWidth = 5;
             chartMain.Series["Robot Disabled"].Color = Color.DarkGray;
 
             chartMain.Series.Add(new Series("Robot Auto"));
             chartMain.Series["Robot Auto"].XValueType = ChartValueType.DateTime;
             chartMain.Series["Robot Auto"].YAxisType = AxisType.Primary;
-            chartMain.Series["Robot Auto"].ChartType = SeriesChartType.FastPoint;
-            chartMain.Series["Robot Auto"].MarkerStyle = MarkerStyle.Circle;
+            chartMain.Series["Robot Auto"].ChartType = SeriesChartType.Line;
+            chartMain.Series["Robot Auto"].BorderWidth = 5;
             chartMain.Series["Robot Auto"].Color = Color.Lime;
 
             chartMain.Series.Add(new Series("Robot Tele"));
             chartMain.Series["Robot Tele"].XValueType = ChartValueType.DateTime;
             chartMain.Series["Robot Tele"].YAxisType = AxisType.Primary;
-            chartMain.Series["Robot Tele"].ChartType = SeriesChartType.FastPoint;
-            chartMain.Series["Robot Tele"].MarkerStyle = MarkerStyle.Circle;
+            chartMain.Series["Robot Tele"].ChartType = SeriesChartType.Line;
+            chartMain.Series["Robot Tele"].BorderWidth = 5;
             chartMain.Series["Robot Tele"].Color = Color.Cyan;
 
             chartMain.Series.Add(new Series("Brownout"));
             chartMain.Series["Brownout"].XValueType = ChartValueType.DateTime;
             chartMain.Series["Brownout"].YAxisType = AxisType.Primary;
-            chartMain.Series["Brownout"].ChartType = SeriesChartType.FastPoint;
-            chartMain.Series["Brownout"].MarkerStyle = MarkerStyle.Circle;
+            chartMain.Series["Brownout"].ChartType = SeriesChartType.Line;
+            chartMain.Series["Brownout"].BorderWidth = 5;
             chartMain.Series["Brownout"].Color = Color.OrangeRed;
 
             chartMain.Series.Add(new Series("Watchdog"));
             chartMain.Series["Watchdog"].XValueType = ChartValueType.DateTime;
             chartMain.Series["Watchdog"].YAxisType = AxisType.Primary;
-            chartMain.Series["Watchdog"].ChartType = SeriesChartType.FastPoint;
-            chartMain.Series["Watchdog"].MarkerStyle = MarkerStyle.Circle;
+            chartMain.Series["Watchdog"].ChartType = SeriesChartType.Line;
+            chartMain.Series["Watchdog"].BorderWidth = 5;
             chartMain.Series["Watchdog"].Color = Color.FromArgb(249, 0, 255);
 
             
@@ -195,8 +197,11 @@ namespace Dslog
             {
                 if (!Double.IsNaN(e.NewPosition))
                 {
-                    setCursorLineRed();
-                    probe(e.NewPosition);
+                    
+
+                        setCursorLineRed();
+                        probe(e.NewPosition);
+                    
                     
                 } 
             }
@@ -212,55 +217,66 @@ namespace Dslog
 
         private void probe(double pos)
         {
-            
-            tabPage3.Controls.Clear();
-            //Get x value form probe
-            DateTime xValue = DateTime.FromOADate(pos);
-            //get entry from x value
-            Entry en = log.Entries.ElementAt((int)(xValue.Subtract(log.StartTime).TotalMilliseconds / 20));
-            int labelNum = 0;
-            double totalA = 0;
-            
-            Label timeLabel = new Label();
-            timeLabel.Text = "Time: "+DateTime.FromOADate(chartMain.ChartAreas[0].CursorX.Position).ToString("HH:mm:ss.fff");
-            timeLabel.Visible = true;
-            timeLabel.AutoSize = true;
-            timeLabel.Location = new Point(7, (24 * labelNum++) + 7);
-            tabPage3.Controls.Add(timeLabel);
-
-            for (int seriesNum = 0; seriesNum < chartMain.Series.Count; seriesNum++)
+            if (pos < chartMain.ChartAreas[0].AxisX.ScaleView.ViewMaximum && pos > chartMain.ChartAreas[0].AxisX.ScaleView.ViewMinimum)
             {
-                if (chartMain.Series[seriesNum].Enabled)
+                tabPage3.Controls.Clear();
+                //Get x value form probe
+                DateTime xValue = DateTime.FromOADate(pos);
+                //get entry from x value
+                Entry en;
+                if (log is DSLOGStreamer && (int)(xValue.Subtract(log.StartTime).TotalMilliseconds / 20) > log.Entries.Count)
                 {
-                    Label seriesLabel = new Label();
-                    seriesLabel.Text = varToLabel(chartMain.Series[seriesNum].Name, en);
-                    seriesLabel.Visible = true;
-                    seriesLabel.AutoSize = true;
-                    seriesLabel.Location = new Point(7, (24 * labelNum++) + 7);
-                    tabPage3.Controls.Add(seriesLabel);
-                    //Add pdp series to total current
-                    if (chartMain.Series[seriesNum].Name.StartsWith("PDP"))
+                    en = ((DSLOGStreamer)log).Queue.ElementAt((int)(xValue.Subtract(((DSLOGStreamer)log).Queue[0].Time).TotalMilliseconds / 20));
+                }
+                else
+                {
+                    en = log.Entries.ElementAt((int)(xValue.Subtract(log.StartTime).TotalMilliseconds / 20));
+                }
+
+                int labelNum = 0;
+                double totalA = 0;
+
+                Label timeLabel = new Label();
+                timeLabel.Text = "Time: " + DateTime.FromOADate(chartMain.ChartAreas[0].CursorX.Position).ToString("HH:mm:ss.fff");
+                timeLabel.Visible = true;
+                timeLabel.AutoSize = true;
+                timeLabel.Location = new Point(7, (24 * labelNum++) + 7);
+                tabPage3.Controls.Add(timeLabel);
+
+                for (int seriesNum = 0; seriesNum < chartMain.Series.Count; seriesNum++)
+                {
+                    if (chartMain.Series[seriesNum].Enabled)
                     {
-                        int channel = Int32.Parse(chartMain.Series[seriesNum].Name.Replace("PDP ", ""));
-                        if (channel <= 3 || channel >= 12)
+                        Label seriesLabel = new Label();
+                        seriesLabel.Text = varToLabel(chartMain.Series[seriesNum].Name, en);
+                        seriesLabel.Visible = true;
+                        seriesLabel.AutoSize = true;
+                        seriesLabel.Location = new Point(7, (24 * labelNum++) + 7);
+                        tabPage3.Controls.Add(seriesLabel);
+                        //Add pdp series to total current
+                        if (chartMain.Series[seriesNum].Name.StartsWith("PDP"))
                         {
-                            if (en.getPDPChannel(int.Parse(chartMain.Series[seriesNum].Name.Split(' ')[1])) >= 40) seriesLabel.BackColor = Color.LightCoral;
+                            int channel = Int32.Parse(chartMain.Series[seriesNum].Name.Replace("PDP ", ""));
+                            if (channel <= 3 || channel >= 12)
+                            {
+                                if (en.getPDPChannel(int.Parse(chartMain.Series[seriesNum].Name.Split(' ')[1])) >= 40) seriesLabel.BackColor = Color.LightCoral;
+                            }
+                            else
+                            {
+                                if (en.getPDPChannel(int.Parse(chartMain.Series[seriesNum].Name.Split(' ')[1])) >= 30) seriesLabel.BackColor = Color.LightCoral;
+                            }
+                            totalA += en.getPDPChannel(int.Parse(chartMain.Series[seriesNum].Name.Split(' ')[1]));
                         }
-                        else
-                        {
-                            if (en.getPDPChannel(int.Parse(chartMain.Series[seriesNum].Name.Split(' ')[1])) >= 30) seriesLabel.BackColor = Color.LightCoral;
-                        }
-                        totalA += en.getPDPChannel(int.Parse(chartMain.Series[seriesNum].Name.Split(' ')[1]));
                     }
                 }
-            }
 
-            Label totalAL = new Label();
-            totalAL.Text = "Total Current: " + totalA + "A";
-            totalAL.Visible = true;
-            totalAL.AutoSize = true;
-            totalAL.Location = new Point(7, (24 * labelNum++) + 7);
-            tabPage3.Controls.Add(totalAL);
+                Label totalAL = new Label();
+                totalAL.Text = "Total Current: " + totalA + "A";
+                totalAL.Visible = true;
+                totalAL.AutoSize = true;
+                totalAL.Location = new Point(7, (24 * labelNum++) + 7);
+                tabPage3.Controls.Add(totalAL);
+            }
         }
 
         string varToLabel(String name, Entry en)
@@ -750,7 +766,7 @@ namespace Dslog
                     }
                     lastTop = topIndex;
                 }
-                for (int inx = topIndex; inx < topIndex + listViewDSLOGFolder.Height / 18; inx++)
+                for (int inx = topIndex; inx < (topIndex+5) + listViewDSLOGFolder.Height / 18; inx++)
                 {
                     if (inx < listViewDSLOGFolder.Items.Count)
                     {
@@ -760,6 +776,7 @@ namespace Dslog
                             {
                                 File.OpenRead(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog").Close();
                                 listViewDSLOGFolder.Items[inx].BackColor = SystemColors.Window;
+                                listViewDSLOGFolder.Items[inx].SubItems[2].Text = ("" + ((new FileInfo(listviewFolderPath + "\\" + listViewDSLOGFolder.Items[inx].Text + ".dslog").Length - 19) / 35) / 50);
                             }
                             catch (IOException ex)
                             {
@@ -951,10 +968,45 @@ namespace Dslog
                     chartMain.ChartAreas[0].CursorX.IntervalOffset = log.StartTime.Millisecond % 20;
                     //for lost packets
                     int packetnum = 0;
+                    int voltnum = 0;
+                    //int numConstance = 10;
+                    //for (int i = 0; i < log.Entries.Count / numConstance; i++)
+                    //{
+                    //    double[] ffData = new double[numConstance];
+                    //    for (int w = i * numConstance; w < (i * numConstance) + numConstance; w++)
+                    //    {
+                    //        Entry en = log.Entries.ElementAt(w);
+                    //        ffData[(w - (i * numConstance))] = en.Voltage;
+                    //    }
+                    //    double average = ffData.Average();
+                    //    double sumOfSquaresOfDifferences = ffData.Select(val => (val - average) * (val - average)).Sum();
+                    //    double sd = Math.Sqrt(sumOfSquaresOfDifferences / ffData.Length);
+                    //    Entry enn = log.Entries.ElementAt((i * numConstance)+numConstance/2);
+                    //    chartMain.Series["Voltage"].Points.AddXY(enn.Time.ToOADate(), enn.Voltage);
+                    //    //for (int w = i * numConstance; w < (i * numConstance) + numConstance; w++)
+                    //    //{
+                    //    //    Entry en = log.Entries.ElementAt(w);
+                    //    //    if (w == i * numConstance || w == (i * numConstance) + numConstance - 1)
+                    //    //    {
+                    //    //        chartMain.Series["Voltage"].Points.AddXY(en.Time.ToOADate(), en.Voltage);
+                    //    //    }
+                    //    //    else
+                    //    //    {
+                    //    //        if (Math.Abs(en.Voltage - average) / sd > 2.5)
+                    //    //        {
+                    //    //            chartMain.Series["Voltage"].Points.AddXY(en.Time.ToOADate(), en.Voltage);
+                    //    //        }
 
+                    //    //    }
+
+                    //    //}
+
+                    //}
                     for (int w = 0; w < log.Entries.Count; w++)
                     {
                         Entry en = log.Entries.ElementAt(w);
+
+
                         //Adds points to first and last x values
                         if (w == 0 || w == log.Entries.Count - 1)
                         {
@@ -967,6 +1019,16 @@ namespace Dslog
                             {
                                 chartMain.Series["PDP " + i].Points.AddXY(en.Time.ToOADate(), en.getPDPChannel(i));
                             }
+                            if (en.DSDisabled) chartMain.Series["DS Disabled"].Points.AddXY(en.Time.ToOADate(), 15.9);
+                            if (en.DSAuto) chartMain.Series["DS Auto"].Points.AddXY(en.Time.ToOADate(), 15.9);
+                            if (en.DSTele) chartMain.Series["DS Tele"].Points.AddXY(en.Time.ToOADate(), 15.9);
+
+                            if (en.RobotDisabled) chartMain.Series["Robot Disabled"].Points.AddXY(en.Time.ToOADate(), 16.8);
+                            if (en.RobotAuto) chartMain.Series["Robot Auto"].Points.AddXY(en.Time.ToOADate(), 16.5);
+                            if (en.RobotTele) chartMain.Series["Robot Tele"].Points.AddXY(en.Time.ToOADate(), 16.2);
+
+                            if (en.Brownout) chartMain.Series["Brownout"].Points.AddXY(en.Time.ToOADate(), 15.6);
+                            if (en.Watchdog) chartMain.Series["Watchdog"].Points.AddXY(en.Time.ToOADate(), 15.3);
                         }
                         else
                         {
@@ -988,9 +1050,14 @@ namespace Dslog
                                 }
                                 packetnum++;
                             }
-                            if ((log.Entries.ElementAt(w - 1).Voltage != en.Voltage || log.Entries.ElementAt(w + 1).Voltage != en.Voltage) && en.Voltage < 17)
+                            if ((Math.Abs(log.Entries.ElementAt(w - 1).Voltage - en.Voltage) > .1 || Math.Abs(log.Entries.ElementAt(w + 1).Voltage - en.Voltage) > .1) && en.Voltage < 17 || voltnum > 20)
                             {
                                 chartMain.Series["Voltage"].Points.AddXY(en.Time.ToOADate(), en.Voltage);
+                                voltnum = 0;
+                            }
+                            else
+                            {
+                                voltnum++;
                             }
                             if (log.Entries.ElementAt(w - 1).RoboRioCPU != en.RoboRioCPU || log.Entries.ElementAt(w + 1).RoboRioCPU != en.RoboRioCPU)
                             {
@@ -1007,18 +1074,70 @@ namespace Dslog
                                     chartMain.Series["PDP " + i].Points.AddXY(en.Time.ToOADate(), en.getPDPChannel(i));
                                 }
                             }
+
+                            if (log.Entries.ElementAt(w - 1).DSDisabled != en.DSDisabled || log.Entries.ElementAt(w + 1).DSDisabled != en.DSDisabled)
+                            {
+                                    DataPoint po = new DataPoint(en.Time.ToOADate(), 15.9);
+                                    if (!en.DSDisabled || !log.Entries.ElementAt(w - 1).DSDisabled) po.Color = Color.Transparent;
+                                    chartMain.Series["DS Disabled"].Points.Add(po);
+                                    //chartMain.Series["DS Disabled"].Points.AddXY(en.Time.ToOADate(), 15.9);
+                            }
+                            if (log.Entries.ElementAt(w - 1).DSAuto != en.DSAuto || log.Entries.ElementAt(w + 1).DSAuto != en.DSAuto)
+                            {
+                                DataPoint po = new DataPoint(en.Time.ToOADate(), 15.9);
+                                if (!en.DSAuto || log.Entries.ElementAt(w - 1).DSAuto == false) po.Color = Color.Transparent;
+                                chartMain.Series["DS Auto"].Points.Add(po);
+                            }
+                            if (log.Entries.ElementAt(w - 1).DSTele != en.DSTele || log.Entries.ElementAt(w + 1).DSTele != en.DSTele)
+                            {
+                                DataPoint po = new DataPoint(en.Time.ToOADate(), 15.9);
+                                if (!en.DSTele || log.Entries.ElementAt(w - 1).DSTele == false) po.Color = Color.Transparent;
+                                chartMain.Series["DS Tele"].Points.Add(po);
+                            }
+
+                            if (log.Entries.ElementAt(w - 1).RobotDisabled != en.RobotDisabled || log.Entries.ElementAt(w + 1).RobotDisabled != en.RobotDisabled)
+                            {
+                                DataPoint po = new DataPoint(en.Time.ToOADate(), 16.8);
+                               if (!en.RobotDisabled || !log.Entries.ElementAt(w - 1).RobotDisabled) po.Color =  Color.Transparent;
+                                chartMain.Series["Robot Disabled"].Points.Add(po);
+                                //chartMain.Series["Robot Disabled"].Points.AddXY(en.Time.ToOADate(), 15.9);
+                            }
+                            if (log.Entries.ElementAt(w - 1).RobotAuto != en.RobotAuto || log.Entries.ElementAt(w + 1).RobotAuto != en.RobotAuto)
+                            {
+                                DataPoint po = new DataPoint(en.Time.ToOADate(), 16.5);
+                                if (!en.RobotAuto || log.Entries.ElementAt(w - 1).RobotAuto == false) po.Color = Color.Transparent;
+                                chartMain.Series["Robot Auto"].Points.Add(po);
+                            }
+                            if (log.Entries.ElementAt(w - 1).RobotTele != en.RobotTele || log.Entries.ElementAt(w + 1).RobotTele != en.RobotTele)
+                            {
+                                DataPoint po = new DataPoint(en.Time.ToOADate(), 16.2);
+                                if (!en.RobotTele || log.Entries.ElementAt(w - 1).RobotTele == false) po.Color = Color.Transparent;
+                                chartMain.Series["Robot Tele"].Points.Add(po);
+                            }
+
+                            if (log.Entries.ElementAt(w - 1).Brownout != en.Brownout || log.Entries.ElementAt(w + 1).Brownout != en.Brownout)
+                            {
+                                DataPoint po = new DataPoint(en.Time.ToOADate(), 15.6);
+                                if (!en.Brownout || log.Entries.ElementAt(w - 1).Brownout == false) po.Color = Color.Transparent;
+                                chartMain.Series["Brownout"].Points.Add(po);
+                            }
+                            if (log.Entries.ElementAt(w - 1).Watchdog != en.Watchdog || log.Entries.ElementAt(w + 1).Watchdog != en.Watchdog)
+                            {
+                                DataPoint po = new DataPoint(en.Time.ToOADate(), 15.3);
+                                if (!en.Watchdog || log.Entries.ElementAt(w - 1).Watchdog == false) po.Color = Color.Transparent;
+                                chartMain.Series["Watchdog"].Points.Add(po);
+                            }
                         }
+                        //if (en.DSDisabled) chartMain.Series["DS Disabled"].Points.AddXY(en.Time.ToOADate(), 15.9);
+                        //if (en.DSAuto) chartMain.Series["DS Auto"].Points.AddXY(en.Time.ToOADate(), 15.9);
+                        //if (en.DSTele) chartMain.Series["DS Tele"].Points.AddXY(en.Time.ToOADate(), 15.9);
 
-                        if (en.DSDisabled) chartMain.Series["DS Disabled"].Points.AddXY(en.Time.ToOADate(), 15.9);
-                        if (en.DSAuto) chartMain.Series["DS Auto"].Points.AddXY(en.Time.ToOADate(), 15.9);
-                        if (en.DSTele) chartMain.Series["DS Tele"].Points.AddXY(en.Time.ToOADate(), 15.9);
+                        //if (en.RobotDisabled) chartMain.Series["Robot Disabled"].Points.AddXY(en.Time.ToOADate(), 16.8);
+                        //if (en.RobotAuto) chartMain.Series["Robot Auto"].Points.AddXY(en.Time.ToOADate(), 16.5);
+                        //if (en.RobotTele) chartMain.Series["Robot Tele"].Points.AddXY(en.Time.ToOADate(), 16.2);
 
-                        if (en.RobotDisabled) chartMain.Series["Robot Disabled"].Points.AddXY(en.Time.ToOADate(), 16.8);
-                        if (en.RobotAuto) chartMain.Series["Robot Auto"].Points.AddXY(en.Time.ToOADate(), 16.5);
-                        if (en.RobotTele) chartMain.Series["Robot Tele"].Points.AddXY(en.Time.ToOADate(), 16.2);
-
-                        if (en.Brownout) chartMain.Series["Brownout"].Points.AddXY(en.Time.ToOADate(), 15.6);
-                        if (en.Watchdog) chartMain.Series["Watchdog"].Points.AddXY(en.Time.ToOADate(), 15.3);
+                        //if (en.Brownout) chartMain.Series["Brownout"].Points.AddXY(en.Time.ToOADate(), 15.6);
+                        //if (en.Watchdog) chartMain.Series["Watchdog"].Points.AddXY(en.Time.ToOADate(), 15.3);
                     }
                     Dsevents = null;
                     EventsDict = null;
@@ -1037,6 +1156,7 @@ namespace Dslog
                 {
                     MessageBox.Show("ERROR: dslog version not supported");
                 }
+                
             }
             
         }
@@ -1211,15 +1331,38 @@ namespace Dslog
                     {
                         //(((getTotalSecoundsInView() / 300d) < .002) ? .002 : (getTotalSecoundsInView() / 300d))
                         chartMain.ChartAreas[0].CursorX.SetCursorPosition(DateTime.FromOADate(chartMain.ChartAreas[0].CursorX.Position).AddSeconds(-(((getTotalSecoundsInView() / 300d) < .02) ? .02 : (getTotalSecoundsInView() / 250d))).ToOADate());
+                        if (((int)(DateTime.FromOADate(chartMain.ChartAreas[0].CursorX.Position).Subtract(log.StartTime).TotalMilliseconds / 20)) > 0)
+                        {
+                            if (chartMain.ChartAreas[0].AxisX.ScaleView.ViewMinimum > chartMain.ChartAreas[0].CursorX.Position)
+                            {
+                                chartMain.ChartAreas[0].AxisX.ScaleView.Position = chartMain.ChartAreas[0].AxisX.ScaleView.Position - (chartMain.ChartAreas[0].AxisX.ScaleView.ViewMaximum - chartMain.ChartAreas[0].AxisX.ScaleView.ViewMinimum) / 10d;
+                            }
+                        }
+                        else
+                        {
+                            chartMain.ChartAreas[0].CursorX.Position = chartMain.ChartAreas[0].AxisX.Minimum;
+                        }
                         probe(chartMain.ChartAreas[0].CursorX.Position);
                         setCursorLineRed();
+                        
                         return true;
                     }
                     if (keyData == Keys.Right)
                     {
-                        chartMain.ChartAreas[0].CursorX.SetCursorPosition(DateTime.FromOADate(chartMain.ChartAreas[0].CursorX.Position).AddSeconds((((getTotalSecoundsInView() / 300d) < .02) ? .02 : (getTotalSecoundsInView() / 250d))).ToOADate());
-                        probe(chartMain.ChartAreas[0].CursorX.Position);
-                        setCursorLineRed();
+                            chartMain.ChartAreas[0].CursorX.SetCursorPosition(DateTime.FromOADate(chartMain.ChartAreas[0].CursorX.Position).AddSeconds((((getTotalSecoundsInView() / 300d) < .02) ? .02 : (getTotalSecoundsInView() / 250d))).ToOADate());
+                            if (((int)(DateTime.FromOADate(chartMain.ChartAreas[0].CursorX.Position).Subtract(log.StartTime).TotalMilliseconds / 20)) < log.Entries.Count)
+                            {
+                                if (chartMain.ChartAreas[0].AxisX.ScaleView.ViewMaximum < chartMain.ChartAreas[0].CursorX.Position)
+                                {
+                                    chartMain.ChartAreas[0].AxisX.ScaleView.Position = chartMain.ChartAreas[0].AxisX.ScaleView.Position + (chartMain.ChartAreas[0].AxisX.ScaleView.ViewMaximum - chartMain.ChartAreas[0].AxisX.ScaleView.ViewMinimum) / 10d;
+                                }
+                            }
+                            else
+                            {
+                                chartMain.ChartAreas[0].CursorX.Position = chartMain.ChartAreas[0].AxisX.Maximum;
+                            }
+                            probe(chartMain.ChartAreas[0].CursorX.Position);
+                            setCursorLineRed();
                         return true;
                     }
                 }
@@ -1330,30 +1473,21 @@ namespace Dslog
             }
         }
         int lastNumQueue = 0;
+        private Stopwatch timeoutStop;
         private void timerStream_Tick(object sender, EventArgs e)
         {
             DSLOGStreamer StreamDS = (DSLOGStreamer)log;
-            if (StreamDS.Queue.Count-lastNumQueue >= 2)
+            if (StreamDS.Queue.Count-lastNumQueue >= 3)
             {
+                timeoutStop.Restart();
                 menuStrip1.BackColor = Color.Lime;
-                if (lastNumQueue != 0)
-                {
-                    chartMain.Series["Trip Time"].Points.RemoveAt(chartMain.Series["Trip Time"].Points.Count - 1);
-                    chartMain.Series["Voltage"].Points.RemoveAt(chartMain.Series["Voltage"].Points.Count - 1);
-                    chartMain.Series["Lost Packets"].Points.RemoveAt(chartMain.Series["Lost Packets"].Points.Count - 1);
-                    chartMain.Series["roboRIO CPU"].Points.RemoveAt(chartMain.Series["roboRIO CPU"].Points.Count - 1);
-                    chartMain.Series["CAN"].Points.RemoveAt(chartMain.Series["CAN"].Points.Count - 1);
-                    for (int i = 0; i < 16; i++)
-                    {
-                        chartMain.Series["PDP " + i].Points.RemoveAt(chartMain.Series["PDP " + i].Points.Count-1);
-                    }
-                }
+                
                 int packetnum = 0;
-                for (int w = lastNumQueue; w < StreamDS.Queue.Count; w++)
+                for (int w = lastNumQueue; w < StreamDS.Queue.Count-1; w++)
                 {
                     Entry en = StreamDS.Queue.ElementAt(w);
                     //Adds points to first and last x values
-                    if (w == StreamDS.Queue.Count-1 || w ==0)
+                    if (w == StreamDS.Queue.Count-2 || w ==0)
                     {
                         chartMain.Series["Trip Time"].Points.AddXY(en.Time.ToOADate(), en.TripTime);
                         chartMain.Series["Voltage"].Points.AddXY(en.Time.ToOADate(), en.Voltage);
@@ -1364,6 +1498,16 @@ namespace Dslog
                         {
                             chartMain.Series["PDP " + i].Points.AddXY(en.Time.ToOADate(), en.getPDPChannel(i));
                         }
+                        if (en.DSDisabled) chartMain.Series["DS Disabled"].Points.AddXY(en.Time.ToOADate(), 15.9);
+                        if (en.DSAuto) chartMain.Series["DS Auto"].Points.AddXY(en.Time.ToOADate(), 15.9);
+                        if (en.DSTele) chartMain.Series["DS Tele"].Points.AddXY(en.Time.ToOADate(), 15.9);
+
+                        if (en.RobotDisabled) chartMain.Series["Robot Disabled"].Points.AddXY(en.Time.ToOADate(), 16.8);
+                        if (en.RobotAuto) chartMain.Series["Robot Auto"].Points.AddXY(en.Time.ToOADate(), 16.5);
+                        if (en.RobotTele) chartMain.Series["Robot Tele"].Points.AddXY(en.Time.ToOADate(), 16.2);
+
+                        if (en.Brownout) chartMain.Series["Brownout"].Points.AddXY(en.Time.ToOADate(), 15.6);
+                        if (en.Watchdog) chartMain.Series["Watchdog"].Points.AddXY(en.Time.ToOADate(), 15.3);
                     }
                     else
                     {
@@ -1404,18 +1548,71 @@ namespace Dslog
                                 chartMain.Series["PDP " + i].Points.AddXY(en.Time.ToOADate(), en.getPDPChannel(i));
                             }
                         }
+                        //Fun line stuff
+                        if (StreamDS.Queue.ElementAt(w - 1).DSDisabled != en.DSDisabled || StreamDS.Queue.ElementAt(w + 1).DSDisabled != en.DSDisabled)
+                        {
+                            DataPoint po = new DataPoint(en.Time.ToOADate(), 15.9);
+                            if (!en.DSDisabled || !StreamDS.Queue.ElementAt(w - 1).DSDisabled) po.Color = Color.Transparent;
+                            chartMain.Series["DS Disabled"].Points.Add(po);
+                            //chartMain.Series["DS Disabled"].Points.AddXY(en.Time.ToOADate(), 15.9);
+                        }
+                        if (StreamDS.Queue.ElementAt(w - 1).DSAuto != en.DSAuto || StreamDS.Queue.ElementAt(w + 1).DSAuto != en.DSAuto)
+                        {
+                            DataPoint po = new DataPoint(en.Time.ToOADate(), 15.9);
+                            if (!en.DSAuto || StreamDS.Queue.ElementAt(w - 1).DSAuto == false) po.Color = Color.Transparent;
+                            chartMain.Series["DS Auto"].Points.Add(po);
+                        }
+                        if (StreamDS.Queue.ElementAt(w - 1).DSTele != en.DSTele || StreamDS.Queue.ElementAt(w + 1).DSTele != en.DSTele)
+                        {
+                            DataPoint po = new DataPoint(en.Time.ToOADate(), 15.9);
+                            if (!en.DSTele || StreamDS.Queue.ElementAt(w - 1).DSTele == false) po.Color = Color.Transparent;
+                            chartMain.Series["DS Tele"].Points.Add(po);
+                        }
+
+                        if (StreamDS.Queue.ElementAt(w - 1).RobotDisabled != en.RobotDisabled || StreamDS.Queue.ElementAt(w + 1).RobotDisabled != en.RobotDisabled)
+                        {
+                            DataPoint po = new DataPoint(en.Time.ToOADate(), 16.8);
+                            if (!en.RobotDisabled || !StreamDS.Queue.ElementAt(w - 1).RobotDisabled) po.Color = Color.Transparent;
+                            chartMain.Series["Robot Disabled"].Points.Add(po);
+                            //chartMain.Series["Robot Disabled"].Points.AddXY(en.Time.ToOADate(), 15.9);
+                        }
+                        if (StreamDS.Queue.ElementAt(w - 1).RobotAuto != en.RobotAuto || StreamDS.Queue.ElementAt(w + 1).RobotAuto != en.RobotAuto)
+                        {
+                            DataPoint po = new DataPoint(en.Time.ToOADate(), 16.5);
+                            if (!en.RobotAuto || StreamDS.Queue.ElementAt(w - 1).RobotAuto == false) po.Color = Color.Transparent;
+                            chartMain.Series["Robot Auto"].Points.Add(po);
+                        }
+                        if (StreamDS.Queue.ElementAt(w - 1).RobotTele != en.RobotTele || StreamDS.Queue.ElementAt(w + 1).RobotTele != en.RobotTele)
+                        {
+                            DataPoint po = new DataPoint(en.Time.ToOADate(), 16.2);
+                            if (!en.RobotTele || StreamDS.Queue.ElementAt(w - 1).RobotTele == false) po.Color = Color.Transparent;
+                            chartMain.Series["Robot Tele"].Points.Add(po);
+                        }
+
+                        if (StreamDS.Queue.ElementAt(w - 1).Brownout != en.Brownout || StreamDS.Queue.ElementAt(w + 1).Brownout != en.Brownout)
+                        {
+                            DataPoint po = new DataPoint(en.Time.ToOADate(), 15.6);
+                            if (!en.Brownout || StreamDS.Queue.ElementAt(w - 1).Brownout == false) po.Color = Color.Transparent;
+                            chartMain.Series["Brownout"].Points.Add(po);
+                        }
+                        if (StreamDS.Queue.ElementAt(w - 1).Watchdog != en.Watchdog || StreamDS.Queue.ElementAt(w + 1).Watchdog != en.Watchdog)
+                        {
+                            DataPoint po = new DataPoint(en.Time.ToOADate(), 15.3);
+                            if (!en.Watchdog || StreamDS.Queue.ElementAt(w - 1).Watchdog == false) po.Color = Color.Transparent;
+                            chartMain.Series["Watchdog"].Points.Add(po);
+                        }
                     }
 
-                    if (en.DSDisabled) chartMain.Series["DS Disabled"].Points.AddXY(en.Time.ToOADate(), 15.9);
-                    if (en.DSAuto) chartMain.Series["DS Auto"].Points.AddXY(en.Time.ToOADate(), 15.9);
-                    if (en.DSTele) chartMain.Series["DS Tele"].Points.AddXY(en.Time.ToOADate(), 15.9);
+                    //if (en.DSDisabled) chartMain.Series["DS Disabled"].Points.AddXY(en.Time.ToOADate(), 15.9);
+                    //if (en.DSAuto) chartMain.Series["DS Auto"].Points.AddXY(en.Time.ToOADate(), 15.9);
+                    //if (en.DSTele) chartMain.Series["DS Tele"].Points.AddXY(en.Time.ToOADate(), 15.9);
 
-                    if (en.RobotDisabled) chartMain.Series["Robot Disabled"].Points.AddXY(en.Time.ToOADate(), 16.8);
-                    if (en.RobotAuto) chartMain.Series["Robot Auto"].Points.AddXY(en.Time.ToOADate(), 16.5);
-                    if (en.RobotTele) chartMain.Series["Robot Tele"].Points.AddXY(en.Time.ToOADate(), 16.2);
+                    //if (en.RobotDisabled) chartMain.Series["Robot Disabled"].Points.AddXY(en.Time.ToOADate(), 16.8);
+                    //if (en.RobotAuto) chartMain.Series["Robot Auto"].Points.AddXY(en.Time.ToOADate(), 16.5);
+                    //if (en.RobotTele) chartMain.Series["Robot Tele"].Points.AddXY(en.Time.ToOADate(), 16.2);
 
-                    if (en.Brownout) chartMain.Series["Brownout"].Points.AddXY(en.Time.ToOADate(), 15.6);
-                    if (en.Watchdog) chartMain.Series["Watchdog"].Points.AddXY(en.Time.ToOADate(), 15.3);
+                    //if (en.Brownout) chartMain.Series["Brownout"].Points.AddXY(en.Time.ToOADate(), 15.6);
+                    //if (en.Watchdog) chartMain.Series["Watchdog"].Points.AddXY(en.Time.ToOADate(), 15.3);
                 }
                 menuStrip1.Items[menuStrip1.Items.Count - 1].Text = "Time Scale " + getTotalSecoundsInView() + " Sec";
                 chartMain.ChartAreas[0].AxisX.Maximum = StreamDS.Queue.Last().Time.ToOADate();
@@ -1423,9 +1620,11 @@ namespace Dslog
                 //chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset();
                 //double pos = chartMain.ChartAreas[0].AxisX.ScaleView.Position;
                 if (autoScrollToolStripMenuItem.Checked) chartMain.ChartAreas[0].AxisX.ScaleView.Scroll(StreamDS.Queue.Last().Time.ToOADate());
-                new Thread(menuColorBack).Start();
+                //new Thread(menuColorBack).Start();
                 //chartMain.ChartAreas[0].AxisX.ScaleView.Scroll(pos);
             }
+
+            if (timeoutStop.ElapsedMilliseconds > 1000) menuStrip1.BackColor = SystemColors.Control;
             lastNumQueue = StreamDS.Queue.Count;
             
             //timerMenuColor.Start();
@@ -1447,7 +1646,7 @@ namespace Dslog
 
         private void menuColorBack()
         {
-            Thread.Sleep(200);
+            Thread.Sleep(1000);
             try
             {
                 menuStrip1.Invoke(new MethodInvoker(delegate { menuStrip1.BackColor = SystemColors.Control; }));
