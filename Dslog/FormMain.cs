@@ -198,7 +198,7 @@ namespace Dslog
                 if (!Double.IsNaN(e.NewPosition))
                 {
                     
-
+                        
                         setCursorLineRed();
                         probe(e.NewPosition);
                     
@@ -214,11 +214,12 @@ namespace Dslog
             GraphCorsorLine.Stop();
             GraphCorsorLine.Start();
         }
-
+        double temppos = 0;
         private void probe(double pos)
         {
             if (pos < chartMain.ChartAreas[0].AxisX.ScaleView.ViewMaximum && pos > chartMain.ChartAreas[0].AxisX.ScaleView.ViewMinimum)
             {
+                temppos = pos;
                 tabPage3.Controls.Clear();
                 //Get x value form probe
                 DateTime xValue = DateTime.FromOADate(pos);
@@ -245,7 +246,7 @@ namespace Dslog
 
                 for (int seriesNum = 0; seriesNum < chartMain.Series.Count; seriesNum++)
                 {
-                    if (chartMain.Series[seriesNum].Enabled)
+                    if (chartMain.Series[seriesNum].Enabled && chartMain.Series[seriesNum].Name != "Messages")
                     {
                         Label seriesLabel = new Label();
                         seriesLabel.Text = varToLabel(chartMain.Series[seriesNum].Name, en);
@@ -936,7 +937,8 @@ namespace Dslog
                 }
                 timerStream.Stop();
                 clearGraph();
-                chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+
+                chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset(100);
                 menuStrip1.BackColor = SystemColors.Control;
                 Boolean stream = false;
                 //check if file is open by ds
@@ -969,39 +971,7 @@ namespace Dslog
                     //for lost packets
                     int packetnum = 0;
                     int voltnum = 0;
-                    //int numConstance = 10;
-                    //for (int i = 0; i < log.Entries.Count / numConstance; i++)
-                    //{
-                    //    double[] ffData = new double[numConstance];
-                    //    for (int w = i * numConstance; w < (i * numConstance) + numConstance; w++)
-                    //    {
-                    //        Entry en = log.Entries.ElementAt(w);
-                    //        ffData[(w - (i * numConstance))] = en.Voltage;
-                    //    }
-                    //    double average = ffData.Average();
-                    //    double sumOfSquaresOfDifferences = ffData.Select(val => (val - average) * (val - average)).Sum();
-                    //    double sd = Math.Sqrt(sumOfSquaresOfDifferences / ffData.Length);
-                    //    Entry enn = log.Entries.ElementAt((i * numConstance)+numConstance/2);
-                    //    chartMain.Series["Voltage"].Points.AddXY(enn.Time.ToOADate(), enn.Voltage);
-                    //    //for (int w = i * numConstance; w < (i * numConstance) + numConstance; w++)
-                    //    //{
-                    //    //    Entry en = log.Entries.ElementAt(w);
-                    //    //    if (w == i * numConstance || w == (i * numConstance) + numConstance - 1)
-                    //    //    {
-                    //    //        chartMain.Series["Voltage"].Points.AddXY(en.Time.ToOADate(), en.Voltage);
-                    //    //    }
-                    //    //    else
-                    //    //    {
-                    //    //        if (Math.Abs(en.Voltage - average) / sd > 2.5)
-                    //    //        {
-                    //    //            chartMain.Series["Voltage"].Points.AddXY(en.Time.ToOADate(), en.Voltage);
-                    //    //        }
-
-                    //    //    }
-
-                    //    //}
-
-                    //}
+                    double initVolt = 0;
                     for (int w = 0; w < log.Entries.Count; w++)
                     {
                         Entry en = log.Entries.ElementAt(w);
@@ -1050,7 +1020,8 @@ namespace Dslog
                                 }
                                 packetnum++;
                             }
-                            if ((Math.Abs(log.Entries.ElementAt(w - 1).Voltage - en.Voltage) > .1 || Math.Abs(log.Entries.ElementAt(w + 1).Voltage - en.Voltage) > .1) && en.Voltage < 17 || voltnum > 20)
+                            if (((Math.Abs(log.Entries.ElementAt(w - 1).Voltage - en.Voltage) > .05 || Math.Abs(log.Entries.ElementAt(w + 1).Voltage - en.Voltage) > .05) || voltnum > 5) && en.Voltage < 17)
+                            //if (log.Entries.ElementAt(w - 1).Voltage != en.Voltage || log.Entries.ElementAt(w + 1).Voltage != en.Voltage && en.Voltage < 17)
                             {
                                 chartMain.Series["Voltage"].Points.AddXY(en.Time.ToOADate(), en.Voltage);
                                 voltnum = 0;
@@ -1059,6 +1030,7 @@ namespace Dslog
                             {
                                 voltnum++;
                             }
+
                             if (log.Entries.ElementAt(w - 1).RoboRioCPU != en.RoboRioCPU || log.Entries.ElementAt(w + 1).RoboRioCPU != en.RoboRioCPU)
                             {
                                 chartMain.Series["roboRIO CPU"].Points.AddXY(en.Time.ToOADate(), en.RoboRioCPU * 100);
@@ -1150,7 +1122,10 @@ namespace Dslog
                     lastIndexSelectedEvents = -1;
                     lastNumQueue = 0;
                     EventRichTextBox.Clear();
+                    
+                    //MessageBox.Show(chartMain.Series["Voltage"].Points.Count + "");
                     if (stream) timerStream.Start();
+
                 }
                 else
                 {
@@ -1198,27 +1173,31 @@ namespace Dslog
                     }
                     else if (en.Data.Contains("<Code> 44008 "))
                     {
-                            string[] lostString = en.Data.Split(new string[] { " <radioSeenEvents>  " }, StringSplitOptions.None)[0].Split('>')[2].Split(',');
-                            if (lostString.Length != 0)
+                        int pFrom = en.Data.IndexOf("Warning <Code> 44008 <radioLostEvents>  ") + "Warning <Code> 44008 <radioLostEvents>  ".Length;
+                        int pTo = en.Data.IndexOf("\r<Description>FRC:  Robot radio detection times.");
+                        string processedData = en.Data.Substring(pFrom, pTo - pFrom).Replace("<radioSeenEvents>", "~");
+                        string[] dataInArray = processedData.Split('~');
+                        if (!dataInArray[0].Trim().Equals(""))
+                        {
+                            double[] arrayLost = Array.ConvertAll(dataInArray[0].Trim().Split(','), Double.Parse);
+                            foreach (double d in arrayLost)
                             {
-                                double[] arrayLost = Array.ConvertAll(lostString, Double.Parse);
-                                foreach (double d in arrayLost)
-                                {
-                                    DateTime newTime = en.Time.AddSeconds(-d);
-                                    DataPoint pRL = new DataPoint(newTime.ToOADate(), 14.9);
-                                    pRL.Color = Color.Yellow;
-                                    pRL.MarkerSize = 6;
-                                    pRL.MarkerStyle = MarkerStyle.Square;
-                                    pRL.YValues[0] = 14.9;
-                                    chartMain.Series["Messages"].Points.Add(pRL);
-                                    EventsDict[newTime.ToOADate()] = "Radio Lost";
-                                }
+                                DateTime newTime = en.Time.AddSeconds(-d);
+                                DataPoint pRL = new DataPoint(newTime.ToOADate(), 14.9);
+                                pRL.Color = Color.Yellow;
+                                pRL.MarkerSize = 6;
+                                pRL.MarkerStyle = MarkerStyle.Square;
+                                pRL.YValues[0] = 14.9;
+                                chartMain.Series["Messages"].Points.Add(pRL);
+                                EventsDict[newTime.ToOADate()] = "Radio Lost";
                             }
-                            string[] seenString = en.Data.Split(new string[] { " <radioSeenEvents>  " }, StringSplitOptions.None)[1].Split('<')[0].Split(',');
-                            if (seenString.Length != 0)
+                        }
+                        if (dataInArray.Length > 1)
+                        {
+                            if (!dataInArray[1].Trim().Equals(""))
                             {
-                                double[] arraySeen = Array.ConvertAll(seenString, Double.Parse);
-                                foreach (double d in arraySeen)
+                                double[] arrayLost = Array.ConvertAll(dataInArray[1].Trim().Split('<')[0].Split(','), Double.Parse);
+                                foreach (double d in arrayLost)
                                 {
                                     DateTime newTime = en.Time.AddSeconds(-d);
                                     DataPoint pRL = new DataPoint(newTime.ToOADate(), 14.9);
@@ -1230,7 +1209,8 @@ namespace Dslog
                                     EventsDict[newTime.ToOADate()] = "Radio Seen";
                                 }
                             }
-                        
+                        }
+               
                         item.BackColor = Color.Khaki;
                         po.Color = Color.Khaki;
                         po.YValues[0] = 14.9;
@@ -1657,6 +1637,20 @@ namespace Dslog
             }
         }
 
-
+        private void matchLengthToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (log != null)
+            {
+                for (int w = 0; w < log.Entries.Count; w++)
+                {
+                    if (log.Entries[w].DSAuto)
+                    {
+                        chartMain.ChartAreas[0].AxisX.ScaleView.Zoom(log.Entries[w].Time.AddSeconds(-2).ToOADate(), 156000, DateTimeIntervalType.Milliseconds);
+                        menuStrip1.Items[menuStrip1.Items.Count - 1].Text = "Time Scale " + getTotalSecoundsInView() + " Sec";
+                        break;
+                    }
+                }
+            }
+        }
     }
 }

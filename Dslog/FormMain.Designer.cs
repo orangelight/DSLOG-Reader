@@ -85,6 +85,7 @@
             this.refreshPathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.resetZoomToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.matchLengthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoScrollToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.viewHelpToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -653,6 +654,7 @@
             // viewToolStripMenuItem2
             // 
             this.viewToolStripMenuItem2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.matchLengthToolStripMenuItem,
             this.resetZoomToolStripMenuItem2,
             this.autoScrollToolStripMenuItem});
             this.viewToolStripMenuItem2.Name = "viewToolStripMenuItem2";
@@ -662,9 +664,16 @@
             // resetZoomToolStripMenuItem2
             // 
             this.resetZoomToolStripMenuItem2.Name = "resetZoomToolStripMenuItem2";
-            this.resetZoomToolStripMenuItem2.Size = new System.Drawing.Size(137, 22);
+            this.resetZoomToolStripMenuItem2.Size = new System.Drawing.Size(169, 22);
             this.resetZoomToolStripMenuItem2.Text = "Reset Zoom";
             this.resetZoomToolStripMenuItem2.Click += new System.EventHandler(this.resetZoomToolStripMenuItem_Click);
+            // 
+            // matchLengthToolStripMenuItem
+            // 
+            this.matchLengthToolStripMenuItem.Name = "matchLengthToolStripMenuItem";
+            this.matchLengthToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.matchLengthToolStripMenuItem.Text = "Match Length";
+            this.matchLengthToolStripMenuItem.Click += new System.EventHandler(this.matchLengthToolStripMenuItem_Click);
             // 
             // autoScrollToolStripMenuItem
             // 
@@ -672,8 +681,8 @@
             this.autoScrollToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.autoScrollToolStripMenuItem.Enabled = false;
             this.autoScrollToolStripMenuItem.Name = "autoScrollToolStripMenuItem";
-            this.autoScrollToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
-            this.autoScrollToolStripMenuItem.Text = "AutoScroll";
+            this.autoScrollToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.autoScrollToolStripMenuItem.Text = "Stream AutoScroll";
             this.autoScrollToolStripMenuItem.Click += new System.EventHandler(this.autoScrollToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem2
@@ -912,6 +921,7 @@
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
         private System.Windows.Forms.Timer timerStream;
         private System.Windows.Forms.ToolStripMenuItem autoScrollToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem matchLengthToolStripMenuItem;
     }
 }
 
