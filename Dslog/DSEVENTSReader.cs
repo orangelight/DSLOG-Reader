@@ -20,7 +20,7 @@ namespace DSLOG_Reader
         {
             Time = time;
             Data = s;
-            TimeData = time.ToString("h:mm:ss fff tt");
+            TimeData = time.ToString("h:mm:ss.fff tt");
         }
     }
     class DSEVENTSReader

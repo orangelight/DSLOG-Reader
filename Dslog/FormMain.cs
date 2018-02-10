@@ -37,8 +37,12 @@ namespace Dslog
             menuStrip1.Items.Add(new ToolStripLabel("Time Scale"));
             menuStrip1.Items[menuStrip1.Items.Count - 1].Alignment = ToolStripItemAlignment.Right;
             timeoutStop = new Stopwatch();
+            chartMain.MouseWheel += ChartMain_MouseWheel;
             
         }
+
+       
+
         DSLOGReader log;
         
         Color[] pdpColors = { Color.FromArgb(255, 113, 113), Color.FromArgb(255, 198, 89), Color.FromArgb(152, 255, 136), Color.FromArgb(136, 154, 255), Color.FromArgb(255, 52, 42), Color.FromArgb(255, 176, 42), Color.FromArgb(0, 255, 9), Color.FromArgb(0, 147, 255), Color.FromArgb(180, 8, 0), Color.FromArgb(239, 139,0), Color.FromArgb(46,220,0), Color.FromArgb(57,42,255),Color.FromArgb(180,8,0), Color.FromArgb(200,132, 0), Color.FromArgb(42,159,0), Color.FromArgb(0,47,239) };
@@ -416,7 +420,22 @@ namespace Dslog
         //Set timescale label when view is changed
         private void chartMain_AxisViewChanged(object sender, ViewEventArgs e)
         {
-            if(log != null) menuStrip1.Items[menuStrip1.Items.Count-1].Text =  "Time Scale " + getTotalSecoundsInView() + " Sec";
+            if (chartMain.ChartAreas[0].AxisX.ScaleView.ViewMinimum < chartMain.ChartAreas[0].AxisX.Minimum || chartMain.ChartAreas[0].AxisX.ScaleView.ViewMaximum > chartMain.ChartAreas[0].AxisX.Maximum) chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+            changeLabels();
+        }
+
+        private void changeLabels()
+        {
+            if (log != null) menuStrip1.Items[menuStrip1.Items.Count - 1].Text = "Time Scale " + getTotalSecoundsInView() + " Sec";
+            if (getTotalSecoundsInView() < 5)
+            {
+                chartMain.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss.fff";
+            }
+            else
+            {
+                chartMain.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss";
+
+            }
         }
 
         //gets time scale
@@ -672,6 +691,36 @@ namespace Dslog
         private void resetZoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
             chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset(100);
+        }
+
+        //scroll zoom
+        private void ChartMain_MouseWheel(object sender, MouseEventArgs e)
+        {
+            double curpos = chartMain.ChartAreas[0].AxisX.PixelPositionToValue(e.X);
+            double zoomFactor = 1.25;
+
+            if (e.Delta < 0)//zoom out
+            {
+                double dLeft = (curpos - chartMain.ChartAreas[0].AxisX.ScaleView.ViewMinimum) * zoomFactor, dRight = (chartMain.ChartAreas[0].AxisX.ScaleView.ViewMaximum - curpos) * zoomFactor;
+
+                if (dLeft + dRight >= chartMain.ChartAreas[0].AxisX.Maximum - chartMain.ChartAreas[0].AxisX.Minimum) chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+                else
+                {
+                    //Make sure when you are zooming out against min or max you don't zoom out of the graph
+                    if (curpos + (dRight) > chartMain.ChartAreas[0].AxisX.Maximum) chartMain.ChartAreas[0].AxisX.ScaleView.Zoom(curpos - (dLeft), chartMain.ChartAreas[0].AxisX.Maximum-.000001);
+                    else if(curpos - (dLeft) < chartMain.ChartAreas[0].AxisX.Minimum) chartMain.ChartAreas[0].AxisX.ScaleView.Zoom(chartMain.ChartAreas[0].AxisX.Minimum + .000001, curpos + (dRight));
+                    else chartMain.ChartAreas[0].AxisX.ScaleView.Zoom(curpos - (dLeft), curpos + (dRight));
+                }
+
+            }
+            if (e.Delta > 0) //zoom in
+            {
+                double dLeft = (curpos - chartMain.ChartAreas[0].AxisX.ScaleView.ViewMinimum) / zoomFactor, dRight = (chartMain.ChartAreas[0].AxisX.ScaleView.ViewMaximum - curpos) / zoomFactor;
+                chartMain.ChartAreas[0].AxisX.ScaleView.Zoom(curpos - (dLeft), curpos + (dRight));
+
+            }
+            changeLabels();
+
         }
         #endregion
 
@@ -1115,7 +1164,7 @@ namespace Dslog
                     EventsDict = null;
                     readDSEVENTS(path);
                     chartMain.ChartAreas[0].AxisX.Maximum = log.Entries.Last().Time.ToOADate();
-                    menuStrip1.Items[menuStrip1.Items.Count - 1].Text = "Time Scale " + getTotalSecoundsInView() + " Sec";
+                    changeLabels();
                     setColoumnLabelNumber();
                     tabPage4.Enabled = true;
                     chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset();
@@ -1594,7 +1643,7 @@ namespace Dslog
                     //if (en.Brownout) chartMain.Series["Brownout"].Points.AddXY(en.Time.ToOADate(), 15.6);
                     //if (en.Watchdog) chartMain.Series["Watchdog"].Points.AddXY(en.Time.ToOADate(), 15.3);
                 }
-                menuStrip1.Items[menuStrip1.Items.Count - 1].Text = "Time Scale " + getTotalSecoundsInView() + " Sec";
+                changeLabels();
                 chartMain.ChartAreas[0].AxisX.Maximum = StreamDS.Queue.Last().Time.ToOADate();
                 
                 //chartMain.ChartAreas[0].AxisX.ScaleView.ZoomReset();
@@ -1646,11 +1695,23 @@ namespace Dslog
                     if (log.Entries[w].DSAuto)
                     {
                         chartMain.ChartAreas[0].AxisX.ScaleView.Zoom(log.Entries[w].Time.AddSeconds(-2).ToOADate(), 156000, DateTimeIntervalType.Milliseconds);
-                        menuStrip1.Items[menuStrip1.Items.Count - 1].Text = "Time Scale " + getTotalSecoundsInView() + " Sec";
+                        changeLabels();
                         break;
                     }
                 }
             }
+        }
+
+        private void listViewEvents_Resize(object sender, EventArgs e)
+        {
+            if (listViewEvents.Width > 1095)
+            {
+                listViewEvents.Columns[1].Width = listViewEvents.Width - 97;
+            }else
+            {
+                listViewEvents.Columns[1].Width = 1000;
+            }
+           
         }
     }
 }

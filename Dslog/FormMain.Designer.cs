@@ -84,8 +84,8 @@
             this.fileToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshPathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.resetZoomToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.matchLengthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.resetZoomToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.autoScrollToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.viewHelpToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -175,7 +175,7 @@
             this.chartMain.Location = new System.Drawing.Point(3, 3);
             this.chartMain.Margin = new System.Windows.Forms.Padding(2);
             this.chartMain.Name = "chartMain";
-            this.chartMain.Size = new System.Drawing.Size(734, 498);
+            this.chartMain.Size = new System.Drawing.Size(734, 508);
             this.chartMain.TabIndex = 2;
             this.chartMain.Text = "chart2";
             this.chartMain.CursorPositionChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.chartMain_CursorPositionChanged);
@@ -367,7 +367,7 @@
             this.listViewDSLOGFolder.Location = new System.Drawing.Point(3, 3);
             this.listViewDSLOGFolder.MultiSelect = false;
             this.listViewDSLOGFolder.Name = "listViewDSLOGFolder";
-            this.listViewDSLOGFolder.Size = new System.Drawing.Size(332, 498);
+            this.listViewDSLOGFolder.Size = new System.Drawing.Size(332, 508);
             this.listViewDSLOGFolder.TabIndex = 9;
             this.listViewDSLOGFolder.UseCompatibleStateImageBehavior = false;
             this.listViewDSLOGFolder.View = System.Windows.Forms.View.Details;
@@ -454,7 +454,7 @@
             this.tabControlMain.Location = new System.Drawing.Point(12, 25);
             this.tabControlMain.Name = "tabControlMain";
             this.tabControlMain.SelectedIndex = 0;
-            this.tabControlMain.Size = new System.Drawing.Size(346, 530);
+            this.tabControlMain.Size = new System.Drawing.Size(346, 540);
             this.tabControlMain.TabIndex = 12;
             // 
             // tabPage5
@@ -463,7 +463,7 @@
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(338, 504);
+            this.tabPage5.Size = new System.Drawing.Size(338, 514);
             this.tabPage5.TabIndex = 0;
             this.tabPage5.Text = "Log Files";
             this.tabPage5.UseVisualStyleBackColor = true;
@@ -476,7 +476,7 @@
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(338, 504);
+            this.tabPage6.Size = new System.Drawing.Size(338, 514);
             this.tabPage6.TabIndex = 1;
             this.tabPage6.Text = "Graph";
             this.tabPage6.UseVisualStyleBackColor = true;
@@ -484,7 +484,7 @@
             // GraphRichTextBox
             // 
             this.GraphRichTextBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.GraphRichTextBox.Location = new System.Drawing.Point(3, 391);
+            this.GraphRichTextBox.Location = new System.Drawing.Point(3, 401);
             this.GraphRichTextBox.Name = "GraphRichTextBox";
             this.GraphRichTextBox.ReadOnly = true;
             this.GraphRichTextBox.Size = new System.Drawing.Size(332, 110);
@@ -661,19 +661,19 @@
             this.viewToolStripMenuItem2.Size = new System.Drawing.Size(44, 23);
             this.viewToolStripMenuItem2.Text = "View";
             // 
-            // resetZoomToolStripMenuItem2
-            // 
-            this.resetZoomToolStripMenuItem2.Name = "resetZoomToolStripMenuItem2";
-            this.resetZoomToolStripMenuItem2.Size = new System.Drawing.Size(169, 22);
-            this.resetZoomToolStripMenuItem2.Text = "Reset Zoom";
-            this.resetZoomToolStripMenuItem2.Click += new System.EventHandler(this.resetZoomToolStripMenuItem_Click);
-            // 
             // matchLengthToolStripMenuItem
             // 
             this.matchLengthToolStripMenuItem.Name = "matchLengthToolStripMenuItem";
             this.matchLengthToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.matchLengthToolStripMenuItem.Text = "Match Length";
             this.matchLengthToolStripMenuItem.Click += new System.EventHandler(this.matchLengthToolStripMenuItem_Click);
+            // 
+            // resetZoomToolStripMenuItem2
+            // 
+            this.resetZoomToolStripMenuItem2.Name = "resetZoomToolStripMenuItem2";
+            this.resetZoomToolStripMenuItem2.Size = new System.Drawing.Size(169, 22);
+            this.resetZoomToolStripMenuItem2.Text = "Reset Zoom";
+            this.resetZoomToolStripMenuItem2.Click += new System.EventHandler(this.resetZoomToolStripMenuItem_Click);
             // 
             // autoScrollToolStripMenuItem
             // 
@@ -729,7 +729,7 @@
             this.tabControlChart.Location = new System.Drawing.Point(360, 25);
             this.tabControlChart.Name = "tabControlChart";
             this.tabControlChart.SelectedIndex = 0;
-            this.tabControlChart.Size = new System.Drawing.Size(748, 530);
+            this.tabControlChart.Size = new System.Drawing.Size(748, 540);
             this.tabControlChart.TabIndex = 14;
             // 
             // tabPageChart
@@ -739,7 +739,7 @@
             this.tabPageChart.Location = new System.Drawing.Point(4, 22);
             this.tabPageChart.Name = "tabPageChart";
             this.tabPageChart.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageChart.Size = new System.Drawing.Size(740, 504);
+            this.tabPageChart.Size = new System.Drawing.Size(740, 514);
             this.tabPageChart.TabIndex = 0;
             this.tabPageChart.Text = "Graph";
             // 
@@ -750,7 +750,7 @@
             this.tabPageMessages.Location = new System.Drawing.Point(4, 22);
             this.tabPageMessages.Name = "tabPageMessages";
             this.tabPageMessages.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageMessages.Size = new System.Drawing.Size(740, 504);
+            this.tabPageMessages.Size = new System.Drawing.Size(740, 514);
             this.tabPageMessages.TabIndex = 1;
             this.tabPageMessages.Text = "Events";
             this.tabPageMessages.UseVisualStyleBackColor = true;
@@ -758,7 +758,7 @@
             // EventRichTextBox
             // 
             this.EventRichTextBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.EventRichTextBox.Location = new System.Drawing.Point(3, 396);
+            this.EventRichTextBox.Location = new System.Drawing.Point(3, 406);
             this.EventRichTextBox.Name = "EventRichTextBox";
             this.EventRichTextBox.ReadOnly = true;
             this.EventRichTextBox.Size = new System.Drawing.Size(734, 105);
@@ -781,12 +781,13 @@
             this.listViewEvents.Location = new System.Drawing.Point(3, 8);
             this.listViewEvents.MultiSelect = false;
             this.listViewEvents.Name = "listViewEvents";
-            this.listViewEvents.Size = new System.Drawing.Size(722, 383);
+            this.listViewEvents.Size = new System.Drawing.Size(722, 393);
             this.listViewEvents.TabIndex = 0;
             this.listViewEvents.UseCompatibleStateImageBehavior = false;
             this.listViewEvents.View = System.Windows.Forms.View.Details;
             this.listViewEvents.SelectedIndexChanged += new System.EventHandler(this.listViewEvents_SelectedIndexChanged);
             this.listViewEvents.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listViewEvents_MouseDoubleClick);
+            this.listViewEvents.Resize += new System.EventHandler(this.listViewEvents_Resize);
             // 
             // columnHeaderDSTime
             // 
