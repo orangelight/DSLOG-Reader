@@ -37,3 +37,9 @@ These checkboxs will enable groups of values on the graph.
 
 ### Plots
 These checkboxs will enable individual values on the graph.
+
+## Settings
+All settings are under File>Settings
+
+### Changing PDP Labels
+To change the PDP labels, you must first add a new config by clicking Add. To use a different config simply go to settings and select which config you want to use then save.
