@@ -22,12 +22,14 @@ namespace Dslog
     {
 
         public static string VERSION;
-        
+        public static SettingsContainer settings;
         public FormMain()
         {
             InitializeComponent();
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             VERSION = AssemblyName.GetAssemblyName(assembly.Location).Version.ToString();
+
+            LoadSettings();
             addSeries();
             this.DoubleBuffered = true;
             //Select csv in exportBox
@@ -36,11 +38,27 @@ namespace Dslog
             menuStrip1.Items.Add(new ToolStripLabel("Current File: "));
             menuStrip1.Items.Add(new ToolStripLabel("Time Scale"));
             menuStrip1.Items[menuStrip1.Items.Count - 1].Alignment = ToolStripItemAlignment.Right;
+            
             timeoutStop = new Stopwatch();
             chartMain.MouseWheel += ChartMain_MouseWheel;
             
         }
 
+
+        public static void LoadSettings()
+        {
+            if (File.Exists(@"C:\Users\Public\Documents\dslogsettings.txt"))
+            {
+                settings = new SettingsContainer(File.ReadAllText(@"C:\Users\Public\Documents\dslogsettings.txt"));
+
+            }
+            else
+            {
+                string defaultSettings = "VoltageQuality:9\nRobotModeDots:false\nDSEvents:true\nPDPConfigSelected:0\nPDPConfigs\nDefault:PDP 0,PDP 1,PDP 2,PDP 3,PDP 4,PDP 5,PDP 6,PDP 7,PDP 8,PDP 9,PDP 10,PDP 11,PDP 12,PDP 13,PDP 14,PDP 15\n";
+                File.WriteAllText(@"C:\Users\Public\Documents\dslogsettings.txt", defaultSettings);
+                settings = new SettingsContainer(defaultSettings);
+            }
+        }
        
 
         DSLOGReader log;
@@ -164,6 +182,8 @@ namespace Dslog
 
         void addSeriesPlotCheckBoxs()
         {
+            tabPage2.Controls.Clear();
+            int pdpindex = 0;
             for (int x = 0; x < chartMain.Series.Count; x++)
             {
                 CheckBox cb = new CheckBox();
@@ -172,8 +192,12 @@ namespace Dslog
                 cb.Visible = true;
                 cb.Location = new Point(7, (x * 24) + 7);
                 cb.Checked = chartMain.Series[x].Enabled;
-
+                cb.Size = new Size(130, 24);
                 cb.CheckedChanged += plotCheckBox_CheckedChanged;
+                if(chartMain.Series[x].Name.Contains("PDP"))
+                {
+                    cb.Text = settings.PDPConfigs[settings.PDPConfigSelected].PDPNames[pdpindex++];
+                }
                 tabPage2.Controls.Add(cb);
             }
         }
@@ -186,9 +210,9 @@ namespace Dslog
 
         void SetSeriesEnabledForIndv()
         {
-            foreach (Control con in tabPage2.Controls)
+            for(int i = 0; i< chartMain.Series.Count; i++)
             {
-                chartMain.Series[con.Text].Enabled = ((CheckBox)con).Checked;
+                chartMain.Series[i].Enabled = ((CheckBox)tabPage2.Controls[i]).Checked;
             }
         }
         #endregion
@@ -245,7 +269,7 @@ namespace Dslog
                 timeLabel.Text = "Time: " + DateTime.FromOADate(chartMain.ChartAreas[0].CursorX.Position).ToString("HH:mm:ss.fff");
                 timeLabel.Visible = true;
                 timeLabel.AutoSize = true;
-                timeLabel.Location = new Point(7, (24 * labelNum++) + 7);
+                timeLabel.Location = new Point(4, (24 * labelNum++) + 7);
                 tabPage3.Controls.Add(timeLabel);
 
                 for (int seriesNum = 0; seriesNum < chartMain.Series.Count; seriesNum++)
@@ -256,21 +280,24 @@ namespace Dslog
                         seriesLabel.Text = varToLabel(chartMain.Series[seriesNum].Name, en);
                         seriesLabel.Visible = true;
                         seriesLabel.AutoSize = true;
-                        seriesLabel.Location = new Point(7, (24 * labelNum++) + 7);
+                        seriesLabel.Location = new Point(4, (24 * labelNum++) + 7);
                         tabPage3.Controls.Add(seriesLabel);
                         //Add pdp series to total current
                         if (chartMain.Series[seriesNum].Name.StartsWith("PDP"))
                         {
+                            
                             int channel = Int32.Parse(chartMain.Series[seriesNum].Name.Replace("PDP ", ""));
+                            
+                            seriesLabel.Text = settings.PDPConfigs[settings.PDPConfigSelected].PDPNames[channel]+": " + en.getPDPChannel(channel) + "A";
                             if (channel <= 3 || channel >= 12)
                             {
-                                if (en.getPDPChannel(int.Parse(chartMain.Series[seriesNum].Name.Split(' ')[1])) >= 40) seriesLabel.BackColor = Color.LightCoral;
+                                if (en.getPDPChannel(channel) >= 40) seriesLabel.BackColor = Color.LightCoral;
                             }
                             else
                             {
-                                if (en.getPDPChannel(int.Parse(chartMain.Series[seriesNum].Name.Split(' ')[1])) >= 30) seriesLabel.BackColor = Color.LightCoral;
+                                if (en.getPDPChannel(channel) >= 30) seriesLabel.BackColor = Color.LightCoral;
                             }
-                            totalA += en.getPDPChannel(int.Parse(chartMain.Series[seriesNum].Name.Split(' ')[1]));
+                            totalA += en.getPDPChannel(channel);
                         }
                     }
                 }
@@ -279,7 +306,7 @@ namespace Dslog
                 totalAL.Text = "Total Current: " + totalA + "A";
                 totalAL.Visible = true;
                 totalAL.AutoSize = true;
-                totalAL.Location = new Point(7, (24 * labelNum++) + 7);
+                totalAL.Location = new Point(4, (24 * labelNum++) + 7);
                 tabPage3.Controls.Add(totalAL);
             }
         }
@@ -381,21 +408,25 @@ namespace Dslog
            
             for (int i = 0; i < 4; i++)
             {
-                checkFromString("PDP " + i, checkBox4.Checked);
+                ((CheckBox)tabPage2.Controls[13 + i]).Checked = checkBox4.Checked;
+                //checkFromString("PDP " + i, checkBox4.Checked);
             }
 
             for (int i = 4; i < 8; i++)
             {
-                checkFromString("PDP " + i, checkBox5.Checked);
+                ((CheckBox)tabPage2.Controls[13 + i]).Checked = checkBox5.Checked;
+                //checkFromString("PDP " + i, checkBox5.Checked);
             }
             for (int i = 8; i < 12; i++)
             {
-                checkFromString("PDP " + i, checkBox6.Checked);
+                ((CheckBox)tabPage2.Controls[13 + i]).Checked = checkBox6.Checked;
+                // checkFromString("PDP " + i, checkBox6.Checked);
             }
 
             for (int i = 12; i < 16; i++)
             {
-                checkFromString("PDP " + i, checkBox7.Checked);
+                ((CheckBox)tabPage2.Controls[13 + i]).Checked = checkBox7.Checked;
+                //checkFromString("PDP " + i, checkBox7.Checked);
             }
 
         }
@@ -1069,16 +1100,24 @@ namespace Dslog
                                 }
                                 packetnum++;
                             }
-                            if (((Math.Abs(log.Entries.ElementAt(w - 1).Voltage - en.Voltage) > .05 || Math.Abs(log.Entries.ElementAt(w + 1).Voltage - en.Voltage) > .05) || voltnum > 5) && en.Voltage < 17)
-                            //if (log.Entries.ElementAt(w - 1).Voltage != en.Voltage || log.Entries.ElementAt(w + 1).Voltage != en.Voltage && en.Voltage < 17)
+
+                            if(settings.VoltageQuality==10)
                             {
-                                chartMain.Series["Voltage"].Points.AddXY(en.Time.ToOADate(), en.Voltage);
-                                voltnum = 0;
+                                if (log.Entries.ElementAt(w - 1).Voltage != en.Voltage || log.Entries.ElementAt(w + 1).Voltage != en.Voltage && en.Voltage < 17) chartMain.Series["Voltage"].Points.AddXY(en.Time.ToOADate(), en.Voltage);
                             }
                             else
                             {
-                                voltnum++;
+                                if (((Math.Abs(log.Entries.ElementAt(w - 1).Voltage - en.Voltage) > 1/ (settings.VoltageQuality + 1) || Math.Abs(log.Entries.ElementAt(w + 1).Voltage - en.Voltage) > 1/( settings.VoltageQuality+1)) || voltnum > 50/ (settings.VoltageQuality + 1)) && en.Voltage < 17)
+                                {
+                                    chartMain.Series["Voltage"].Points.AddXY(en.Time.ToOADate(), en.Voltage);
+                                    voltnum = 0;
+                                }
+                                else
+                                {
+                                    voltnum++;
+                                }
                             }
+                            
 
                             if (log.Entries.ElementAt(w - 1).RoboRioCPU != en.RoboRioCPU || log.Entries.ElementAt(w + 1).RoboRioCPU != en.RoboRioCPU)
                             {
@@ -1162,7 +1201,11 @@ namespace Dslog
                     }
                     Dsevents = null;
                     EventsDict = null;
-                    readDSEVENTS(path);
+                    listViewEvents.Items.Clear();
+                    if (settings.DSEvents)
+                    {
+                        readDSEVENTS(path);
+                    }
                     chartMain.ChartAreas[0].AxisX.Maximum = log.Entries.Last().Time.ToOADate();
                     changeLabels();
                     setColoumnLabelNumber();
@@ -1171,6 +1214,7 @@ namespace Dslog
                     lastIndexSelectedEvents = -1;
                     lastNumQueue = 0;
                     EventRichTextBox.Clear();
+
                     
                     //MessageBox.Show(chartMain.Series["Voltage"].Points.Count + "");
                     if (stream) timerStream.Start();
@@ -1191,7 +1235,6 @@ namespace Dslog
         {
             Dsevents = new DSEVENTSReader(path.Replace(".dslog", ".dsevents"));
             EventsDict = new Dictionary<double, string>();
-            listViewEvents.Items.Clear();
             addEventPointsAndListView();
         }
 
@@ -1201,7 +1244,7 @@ namespace Dslog
             {
                 if (en.Data.ToLower().Contains(toolStripTextBox1.Text.ToLower()))
                 {
-                    DataPoint po = new DataPoint(en.Time.ToOADate(), 15.2);
+                    DataPoint po = new DataPoint(en.Time.ToOADate(), 15);
                     po.MarkerSize = 6;
                     ListViewItem item = new ListViewItem();
                     item.Text = en.TimeData;
@@ -1211,14 +1254,14 @@ namespace Dslog
                     {
                         item.BackColor = Color.Red;
                         po.Color = Color.Red;
-                        po.YValues[0] = 14.9;
+                        po.YValues[0] = 14.7;
                     }
                     else if (en.Data.Contains("<Code> 44004 "))
                     {
                         item.BackColor = Color.SandyBrown;
                         po.Color = Color.SandyBrown;
                         po.MarkerStyle = MarkerStyle.Square;
-                        po.YValues[0] = 14.9;
+                        po.YValues[0] = 14.7;
                     }
                     else if (en.Data.Contains("<Code> 44008 "))
                     {
@@ -1232,11 +1275,11 @@ namespace Dslog
                             foreach (double d in arrayLost)
                             {
                                 DateTime newTime = en.Time.AddSeconds(-d);
-                                DataPoint pRL = new DataPoint(newTime.ToOADate(), 14.9);
+                                DataPoint pRL = new DataPoint(newTime.ToOADate(), 14.7);
                                 pRL.Color = Color.Yellow;
                                 pRL.MarkerSize = 6;
                                 pRL.MarkerStyle = MarkerStyle.Square;
-                                pRL.YValues[0] = 14.9;
+                                pRL.YValues[0] = 14.7;
                                 chartMain.Series["Messages"].Points.Add(pRL);
                                 EventsDict[newTime.ToOADate()] = "Radio Lost";
                             }
@@ -1249,11 +1292,11 @@ namespace Dslog
                                 foreach (double d in arrayLost)
                                 {
                                     DateTime newTime = en.Time.AddSeconds(-d);
-                                    DataPoint pRL = new DataPoint(newTime.ToOADate(), 14.9);
+                                    DataPoint pRL = new DataPoint(newTime.ToOADate(), 14.7);
                                     pRL.Color = Color.Lime;
                                     pRL.MarkerSize = 6;
                                     pRL.MarkerStyle = MarkerStyle.Square;
-                                    pRL.YValues[0] = 14.9;
+                                    pRL.YValues[0] = 14.7;
                                     chartMain.Series["Messages"].Points.Add(pRL);
                                     EventsDict[newTime.ToOADate()] = "Radio Seen";
                                 }
@@ -1262,13 +1305,13 @@ namespace Dslog
                
                         item.BackColor = Color.Khaki;
                         po.Color = Color.Khaki;
-                        po.YValues[0] = 14.9;
+                        po.YValues[0] = 14.7;
                     }
                     else if (en.Data.Contains("Warning") || en.Data.Contains("<flags> 2"))
                     {
                         item.BackColor = Color.Khaki;
                         po.Color = Color.Khaki;
-                        po.YValues[0] = 14.9;
+                        po.YValues[0] = 14.7;
                     }
                     item.SubItems.Add("" + en.Time.ToOADate());
                     listViewEvents.Items.Add(item);
@@ -1436,7 +1479,7 @@ namespace Dslog
                     var prop = result.Object as DataPoint;
                     if (prop != null)
                     {
-                        if (prop.YValues[0] == 15.2 || prop.YValues[0] == 14.9)
+                        if (prop.YValues[0] == 15 || prop.YValues[0] == 14.7)
                         {
                             var pointXPixel = result.ChartArea.AxisX.ValueToPixelPosition(prop.XValue);
                             var pointYPixel = result.ChartArea.AxisY.ValueToPixelPosition(prop.YValues[0]);
@@ -1712,6 +1755,24 @@ namespace Dslog
                 listViewEvents.Columns[1].Width = 1000;
             }
            
+        }
+
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<string> names = new List<string>();
+            List<Color> colors = new List<Color>();
+            for (int x = 0; x < chartMain.Series.Count; x++)
+            {
+                if(chartMain.Series[x].Name.Contains("PDP"))
+                {
+                    names.Add(chartMain.Series[x].Name);
+                    colors.Add(chartMain.Series[x].Color);
+                }
+              
+            }
+            FormSettings formSettings = new FormSettings(settings, colors.ToArray());
+            formSettings.ShowDialog();
+            addSeriesPlotCheckBoxs();
         }
     }
 }
