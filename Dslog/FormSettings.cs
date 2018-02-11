@@ -107,7 +107,7 @@ namespace DSLOG_Reader
 
         private void FormSettings_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Dslog.FormMain.LoadSettings();
+            
         }
 
         private void trackBar1_Scroll(object sender, EventArgs e)

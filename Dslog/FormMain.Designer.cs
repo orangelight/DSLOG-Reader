@@ -59,6 +59,8 @@
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.label1 = new System.Windows.Forms.Label();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.GraphRichTextBox = new System.Windows.Forms.RichTextBox();
             this.timerScrollToBottom = new System.Windows.Forms.Timer(this.components);
             this.logUpdate = new System.Windows.Forms.Timer(this.components);
@@ -83,6 +85,7 @@
             this.loadLogToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.fileToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshPathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.matchLengthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetZoomToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -91,7 +94,6 @@
             this.viewHelpToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
-            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControlChart = new System.Windows.Forms.TabControl();
             this.tabPageChart = new System.Windows.Forms.TabPage();
             this.tabPageMessages = new System.Windows.Forms.TabPage();
@@ -190,10 +192,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControlChartCheckBox.Controls.Add(this.tabPage1);
             this.tabControlChartCheckBox.Controls.Add(this.tabPage2);
-            this.tabControlChartCheckBox.Location = new System.Drawing.Point(173, 3);
+            this.tabControlChartCheckBox.Location = new System.Drawing.Point(182, 3);
             this.tabControlChartCheckBox.Name = "tabControlChartCheckBox";
             this.tabControlChartCheckBox.SelectedIndex = 0;
-            this.tabControlChartCheckBox.Size = new System.Drawing.Size(162, 385);
+            this.tabControlChartCheckBox.Size = new System.Drawing.Size(162, 370);
             this.tabControlChartCheckBox.TabIndex = 3;
             // 
             // tabPage1
@@ -209,7 +211,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(154, 359);
+            this.tabPage1.Size = new System.Drawing.Size(154, 344);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Groups";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -303,7 +305,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(154, 359);
+            this.tabPage2.Size = new System.Drawing.Size(154, 344);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Plots";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -368,7 +370,7 @@
             this.listViewDSLOGFolder.Location = new System.Drawing.Point(3, 3);
             this.listViewDSLOGFolder.MultiSelect = false;
             this.listViewDSLOGFolder.Name = "listViewDSLOGFolder";
-            this.listViewDSLOGFolder.Size = new System.Drawing.Size(332, 508);
+            this.listViewDSLOGFolder.Size = new System.Drawing.Size(341, 508);
             this.listViewDSLOGFolder.TabIndex = 9;
             this.listViewDSLOGFolder.UseCompatibleStateImageBehavior = false;
             this.listViewDSLOGFolder.View = System.Windows.Forms.View.Details;
@@ -418,7 +420,7 @@
             this.tabControlProbeExport.Location = new System.Drawing.Point(3, 3);
             this.tabControlProbeExport.Name = "tabControlProbeExport";
             this.tabControlProbeExport.SelectedIndex = 0;
-            this.tabControlProbeExport.Size = new System.Drawing.Size(170, 385);
+            this.tabControlProbeExport.Size = new System.Drawing.Size(177, 392);
             this.tabControlProbeExport.TabIndex = 11;
             // 
             // tabPage3
@@ -427,7 +429,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(162, 359);
+            this.tabPage3.Size = new System.Drawing.Size(169, 366);
             this.tabPage3.TabIndex = 0;
             this.tabPage3.Text = "Probe";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -441,7 +443,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(162, 359);
+            this.tabPage4.Size = new System.Drawing.Size(169, 366);
             this.tabPage4.TabIndex = 1;
             this.tabPage4.Text = "Export";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -452,10 +454,10 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.tabControlMain.Controls.Add(this.tabPage5);
             this.tabControlMain.Controls.Add(this.tabPage6);
-            this.tabControlMain.Location = new System.Drawing.Point(12, 25);
+            this.tabControlMain.Location = new System.Drawing.Point(3, 25);
             this.tabControlMain.Name = "tabControlMain";
             this.tabControlMain.SelectedIndex = 0;
-            this.tabControlMain.Size = new System.Drawing.Size(346, 540);
+            this.tabControlMain.Size = new System.Drawing.Size(355, 540);
             this.tabControlMain.TabIndex = 12;
             // 
             // tabPage5
@@ -464,23 +466,47 @@
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(338, 514);
+            this.tabPage5.Size = new System.Drawing.Size(347, 514);
             this.tabPage5.TabIndex = 0;
             this.tabPage5.Text = "Log Files";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
             // tabPage6
             // 
+            this.tabPage6.Controls.Add(this.label1);
+            this.tabPage6.Controls.Add(this.comboBox1);
             this.tabPage6.Controls.Add(this.GraphRichTextBox);
             this.tabPage6.Controls.Add(this.tabControlProbeExport);
             this.tabPage6.Controls.Add(this.tabControlChartCheckBox);
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(338, 514);
+            this.tabPage6.Size = new System.Drawing.Size(347, 514);
             this.tabPage6.TabIndex = 1;
             this.tabPage6.Text = "Graph";
             this.tabPage6.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(179, 378);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(48, 12);
+            this.label1.TabIndex = 14;
+            this.label1.Text = "PDP Labels";
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(229, 374);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(115, 21);
+            this.comboBox1.TabIndex = 13;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // GraphRichTextBox
             // 
@@ -488,7 +514,7 @@
             this.GraphRichTextBox.Location = new System.Drawing.Point(3, 401);
             this.GraphRichTextBox.Name = "GraphRichTextBox";
             this.GraphRichTextBox.ReadOnly = true;
-            this.GraphRichTextBox.Size = new System.Drawing.Size(332, 110);
+            this.GraphRichTextBox.Size = new System.Drawing.Size(341, 110);
             this.GraphRichTextBox.TabIndex = 12;
             this.GraphRichTextBox.Text = "";
             // 
@@ -613,7 +639,6 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem2,
             this.viewToolStripMenuItem2,
-            this.settingsToolStripMenuItem,
             this.helpToolStripMenuItem2,
             this.toolStripTextBox1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -627,7 +652,8 @@
             this.fileToolStripMenuItem2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadLogToolStripMenuItem1,
             this.fileToolStripMenuItem3,
-            this.refreshPathToolStripMenuItem});
+            this.refreshPathToolStripMenuItem,
+            this.settingsToolStripMenuItem1});
             this.fileToolStripMenuItem2.Name = "fileToolStripMenuItem2";
             this.fileToolStripMenuItem2.Size = new System.Drawing.Size(37, 23);
             this.fileToolStripMenuItem2.Text = "File";
@@ -652,6 +678,13 @@
             this.refreshPathToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.refreshPathToolStripMenuItem.Text = "Refresh Path";
             this.refreshPathToolStripMenuItem.Click += new System.EventHandler(this.refreshPathToolStripMenuItem_Click);
+            // 
+            // settingsToolStripMenuItem1
+            // 
+            this.settingsToolStripMenuItem1.Name = "settingsToolStripMenuItem1";
+            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(147, 22);
+            this.settingsToolStripMenuItem1.Text = "Settings";
+            this.settingsToolStripMenuItem1.Click += new System.EventHandler(this.settingsToolStripMenuItem1_Click);
             // 
             // viewToolStripMenuItem2
             // 
@@ -720,13 +753,6 @@
             this.toolStripTextBox1.Name = "toolStripTextBox1";
             this.toolStripTextBox1.Size = new System.Drawing.Size(250, 23);
             this.toolStripTextBox1.TextChanged += new System.EventHandler(this.toolStripTextBox1_TextChanged);
-            // 
-            // settingsToolStripMenuItem
-            // 
-            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 23);
-            this.settingsToolStripMenuItem.Text = "Settings";
-            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
             // tabControlChart
             // 
@@ -850,6 +876,7 @@
             this.tabControlMain.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
             this.tabPage6.ResumeLayout(false);
+            this.tabPage6.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.tabControlChart.ResumeLayout(false);
@@ -932,7 +959,9 @@
         private System.Windows.Forms.Timer timerStream;
         private System.Windows.Forms.ToolStripMenuItem autoScrollToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem matchLengthToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem1;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Label label1;
     }
 }
 

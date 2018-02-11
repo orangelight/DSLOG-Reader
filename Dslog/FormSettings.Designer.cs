@@ -142,7 +142,7 @@
             this.groupBox4.Size = new System.Drawing.Size(200, 318);
             this.groupBox4.TabIndex = 8;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "PDP Names";
+            this.groupBox4.Text = "PDP Labels";
             // 
             // buttonAdd
             // 
@@ -167,6 +167,7 @@
             // 
             // label6
             // 
+            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(6, 294);
             this.label6.Name = "label6";
@@ -178,6 +179,7 @@
             // 
             this.textBox1.Enabled = false;
             this.textBox1.Location = new System.Drawing.Point(80, 291);
+            this.textBox1.MaxLength = 18;
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(114, 20);
             this.textBox1.TabIndex = 13;

@@ -91,8 +91,8 @@ namespace Dslog
         {
             var epoch = new DateTime(1904, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             epoch = epoch.AddSeconds(unixTime);
-            epoch = epoch.AddHours(-4);
-            
+            epoch = TimeZoneInfo.ConvertTimeFromUtc(epoch, TimeZoneInfo.Local);
+
             return epoch.AddSeconds(((double)ummm / UInt64.MaxValue));
         }
 

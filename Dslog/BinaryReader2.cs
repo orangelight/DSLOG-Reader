@@ -32,7 +32,7 @@ namespace Dslog
             return BitConverter.ToInt64(a64, 0);
         }
 
-        public override UInt64 ReadUInt64()
+        public override UInt64 ReadUInt64() 
         {
             a64 = base.ReadBytes(8);
             Array.Reverse(a64);
@@ -51,8 +51,5 @@ namespace Dslog
             Array.Reverse(a16);
             return BitConverter.ToUInt16(a16, 0);
         }
-
-        
-
     }
 }
