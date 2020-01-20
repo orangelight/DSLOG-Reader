@@ -1,5 +1,4 @@
-﻿using DSLOG_Reader_Library;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,8 +15,8 @@ namespace DSLOG_Reader_2
         public MainForm()
         {
             InitializeComponent();
-            DSLOGReader reader = new DSLOGReader(@"C:\Users\Public\Documents\FRC\Log Files\2019_07_13 11_10_04 Sat.dslog");
-            reader.Read();
+            fileListView.SetPath(@"C:\Users\Public\Documents\FRC\Log Files");
+            fileListView.LoadFiles();
         }
     }
 }

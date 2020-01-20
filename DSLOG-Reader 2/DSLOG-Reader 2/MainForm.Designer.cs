@@ -28,19 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            this.fileListView = new DSLOG_Reader_2.FileListView();
             this.SuspendLayout();
+            // 
+            // fileListView
+            // 
+            this.fileListView.Location = new System.Drawing.Point(12, 12);
+            this.fileListView.MinimumSize = new System.Drawing.Size(335, 540);
+            this.fileListView.Name = "fileListView";
+            this.fileListView.Size = new System.Drawing.Size(335, 540);
+            this.fileListView.TabIndex = 0;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 558);
+            this.Controls.Add(this.fileListView);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
-            this.Text = "DSLOG Reader 2";
+            this.Text = "MainForm";
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private FileListView fileListView;
     }
 }
