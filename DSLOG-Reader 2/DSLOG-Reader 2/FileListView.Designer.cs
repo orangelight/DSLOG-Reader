@@ -30,13 +30,13 @@
         {
             this.components = new System.ComponentModel.Container();
             this.listView = new System.Windows.Forms.ListView();
-            this.filterSelectorCombo = new System.Windows.Forms.ComboBox();
+            this.columnFileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnSeconds = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnMatchNum = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnTimeAgo = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnEventName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnFileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.filterSelectorCombo = new System.Windows.Forms.ComboBox();
             this.timerScrollToBottom = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
@@ -64,6 +64,41 @@
             this.listView.UseCompatibleStateImageBehavior = false;
             this.listView.View = System.Windows.Forms.View.Details;
             // 
+            // columnFileName
+            // 
+            this.columnFileName.DisplayIndex = 5;
+            this.columnFileName.Text = "File Name";
+            this.columnFileName.Width = 170;
+            // 
+            // columnTime
+            // 
+            this.columnTime.DisplayIndex = 0;
+            this.columnTime.Text = "Time";
+            this.columnTime.Width = 123;
+            // 
+            // columnSeconds
+            // 
+            this.columnSeconds.DisplayIndex = 1;
+            this.columnSeconds.Text = "Seconds";
+            this.columnSeconds.Width = 55;
+            // 
+            // columnMatchNum
+            // 
+            this.columnMatchNum.DisplayIndex = 2;
+            this.columnMatchNum.Text = "Match #";
+            this.columnMatchNum.Width = 55;
+            // 
+            // columnTimeAgo
+            // 
+            this.columnTimeAgo.DisplayIndex = 3;
+            this.columnTimeAgo.Text = "Time Ago";
+            this.columnTimeAgo.Width = 100;
+            // 
+            // columnEventName
+            // 
+            this.columnEventName.DisplayIndex = 4;
+            this.columnEventName.Text = "Event";
+            // 
             // filterSelectorCombo
             // 
             this.filterSelectorCombo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -73,35 +108,6 @@
             this.filterSelectorCombo.Name = "filterSelectorCombo";
             this.filterSelectorCombo.Size = new System.Drawing.Size(121, 21);
             this.filterSelectorCombo.TabIndex = 1;
-            // 
-            // columnTime
-            // 
-            this.columnTime.Text = "Time";
-            this.columnTime.Width = 123;
-            // 
-            // columnSeconds
-            // 
-            this.columnSeconds.Text = "Seconds";
-            this.columnSeconds.Width = 55;
-            // 
-            // columnMatchNum
-            // 
-            this.columnMatchNum.Text = "Match #";
-            this.columnMatchNum.Width = 55;
-            // 
-            // columnTimeAgo
-            // 
-            this.columnTimeAgo.Text = "Time Ago";
-            this.columnTimeAgo.Width = 100;
-            // 
-            // columnEventName
-            // 
-            this.columnEventName.Text = "Event";
-            // 
-            // columnFileName
-            // 
-            this.columnFileName.Text = "File Name";
-            this.columnFileName.Width = 170;
             // 
             // timerScrollToBottom
             // 
