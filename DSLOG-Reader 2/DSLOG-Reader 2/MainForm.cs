@@ -17,6 +17,7 @@ namespace DSLOG_Reader_2
             InitializeComponent();
             fileListView.SetPath(@"C:\Users\Public\Documents\FRC\Log Files");
             fileListView.LoadFiles();
+            seriesView.LoadSeries();
         }
     }
 }

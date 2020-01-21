@@ -29,8 +29,16 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            this.seriesView = new DSLOG_Reader_2.SeriesView();
             this.fileListView = new DSLOG_Reader_2.FileListView();
             this.SuspendLayout();
+            // 
+            // seriesView
+            // 
+            this.seriesView.Location = new System.Drawing.Point(353, 12);
+            this.seriesView.Name = "seriesView";
+            this.seriesView.Size = new System.Drawing.Size(150, 494);
+            this.seriesView.TabIndex = 1;
             // 
             // fileListView
             // 
@@ -45,6 +53,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 558);
+            this.Controls.Add(this.seriesView);
             this.Controls.Add(this.fileListView);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
@@ -56,5 +65,6 @@
         #endregion
 
         private FileListView fileListView;
+        private SeriesView seriesView;
     }
 }

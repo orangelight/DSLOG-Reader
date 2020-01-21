@@ -98,7 +98,18 @@ namespace DSLOG_Reader_2
         private void OnFileChanged(object sender, FileSystemEventArgs e)
         {
             var entry = new DSLOGFileEntry(e.Name.Replace(".dslog", ""), Path);
-            listView.Invoke(new MethodInvoker(delegate { listView.Items.Add(entry.ToListViewItem()); }));
+            
+            listView.Invoke(new MethodInvoker(delegate 
+            {
+                DSLOGFiles.Add(entry);
+                string selectedEvent = filterSelectorCombo.Items[filterSelectorCombo.SelectedIndex].ToString();
+
+                if (selectedEvent == "" || entry.EventName == selectedEvent.Substring(0, selectedEvent.Length - 5) && entry.StartTime.ToString("yyyy") == selectedEvent.GetLast(4))
+                {
+                    listView.Items.Add(entry.ToListViewItem());
+                }
+                
+            }));
         }
 
         private void timerScrollToBottom_Tick(object sender, EventArgs e)
