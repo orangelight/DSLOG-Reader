@@ -108,9 +108,11 @@
             this.filterSelectorCombo.Name = "filterSelectorCombo";
             this.filterSelectorCombo.Size = new System.Drawing.Size(121, 21);
             this.filterSelectorCombo.TabIndex = 1;
+            this.filterSelectorCombo.SelectedIndexChanged += new System.EventHandler(this.filterSelectorCombo_SelectedIndexChanged);
             // 
             // timerScrollToBottom
             // 
+            this.timerScrollToBottom.Interval = 10;
             this.timerScrollToBottom.Tick += new System.EventHandler(this.timerScrollToBottom_Tick);
             // 
             // FileListView

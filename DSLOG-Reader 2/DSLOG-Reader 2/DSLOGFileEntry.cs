@@ -30,7 +30,7 @@ namespace DSLOG_Reader_2
         public bool Valid { get; private set; }
         public FMSMatchType MatchType { get; private set; }
         public int FMSMatchNum { get; private set; }
-        public string EventName {  get; private set; }
+        public string EventName {  get; set; }
         public DSLOGFileEntry(string fileName, string dir)
         {
             Name = fileName;
@@ -94,6 +94,8 @@ namespace DSLOG_Reader_2
                     {
                         IsFMSMatch = true;
                     }
+
+
                     if (txtF.Contains("FMS Connected:   Qualification"))
                     {
                         MatchType = FMSMatchType.Qualification;
@@ -122,7 +124,7 @@ namespace DSLOG_Reader_2
                         {
                             if (ss.Contains("FMS Event Name: "))
                             {
-                                EventName = ss.Replace("FMS Event Name: ", "");
+                                EventName = ss.Replace("FMS Event Name: ", "").Trim();
                                 break;
                             }
                         }
