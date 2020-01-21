@@ -6,23 +6,20 @@ using System.Linq;
 
 namespace DSLOG_Reader_Library
 {
-    public class DSLOGReader
+    public class DSLOGReader : Reader
     {
         public const int EntryDistanceMs = 20;
 
-        protected BigEndianBinaryReader reader;
+       
         public readonly List<DSLOGEntry> Entries;
-        public DateTime StartTime;
-        public readonly string Path;
         private int EntryNum;
-        public DSLOGReader(string path)
+        public DSLOGReader(string path) : base(path)
         {
-            Path = path;
             Entries = new List<DSLOGEntry>();
             EntryNum = 0;
         }
 
-        public void Read()
+        public override void Read()
         {
             if (ReadFile())
             {
@@ -31,26 +28,7 @@ namespace DSLOG_Reader_Library
             
         }
 
-        protected bool ReadFile()
-        {
-            if (reader != null)
-            {
-                return false;//Throw something
-            }
-            if (!File.Exists(Path))
-            {
-                return false;//Throw something
-            }
-            reader = new BigEndianBinaryReader(File.Open(Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
-            if (reader == null) return false;//Throw something
-            int version = reader.ReadInt32();
-            if (version != 3) return false;
-            StartTime = Util.FromLVTime(reader.ReadInt64(), reader.ReadUInt64());
-            ReadEntries();
-            return true;
-        }
-
-        protected void ReadEntries()
+        protected override void ReadEntries(bool fms = false)
         {
             while (reader.BaseStream.Position != reader.BaseStream.Length)
             {
@@ -61,15 +39,6 @@ namespace DSLOG_Reader_Library
         protected DSLOGEntry ReadEntry()
         {
             return new DSLOGEntry(TripTimeToDouble(reader.ReadByte()), PacketLossToDouble(reader.ReadSByte()), VoltageToDouble(reader.ReadUInt16()), RoboRioCPUToDouble(reader.ReadByte()), StatusFlagsToBooleanArray(reader.ReadByte()), CANUtilToDouble(reader.ReadByte()), WifidBToDouble(reader.ReadByte()), BandwidthToDouble(reader.ReadUInt16()), reader.ReadByte(), PDPValuesToArrayList(reader.ReadBytes(21)), reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), StartTime.AddMilliseconds(EntryDistanceMs * EntryNum++));
-        }
-
-        protected DateTime FromLVTime(long unixTime, UInt64 ummm)
-        {
-            var epoch = new DateTime(1904, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            epoch = epoch.AddSeconds(unixTime);
-            epoch = TimeZoneInfo.ConvertTimeFromUtc(epoch, TimeZoneInfo.Local);
-
-            return epoch.AddSeconds(((double)ummm / UInt64.MaxValue));
         }
 
         //Import methods

@@ -16,6 +16,7 @@ namespace DSLOG_Reader_Library
 
         public void Stream()
         {
+            Queue = new ConcurrentQueue<DSLOGEntry>();
             if (ReadFile())
             {
                 StreamingThread = new Thread(StreamEntries);

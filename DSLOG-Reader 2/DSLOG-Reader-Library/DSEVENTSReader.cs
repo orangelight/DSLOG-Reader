@@ -5,22 +5,18 @@ using System.Text;
 
 namespace DSLOG_Reader_Library
 {
-    public class DSEVENTSReader
+    public class DSEVENTSReader : Reader
     {
-        protected BigEndianBinaryReader reader;
         public readonly List<DSEVENTSEntry> Entries;
-        public DateTime StartTime;
-        public readonly string Path;
-        private Int32 Version = -1;
 
 
-        public DSEVENTSReader(string path)
+
+        public DSEVENTSReader(string path) : base(path)
         {
-            Path = path;
             Entries = new List<DSEVENTSEntry>();
         }
 
-        public void Read()
+        public override void Read()
         {
             if (ReadFile())
             {
@@ -36,26 +32,7 @@ namespace DSLOG_Reader_Library
             }
         }
 
-        protected bool ReadFile(bool fms = false)
-        {
-            if (reader != null)
-            {
-                return false;//Throw something
-            }
-            if (!File.Exists(Path))
-            {
-                return false;//Throw something
-            }
-            reader = new BigEndianBinaryReader(File.Open(Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
-            if (reader == null) return false;//Throw something
-            Version = reader.ReadInt32();
-            if (Version != 3) return false;
-            StartTime = Util.FromLVTime(reader.ReadInt64(), reader.ReadUInt64());
-            ReadEntries(fms);
-            return true;
-        }
-
-        protected void ReadEntries(bool fms = false)
+        protected override void ReadEntries(bool fms = false)
         {
             bool isFMSMatch = false;
             while (reader.BaseStream.Position != reader.BaseStream.Length)
@@ -96,12 +73,5 @@ namespace DSLOG_Reader_Library
             string s = System.Text.Encoding.ASCII.GetString(reader.ReadBytes(l));
             return new DSEVENTSEntry(time, s);
         }
-
-        public int GetVersion()
-        {
-            return Version;
-        }
-
-
     }
 }

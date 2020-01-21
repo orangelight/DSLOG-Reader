@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DSLOGFileEntry.cs" />
     <Compile Include="FileListView.cs">
       <SubType>UserControl</SubType>
     </Compile>
