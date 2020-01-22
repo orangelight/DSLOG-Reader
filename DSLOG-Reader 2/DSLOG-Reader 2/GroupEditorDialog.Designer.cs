@@ -36,6 +36,10 @@
             this.label1 = new System.Windows.Forms.Label();
             this.buttonColor = new System.Windows.Forms.Button();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.buttonAddGroup = new System.Windows.Forms.Button();
+            this.buttonRemoveGroup = new System.Windows.Forms.Button();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // treeViewPDP
@@ -43,17 +47,19 @@
             this.treeViewPDP.AllowDrop = true;
             this.treeViewPDP.HideSelection = false;
             this.treeViewPDP.LabelEdit = true;
-            this.treeViewPDP.Location = new System.Drawing.Point(192, 6);
+            this.treeViewPDP.Location = new System.Drawing.Point(184, 6);
             this.treeViewPDP.Name = "treeViewPDP";
             this.treeViewPDP.ShowPlusMinus = false;
             this.treeViewPDP.ShowRootLines = false;
-            this.treeViewPDP.Size = new System.Drawing.Size(193, 365);
+            this.treeViewPDP.Size = new System.Drawing.Size(193, 347);
             this.treeViewPDP.TabIndex = 0;
             this.treeViewPDP.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.treeViewPDP_ItemDrag);
+            this.treeViewPDP.NodeMouseHover += new System.Windows.Forms.TreeNodeMouseHoverEventHandler(this.treeViewPDP_NodeMouseHover);
             this.treeViewPDP.BeforeSelect += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeViewPDP_BeforeSelect);
             this.treeViewPDP.DragDrop += new System.Windows.Forms.DragEventHandler(this.treeViewPDP_DragDrop);
             this.treeViewPDP.DragEnter += new System.Windows.Forms.DragEventHandler(this.treeViewPDP_DragEnter);
             this.treeViewPDP.DragOver += new System.Windows.Forms.DragEventHandler(this.treeViewPDP_DragOver);
+            this.treeViewPDP.MouseMove += new System.Windows.Forms.MouseEventHandler(this.treeViewPDP_MouseMove);
             // 
             // comboBoxProfiles
             // 
@@ -105,7 +111,7 @@
             // buttonColor
             // 
             this.buttonColor.Enabled = false;
-            this.buttonColor.Location = new System.Drawing.Point(6, 149);
+            this.buttonColor.Location = new System.Drawing.Point(6, 325);
             this.buttonColor.Name = "buttonColor";
             this.buttonColor.Size = new System.Drawing.Size(98, 23);
             this.buttonColor.TabIndex = 6;
@@ -113,11 +119,55 @@
             this.buttonColor.UseVisualStyleBackColor = true;
             this.buttonColor.Click += new System.EventHandler(this.buttonColor_Click);
             // 
+            // buttonAddGroup
+            // 
+            this.buttonAddGroup.Location = new System.Drawing.Point(2, 139);
+            this.buttonAddGroup.Name = "buttonAddGroup";
+            this.buttonAddGroup.Size = new System.Drawing.Size(74, 23);
+            this.buttonAddGroup.TabIndex = 8;
+            this.buttonAddGroup.Text = "Add Group";
+            this.buttonAddGroup.UseVisualStyleBackColor = true;
+            this.buttonAddGroup.Click += new System.EventHandler(this.buttonAddGroup_Click);
+            // 
+            // buttonRemoveGroup
+            // 
+            this.buttonRemoveGroup.Location = new System.Drawing.Point(82, 139);
+            this.buttonRemoveGroup.Name = "buttonRemoveGroup";
+            this.buttonRemoveGroup.Size = new System.Drawing.Size(95, 23);
+            this.buttonRemoveGroup.TabIndex = 9;
+            this.buttonRemoveGroup.Text = "Remove Group";
+            this.buttonRemoveGroup.UseVisualStyleBackColor = true;
+            this.buttonRemoveGroup.Click += new System.EventHandler(this.buttonRemoveGroup_Click);
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(2, 168);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(94, 17);
+            this.checkBox1.TabIndex = 10;
+            this.checkBox1.Text = "Total In Group";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(2, 191);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(95, 17);
+            this.checkBox2.TabIndex = 11;
+            this.checkBox2.Text = "Delta In Group";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            // 
             // GroupEditorDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(397, 389);
+            this.ClientSize = new System.Drawing.Size(386, 360);
+            this.Controls.Add(this.checkBox2);
+            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.buttonRemoveGroup);
+            this.Controls.Add(this.buttonAddGroup);
             this.Controls.Add(this.buttonColor);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBoxName);
@@ -144,5 +194,9 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button buttonColor;
         private System.Windows.Forms.ColorDialog colorDialog1;
+        private System.Windows.Forms.Button buttonAddGroup;
+        private System.Windows.Forms.Button buttonRemoveGroup;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox checkBox2;
     }
 }

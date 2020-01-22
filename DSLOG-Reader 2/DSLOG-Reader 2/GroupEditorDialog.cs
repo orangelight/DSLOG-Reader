@@ -35,12 +35,15 @@ namespace DSLOG_Reader_2
                     textBoxName.Enabled = false;
                     buttonRemoveProfile.Enabled = false;
                     treeViewPDP.LabelEdit = false;
+                    buttonAddGroup.Enabled = false;
+                    buttonRemoveGroup.Enabled = false;
                 }
                 else
                 {
                     textBoxName.Enabled = true;
                     buttonRemoveProfile.Enabled = true;
                     treeViewPDP.LabelEdit = true;
+                    buttonAddGroup.Enabled = true;
                 }
                 treeViewPDP.Nodes.Clear();
                 treeViewPDP.Nodes.AddRange(Profiles[comboBoxProfiles.SelectedIndex].Groups.ToTreeNodes().ToArray());
@@ -88,11 +91,19 @@ namespace DSLOG_Reader_2
                 {
                     buttonColor.Enabled = true;
                     buttonColor.BackColor = e.Node.BackColor;
-
+                    buttonRemoveGroup.Enabled = false;
                 }
                 else
                 {
                     buttonColor.Enabled = false;
+                    if (treeViewPDP.Nodes.Count > 1 && e.Node.Name.StartsWith("group"))
+                    {
+                        buttonRemoveGroup.Enabled = true;
+                    }
+                    else
+                    {
+                        buttonRemoveGroup.Enabled = false;
+                    }
                 }
             }
         }
@@ -194,6 +205,79 @@ namespace DSLOG_Reader_2
                 buttonColor.BackColor = colorDialog1.Color;
                 treeViewPDP.SelectedNode.BackColor = colorDialog1.Color;
             }
+        }
+
+        private void treeViewPDP_NodeMouseHover(object sender, TreeNodeMouseHoverEventArgs e)
+        {
+            //if (e.Node.Parent == null || e.Node.Name == "total" || comboBoxProfiles.SelectedIndex == 0)
+            //{
+            //    System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
+            //}
+            //else
+            //{
+            //    System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.SizeAll;
+            //}
+        }
+
+        private void treeViewPDP_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (comboBoxProfiles.SelectedIndex == 0)
+            {
+                System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
+                return;
+            }
+            foreach (TreeNode group in treeViewPDP.Nodes)
+            {
+                foreach(TreeNode node in group.Nodes)
+                {
+                    if (node.Bounds.Contains(e.Location) && node.Name != "total")
+                    {
+                        System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.SizeAll;
+                        return;
+                    }
+                }
+            }
+            System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
+        }
+
+        private void buttonAddGroup_Click(object sender, EventArgs e)
+        {
+            if (comboBoxProfiles.SelectedIndex == 0)
+            {
+                return;
+            }
+            TreeNode node = new TreeNode("New Group");
+            node.Name = "group";
+            treeViewPDP.Nodes.Add(node);
+            treeViewPDP.SelectedNode = node;
+            node.BeginEdit();
+        }
+
+        private void buttonRemoveGroup_Click(object sender, EventArgs e)
+        {
+            if (treeViewPDP.SelectedNode.Nodes.Count > 0)
+            {
+                foreach (TreeNode node in treeViewPDP.SelectedNode.Nodes)
+                {
+                    if (node.Name == "total") continue;
+                    if (treeViewPDP.SelectedNode.Index == 0)
+                    {
+                        treeViewPDP.Nodes[1].Nodes.Add((TreeNode)node.Clone());
+                    }
+                    else
+                    {
+                        treeViewPDP.Nodes[treeViewPDP.SelectedNode.Index-1].Nodes.Add((TreeNode)node.Clone());
+                    }
+
+                }
+
+            }
+            treeViewPDP.SelectedNode.Remove();
+            if (treeViewPDP.Nodes.Count <= 1)
+            {
+                buttonRemoveGroup.Enabled = false;
+            }
+            treeViewPDP.ExpandAll();
         }
     }
 }

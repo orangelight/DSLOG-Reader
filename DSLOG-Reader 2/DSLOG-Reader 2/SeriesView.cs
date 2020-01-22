@@ -62,10 +62,10 @@ namespace DSLOG_Reader_2
             var lostPackets = new SeriesChildNode("lostPackets", "Lost Packets", Color.Chocolate, comms);
 
 
-            SeriesGroupNode pdp03 = new SeriesGroupNode("pdp03", "PDP (0-3) 40A", SystemColors.ControlLightLight);
-            SeriesGroupNode pdp47 = new SeriesGroupNode("pdp47", "PDP (4-7) 30A", SystemColors.ControlLightLight);
-            SeriesGroupNode pdp811 = new SeriesGroupNode("pdp811", "PDP (8-11) 30A", SystemColors.ControlLightLight);
-            SeriesGroupNode pdp1215 = new SeriesGroupNode("pdp1215", "PDP (12-15) 40A", SystemColors.ControlLightLight);
+            SeriesGroupNode pdp03 = new SeriesGroupNode("grouppdp03", "PDP (0-3) 40A", SystemColors.ControlLightLight);
+            SeriesGroupNode pdp47 = new SeriesGroupNode("grouppdp47", "PDP (4-7) 30A", SystemColors.ControlLightLight);
+            SeriesGroupNode pdp811 = new SeriesGroupNode("grouppdp811", "PDP (8-11) 30A", SystemColors.ControlLightLight);
+            SeriesGroupNode pdp1215 = new SeriesGroupNode("grouppdp1215", "PDP (12-15) 40A", SystemColors.ControlLightLight);
             List<SeriesChildNode> pdps = new List<SeriesChildNode>();
             for(int i = 0; i < 16; i++)
             {
