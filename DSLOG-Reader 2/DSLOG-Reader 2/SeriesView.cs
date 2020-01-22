@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Xml.Serialization;
+using System.IO;
 
 namespace DSLOG_Reader_2
 {
@@ -17,13 +19,13 @@ namespace DSLOG_Reader_2
         
 
         private bool checkMode = false;
-        private List<GroupProfile> Profiles;
+        private GroupProfiles Profiles;
         private SeriesGroupNodes NonEditGroups;
 
         public SeriesView()
         {
             InitializeComponent();
-            Profiles = new List<GroupProfile>();
+            Profiles = new GroupProfiles();
             NonEditGroups = new SeriesGroupNodes();
 
         }
@@ -31,35 +33,33 @@ namespace DSLOG_Reader_2
         public void LoadSeries()
         {
             SeriesGroupNode robotMode = new SeriesGroupNode("robotMode", "Robot Mode", SystemColors.ControlLightLight);
+            robotMode.Childern.Add(new SeriesChildNode("dsDisabled", "DS Disabled", Color.DarkGray));
+            robotMode.Childern.Add(new SeriesChildNode("dsAuto", "DS Auto", Color.Lime));
+            robotMode.Childern.Add(new SeriesChildNode("dsTele", "DS Tele", Color.Cyan));
+            robotMode.Childern.Add(new SeriesChildNode("robotDisabled", "Robot Disabled", Color.DarkGray));
+            robotMode.Childern.Add(new SeriesChildNode("robotAuto", "Robot Auto", Color.Lime));
+            robotMode.Childern.Add(new SeriesChildNode("robotTele", "Robot Tele", Color.Cyan));
 
-            List<SeriesChildNode> modes = new List<SeriesChildNode>();
-            modes.Add(new SeriesChildNode("dsDisabled", "DS Disabled", Color.DarkGray, robotMode));
-            modes.Add(new SeriesChildNode("dsAuto", "DS Auto", Color.Lime, robotMode));
-            modes.Add(new SeriesChildNode("dsTele", "DS Tele", Color.Cyan, robotMode));
-            modes.Add(new SeriesChildNode("robotDisabled", "Robot Disabled", Color.DarkGray, robotMode));
-            modes.Add(new SeriesChildNode("robotAuto", "Robot Auto", Color.Lime, robotMode));
-            modes.Add(new SeriesChildNode("robotTele", "Robot Tele", Color.Cyan, robotMode));
-
-            modes.Add(new SeriesChildNode("brownout", "Brownout", Color.OrangeRed, robotMode));
-            modes.Add(new SeriesChildNode("watchdog", "Watchdog", Color.FromArgb(249, 0, 255), robotMode));
+            robotMode.Childern.Add(new SeriesChildNode("brownout", "Brownout", Color.OrangeRed));
+            robotMode.Childern.Add(new SeriesChildNode("watchdog", "Watchdog", Color.FromArgb(249, 0, 255)));
            
             
             SeriesGroupNode basic = new SeriesGroupNode("basic", "Basic", SystemColors.ControlLightLight);
-            var voltage = new SeriesChildNode("voltage", "Voltage", Color.Yellow,  basic);
-           
-            
-            var roboRIOCPU = new SeriesChildNode("roboRIOCPU", "roboRIO CPU", Color.Red, basic);
-            
+            basic.Childern.Add(new SeriesChildNode("voltage", "Voltage", Color.Yellow));
 
-            var can = new SeriesChildNode("can", "CAN", Color.Silver, basic);
+
+            basic.Childern.Add(new SeriesChildNode("roboRIOCPU", "roboRIO CPU", Color.Red));
+
+
+            basic.Childern.Add(new SeriesChildNode("can", "CAN", Color.Silver));
            
 
 
             SeriesGroupNode comms = new SeriesGroupNode("comms", "Comms", SystemColors.ControlLightLight);
-            var tripTime = new SeriesChildNode("tripTime", "Trip Time", Color.Lime, comms);
+            comms.Childern.Add(new SeriesChildNode("tripTime", "Trip Time", Color.Lime));
 
 
-            var lostPackets = new SeriesChildNode("lostPackets", "Lost Packets", Color.Chocolate, comms);
+            comms.Childern.Add(new SeriesChildNode("lostPackets", "Lost Packets", Color.Chocolate));
 
 
             SeriesGroupNode pdp03 = new SeriesGroupNode("grouppdp03", "PDP (0-3) 40A", SystemColors.ControlLightLight);
@@ -71,19 +71,19 @@ namespace DSLOG_Reader_2
             {
                 if (i < 4)
                 {
-                    pdps.Add(new SeriesChildNode($"pdp{i}", $"PDP {i}", Util.PdpColors[i], pdp03));
+                    pdp03.Childern.Add(new SeriesChildNode($"pdp{i}", $"PDP {i}", Util.PdpColors[i]));
                 }
                 else if(i < 8)
                 {
-                    pdps.Add(new SeriesChildNode($"pdp{i}", $"PDP {i}", Util.PdpColors[i], pdp47));
+                    pdp47.Childern.Add(new SeriesChildNode($"pdp{i}", $"PDP {i}", Util.PdpColors[i]));
                 }
                 else if (i < 12)
                 {
-                    pdps.Add(new SeriesChildNode($"pdp{i}", $"PDP {i}", Util.PdpColors[i], pdp811));
+                    pdp811.Childern.Add(new SeriesChildNode($"pdp{i}", $"PDP {i}", Util.PdpColors[i]));
                 }
                 else
                 {
-                    pdps.Add(new SeriesChildNode($"pdp{i}", $"PDP {i}", Util.PdpColors[i], pdp1215));
+                    pdp1215.Childern.Add(new SeriesChildNode($"pdp{i}", $"PDP {i}", Util.PdpColors[i]));
                 }
             }
 
@@ -92,13 +92,13 @@ namespace DSLOG_Reader_2
             defG.Add(pdp47);
             defG.Add(pdp811);
             defG.Add(pdp1215);
-            Profiles.Add(new GroupProfile("Default", defG));
+            
 
             SeriesGroupNode other = new SeriesGroupNode("other", "Other", SystemColors.ControlLightLight);
-            var messages = new SeriesChildNode("messages", "Messages", Color.Gainsboro, other);
+            other.Childern.Add(new SeriesChildNode("messages", "Messages", Color.Gainsboro));
 
 
-            var totalPdp = new SeriesChildNode("totalPdp", "Total PDP", Color.FromArgb(249, 0, 255), other);
+            other.Childern.Add(new SeriesChildNode("totalPdp", "Total PDP", Color.FromArgb(249, 0, 255)));
 
 
             NonEditGroups.Add(comms);
@@ -117,6 +117,33 @@ namespace DSLOG_Reader_2
 
             treeView.ItemHeight = 20;
             treeView.ExpandAll();
+            if (File.Exists(".dslogsettings.xml"))
+            {
+                FileStream fileStream = null;
+                try
+                {
+                    XmlSerializer profilesSerializer = new XmlSerializer(typeof(GroupProfiles));
+                    fileStream = new FileStream(".dslogsettings.xml", FileMode.Open);
+                    Profiles = (GroupProfiles)profilesSerializer.Deserialize(fileStream);
+                } catch(Exception ex)
+                {
+                    MessageBox.Show("Setting file is corrupted!");
+                    Profiles.Clear();
+                    Profiles.Add(new GroupProfile("Default", defG));
+                }
+                finally
+                {
+                    if (fileStream != null) fileStream.Close();
+                }
+                
+                
+            }
+            else
+            {
+                Profiles.Clear();
+                Profiles.Add(new GroupProfile("Default", defG));
+            }
+            
             comboBoxProfiles.Items.Clear();
             comboBoxProfiles.Items.AddRange(Profiles.Select(e=> e.Name).ToArray());
             comboBoxProfiles.SelectedIndex = 0;
@@ -188,12 +215,18 @@ namespace DSLOG_Reader_2
 
         private void buttonEditGroups_Click(object sender, EventArgs e)
         {
-            GroupEditorDialog groupEditor = new GroupEditorDialog(Profiles);
+            GroupEditorDialog groupEditor = new GroupEditorDialog((GroupProfiles)Profiles.Clone());
             groupEditor.ShowInTaskbar = false;
             groupEditor.ShowDialog();
-            comboBoxProfiles.Items.Clear();
-            comboBoxProfiles.Items.AddRange(Profiles.Select(p => p.Name).ToArray());
-            comboBoxProfiles.SelectedIndex = 0;
+            if (groupEditor.OK)
+            {
+                Profiles = groupEditor.Profiles;
+                comboBoxProfiles.Items.Clear();
+                comboBoxProfiles.Items.AddRange(Profiles.Select(p => p.Name).ToArray());
+                comboBoxProfiles.SelectedIndex = 0;
+            }
+            
+            
         }
 
         private void comboBoxProfiles_SelectedIndexChanged(object sender, EventArgs e)

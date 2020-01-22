@@ -3,20 +3,35 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Xml.Serialization;
 
 namespace DSLOG_Reader_2
 {
     public class SeriesNode : ICloneable
     {
-        public string Name { get; protected set; }
+        public string Name { get; set; }
         public string Text { get; set; }
-        public Color Color { get; protected set; }
+
+        [XmlIgnore]
+        public Color Color { get; set; }
+
+        [XmlElement("Color")]
+        public int BackColorAsArgb
+        {
+            get { return Color.ToArgb(); }
+            set { Color = Color.FromArgb(value); }
+        }
 
         public SeriesNode(string name, string text, Color color)
         {
             Name = name;
             Text = text;
             Color = color;
+        }
+
+        public SeriesNode()
+        {
+
         }
 
         protected SeriesNode(SeriesNode node)
@@ -43,32 +58,36 @@ namespace DSLOG_Reader_2
 
     public class SeriesChildNode : SeriesNode
     {
-       
-        public SeriesGroupNode Parent { get; set; }
-
-        public SeriesChildNode(string name, string text, Color backColor, SeriesGroupNode parent) : base (name, text, backColor)
+        public SeriesChildNode(string name, string text, Color backColor) : base (name, text, backColor)
         {
             Name = name;
             Text = text;
-            if (parent!= null) parent.AddChild(this);
+        }
+
+        public SeriesChildNode()
+        {
+
         }
     }
 
     public class SeriesGroupNode : SeriesNode
     {
-        private List<SeriesChildNode> Childern {  get; set; }
+        public List<SeriesChildNode> Childern {  get; set; }
 
         public SeriesGroupNode(string name, string text, Color backColor) : base (name, text, backColor)
         {
             Childern = new List<SeriesChildNode>();
         }
 
+        public SeriesGroupNode()
+        {
 
+        }
 
         internal void AddChild(SeriesChildNode child)
         {
-            child.Parent = this;
-            Childern.Add(child);
+            //child.Parent = this;
+            //Childern.Add(child);
         }
 
         protected SeriesGroupNode(SeriesGroupNode group) : base(group)
@@ -76,7 +95,7 @@ namespace DSLOG_Reader_2
             this.Childern = new List<SeriesChildNode>();
             foreach(var child in group.Childern)
             {
-                new SeriesChildNode(child.Name, child.Text, child.Color, this);
+                this.Childern.Add(new SeriesChildNode(child.Name, child.Text, child.Color));
             }
         }
 
@@ -106,9 +125,27 @@ namespace DSLOG_Reader_2
             Groups = groups;
         }
 
+        public GroupProfile()
+        {
+
+        }
+
         public object Clone()
         {
             return new GroupProfile(Name, (SeriesGroupNodes)Groups.Clone());
+        }
+    }
+
+    public class GroupProfiles : List<GroupProfile>, ICloneable
+    {
+        public object Clone()
+        {
+            GroupProfiles profiles = new GroupProfiles();
+            foreach(var profile in this)
+            {
+                profiles.Add((GroupProfile)profile.Clone());
+            }
+            return profiles;
         }
     }
 

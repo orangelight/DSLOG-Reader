@@ -3,21 +3,26 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace DSLOG_Reader_2
 {
     public partial class GroupEditorDialog : Form
     {
-        public List<GroupProfile> Profiles { get; set; }
+        public GroupProfiles Profiles { get; set; }
         private int lastIndex = -1;
-        public GroupEditorDialog(List<GroupProfile> profiles)
+        public bool OK { get; set; }
+        private Font TDFont = new Font(FontFamily.GenericSansSerif, 8.25f, FontStyle.Underline);
+        public GroupEditorDialog(GroupProfiles profiles)
         {
             InitializeComponent();
             Profiles = profiles;
+            OK = false;
             
         }
 
@@ -30,6 +35,11 @@ namespace DSLOG_Reader_2
         {
             if (lastIndex != comboBoxProfiles.SelectedIndex)
             {
+                if (lastIndex > 0)
+                {
+                    SaveProfile(lastIndex);
+                }
+
                 textBoxName.Text = Profiles[comboBoxProfiles.SelectedIndex].Name;
                 if (comboBoxProfiles.SelectedIndex == 0)
                 {
@@ -50,6 +60,14 @@ namespace DSLOG_Reader_2
                 treeViewPDP.BeginUpdate();
                 treeViewPDP.Nodes.Clear();
                 treeViewPDP.Nodes.AddRange(Profiles[comboBoxProfiles.SelectedIndex].Groups.ToTreeNodes().ToArray());
+                foreach(var node in treeViewPDP.Nodes.Find("total", true))
+                {
+                    node.NodeFont = TDFont;
+                }
+                foreach (var node in treeViewPDP.Nodes.Find("delta", true))
+                {
+                    node.NodeFont = TDFont;
+                }
                 treeViewPDP.ExpandAll();
                 treeViewPDP.EndUpdate();
                 lastIndex = comboBoxProfiles.SelectedIndex;
@@ -85,6 +103,7 @@ namespace DSLOG_Reader_2
         private void buttonRemoveProfile_Click(object sender, EventArgs e)
         {
             Profiles.RemoveAt(comboBoxProfiles.SelectedIndex);
+            lastIndex = -1;
             AddProfilesToCombo(0);
         }
 
@@ -262,6 +281,7 @@ namespace DSLOG_Reader_2
             }
             TreeNode node = new TreeNode("New Group");
             node.Name = "group";
+            node.BackColor = SystemColors.ControlLightLight;
             treeViewPDP.Nodes.Add(node);
             treeViewPDP.SelectedNode = node;
             node.BeginEdit();
@@ -286,6 +306,8 @@ namespace DSLOG_Reader_2
 
                 }
 
+                
+                
             }
             treeViewPDP.SelectedNode.Remove();
             if (treeViewPDP.Nodes.Count <= 1)
@@ -334,8 +356,8 @@ namespace DSLOG_Reader_2
             {
                 TreeNode node = new TreeNode("Group Total");
                 node.BackColor = Color.LawnGreen;
-                node.ForeColor = Color.DarkRed;
                 node.Name = "total";
+                node.NodeFont = TDFont;
                 treeViewPDP.SelectedNode.Nodes.Add(node);
             }
             else if (treeViewPDP.SelectedNode.Nodes.ContainsKey("total") && !checkBoxTotal.Checked)
@@ -350,7 +372,7 @@ namespace DSLOG_Reader_2
             {
                 TreeNode node = new TreeNode("Group Delta");
                 node.BackColor = Color.Magenta;
-                node.ForeColor = Color.DarkRed;
+                node.NodeFont = TDFont;
                 node.Name = "delta";
                 treeViewPDP.SelectedNode.Nodes.Add(node);
             }
@@ -376,6 +398,7 @@ namespace DSLOG_Reader_2
 
         private void buttonCopyProfile_Click(object sender, EventArgs e)
         {
+            SaveProfile(comboBoxProfiles.SelectedIndex);
             GroupProfile newProfile = (GroupProfile)Profiles[comboBoxProfiles.SelectedIndex].Clone();
             newProfile.Name = $"{comboBoxProfiles.SelectedItem.ToString()} Copy";
             Profiles.Add(newProfile);
@@ -387,10 +410,11 @@ namespace DSLOG_Reader_2
             SeriesGroupNodes groups = new SeriesGroupNodes();
             foreach(TreeNode treeGroup in nodes)
             {
+                if (treeGroup.Nodes.Count == 0) continue;
                 SeriesGroupNode groupNode = new SeriesGroupNode(treeGroup.Name, treeGroup.Text, treeGroup.BackColor);
                 foreach(TreeNode treeChild in treeGroup.Nodes)
                 {
-                    new SeriesChildNode(treeChild.Name, treeChild.Text, treeChild.BackColor, groupNode);
+                    groupNode.Childern.Add(new SeriesChildNode(treeChild.Name, treeChild.Text, treeChild.BackColor));
                 }
                 groups.Add(groupNode);
             }
@@ -399,7 +423,35 @@ namespace DSLOG_Reader_2
 
         private void buttonProfileSave_Click(object sender, EventArgs e)
         {
-            Profiles[comboBoxProfiles.SelectedIndex].Groups = TreeNodesToSeriesGroupNodes(treeViewPDP.Nodes);
+            
+        }
+
+        private void SaveProfile(int index = -1)
+        {
+            if (index == -1) Profiles[comboBoxProfiles.SelectedIndex].Groups = TreeNodesToSeriesGroupNodes(treeViewPDP.Nodes);
+            else Profiles[index].Groups = TreeNodesToSeriesGroupNodes(treeViewPDP.Nodes); 
+        }
+
+        private void buttonOkay_Click(object sender, EventArgs e)
+        {
+            SaveProfile();
+            OK = true;
+            XmlSerializer profilesSerializer = new XmlSerializer(typeof(GroupProfiles));
+            var fileStream = new StreamWriter(".dslogsettings.xml", false);
+            profilesSerializer.Serialize(fileStream, Profiles);
+            fileStream.Close();
+            this.Close();
+        }
+
+        private void buttonCancel_Click(object sender, EventArgs e)
+        {
+            OK = false;
+            this.Close();
+        }
+
+        private void treeViewPDP_BeforeCollapse(object sender, TreeViewCancelEventArgs e)
+        {
+            e.Cancel = true;
         }
     }
 }
