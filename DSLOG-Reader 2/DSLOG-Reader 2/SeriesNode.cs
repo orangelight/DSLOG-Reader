@@ -65,7 +65,7 @@ namespace DSLOG_Reader_2
 
 
 
-        public void AddChild(SeriesChildNode child)
+        internal void AddChild(SeriesChildNode child)
         {
             child.Parent = this;
             Childern.Add(child);

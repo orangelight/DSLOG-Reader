@@ -41,6 +41,8 @@
             this.checkBoxTotal = new System.Windows.Forms.CheckBox();
             this.checkBoxDelta = new System.Windows.Forms.CheckBox();
             this.labelPDPSlot = new System.Windows.Forms.Label();
+            this.buttonCopyProfile = new System.Windows.Forms.Button();
+            this.buttonProfileSave = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // treeViewPDP
@@ -95,7 +97,7 @@
             // 
             // textBoxName
             // 
-            this.textBoxName.Location = new System.Drawing.Point(78, 62);
+            this.textBoxName.Location = new System.Drawing.Point(78, 85);
             this.textBoxName.Name = "textBoxName";
             this.textBoxName.Size = new System.Drawing.Size(99, 20);
             this.textBoxName.TabIndex = 4;
@@ -104,7 +106,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(10, 65);
+            this.label1.Location = new System.Drawing.Point(10, 88);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(67, 13);
             this.label1.TabIndex = 5;
@@ -173,11 +175,33 @@
             this.labelPDPSlot.TabIndex = 12;
             this.labelPDPSlot.Text = "PDP Slot:";
             // 
+            // buttonCopyProfile
+            // 
+            this.buttonCopyProfile.Location = new System.Drawing.Point(7, 59);
+            this.buttonCopyProfile.Name = "buttonCopyProfile";
+            this.buttonCopyProfile.Size = new System.Drawing.Size(89, 23);
+            this.buttonCopyProfile.TabIndex = 13;
+            this.buttonCopyProfile.Text = "Copy Profile";
+            this.buttonCopyProfile.UseVisualStyleBackColor = true;
+            this.buttonCopyProfile.Click += new System.EventHandler(this.buttonCopyProfile_Click);
+            // 
+            // buttonProfileSave
+            // 
+            this.buttonProfileSave.Location = new System.Drawing.Point(6, 399);
+            this.buttonProfileSave.Name = "buttonProfileSave";
+            this.buttonProfileSave.Size = new System.Drawing.Size(75, 23);
+            this.buttonProfileSave.TabIndex = 14;
+            this.buttonProfileSave.Text = "Save Profile";
+            this.buttonProfileSave.UseVisualStyleBackColor = true;
+            this.buttonProfileSave.Click += new System.EventHandler(this.buttonProfileSave_Click);
+            // 
             // GroupEditorDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(386, 540);
+            this.Controls.Add(this.buttonProfileSave);
+            this.Controls.Add(this.buttonCopyProfile);
             this.Controls.Add(this.labelPDPSlot);
             this.Controls.Add(this.checkBoxDelta);
             this.Controls.Add(this.checkBoxTotal);
@@ -214,5 +238,7 @@
         private System.Windows.Forms.CheckBox checkBoxTotal;
         private System.Windows.Forms.CheckBox checkBoxDelta;
         private System.Windows.Forms.Label labelPDPSlot;
+        private System.Windows.Forms.Button buttonCopyProfile;
+        private System.Windows.Forms.Button buttonProfileSave;
     }
 }

@@ -195,5 +195,22 @@ namespace DSLOG_Reader_2
             comboBoxProfiles.Items.AddRange(Profiles.Select(p => p.Name).ToArray());
             comboBoxProfiles.SelectedIndex = 0;
         }
+
+        private void comboBoxProfiles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            treeView.BeginUpdate();
+            treeView.Nodes.Clear();
+            foreach(var group in NonEditGroups)
+            {
+                treeView.Nodes.Add(group.ToTreeNode());
+                
+            }
+            treeView.ExpandAll();
+            foreach(var group in Profiles[comboBoxProfiles.SelectedIndex].Groups)
+            {
+                treeView.Nodes.Add(group.ToTreeNode());
+            }
+            treeView.EndUpdate();
+        }
     }
 }

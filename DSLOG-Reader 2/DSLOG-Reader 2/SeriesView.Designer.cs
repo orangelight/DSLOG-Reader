@@ -70,6 +70,7 @@
             this.comboBoxProfiles.Name = "comboBoxProfiles";
             this.comboBoxProfiles.Size = new System.Drawing.Size(137, 21);
             this.comboBoxProfiles.TabIndex = 2;
+            this.comboBoxProfiles.SelectedIndexChanged += new System.EventHandler(this.comboBoxProfiles_SelectedIndexChanged);
             // 
             // SeriesView
             // 

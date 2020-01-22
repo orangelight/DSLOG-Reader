@@ -18,6 +18,7 @@ namespace DSLOG_Reader_2
         {
             InitializeComponent();
             Profiles = profiles;
+            
         }
 
         private void GroupEditorDialog_Load(object sender, EventArgs e)
@@ -46,11 +47,14 @@ namespace DSLOG_Reader_2
                     buttonAddGroup.Enabled = true;
                     CheckGroupTotalAndDelta();
                 }
+                treeViewPDP.BeginUpdate();
                 treeViewPDP.Nodes.Clear();
                 treeViewPDP.Nodes.AddRange(Profiles[comboBoxProfiles.SelectedIndex].Groups.ToTreeNodes().ToArray());
                 treeViewPDP.ExpandAll();
+                treeViewPDP.EndUpdate();
                 lastIndex = comboBoxProfiles.SelectedIndex;
                 buttonColor.Enabled = false;
+                
             }
             
         }
@@ -367,6 +371,35 @@ namespace DSLOG_Reader_2
                 }
             }
             return i;
+        }
+
+
+        private void buttonCopyProfile_Click(object sender, EventArgs e)
+        {
+            GroupProfile newProfile = (GroupProfile)Profiles[comboBoxProfiles.SelectedIndex].Clone();
+            newProfile.Name = $"{comboBoxProfiles.SelectedItem.ToString()} Copy";
+            Profiles.Add(newProfile);
+            AddProfilesToCombo(Profiles.Count - 1);
+        }
+
+        private SeriesGroupNodes TreeNodesToSeriesGroupNodes(TreeNodeCollection nodes)
+        {
+            SeriesGroupNodes groups = new SeriesGroupNodes();
+            foreach(TreeNode treeGroup in nodes)
+            {
+                SeriesGroupNode groupNode = new SeriesGroupNode(treeGroup.Name, treeGroup.Text, treeGroup.BackColor);
+                foreach(TreeNode treeChild in treeGroup.Nodes)
+                {
+                    new SeriesChildNode(treeChild.Name, treeChild.Text, treeChild.BackColor, groupNode);
+                }
+                groups.Add(groupNode);
+            }
+            return groups;
+        }
+
+        private void buttonProfileSave_Click(object sender, EventArgs e)
+        {
+            Profiles[comboBoxProfiles.SelectedIndex].Groups = TreeNodesToSeriesGroupNodes(treeViewPDP.Nodes);
         }
     }
 }
