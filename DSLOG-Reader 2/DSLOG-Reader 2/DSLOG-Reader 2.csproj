@@ -57,6 +57,12 @@
     <Compile Include="FileListView.Designer.cs">
       <DependentUpon>FileListView.cs</DependentUpon>
     </Compile>
+    <Compile Include="GroupEditorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GroupEditorDialog.Designer.cs">
+      <DependentUpon>GroupEditorDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -75,6 +81,9 @@
     <Compile Include="Util.cs" />
     <EmbeddedResource Include="FileListView.resx">
       <DependentUpon>FileListView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GroupEditorDialog.resx">
+      <DependentUpon>GroupEditorDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

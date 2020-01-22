@@ -30,7 +30,8 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SeriesView));
             this.treeView = new DSLOG_Reader_2.SeriesView.SeriesTreeView();
-            this.button1 = new System.Windows.Forms.Button();
+            this.buttonEditGroups = new System.Windows.Forms.Button();
+            this.comboBoxProfiles = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // treeView
@@ -41,28 +42,41 @@
             this.treeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.treeView.CheckBoxes = true;
             this.treeView.Indent = 12;
-            this.treeView.Location = new System.Drawing.Point(0, 25);
+            this.treeView.Location = new System.Drawing.Point(0, 20);
             this.treeView.Name = "treeView";
-            this.treeView.Size = new System.Drawing.Size(162, 345);
+            this.treeView.Size = new System.Drawing.Size(162, 350);
             this.treeView.TabIndex = 0;
             this.treeView.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeView_AfterCheck);
             this.treeView.BeforeSelect += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeView_BeforeSelect);
             // 
-            // button1
+            // buttonEditGroups
             // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Image = ((System.Drawing.Image)(resources.GetObject("button1.Image")));
-            this.button1.Location = new System.Drawing.Point(136, -1);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(27, 27);
-            this.button1.TabIndex = 1;
-            this.button1.UseVisualStyleBackColor = true;
+            this.buttonEditGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonEditGroups.Image = ((System.Drawing.Image)(resources.GetObject("buttonEditGroups.Image")));
+            this.buttonEditGroups.Location = new System.Drawing.Point(136, -1);
+            this.buttonEditGroups.Name = "buttonEditGroups";
+            this.buttonEditGroups.Size = new System.Drawing.Size(27, 23);
+            this.buttonEditGroups.TabIndex = 1;
+            this.buttonEditGroups.UseVisualStyleBackColor = true;
+            this.buttonEditGroups.Click += new System.EventHandler(this.buttonEditGroups_Click);
+            // 
+            // comboBoxProfiles
+            // 
+            this.comboBoxProfiles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxProfiles.FormattingEnabled = true;
+            this.comboBoxProfiles.Items.AddRange(new object[] {
+            "Default"});
+            this.comboBoxProfiles.Location = new System.Drawing.Point(0, 0);
+            this.comboBoxProfiles.Name = "comboBoxProfiles";
+            this.comboBoxProfiles.Size = new System.Drawing.Size(137, 21);
+            this.comboBoxProfiles.TabIndex = 2;
             // 
             // SeriesView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.comboBoxProfiles);
+            this.Controls.Add(this.buttonEditGroups);
             this.Controls.Add(this.treeView);
             this.MinimumSize = new System.Drawing.Size(162, 370);
             this.Name = "SeriesView";
@@ -73,7 +87,8 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button buttonEditGroups;
         private SeriesTreeView treeView;
+        private System.Windows.Forms.ComboBox comboBoxProfiles;
     }
 }

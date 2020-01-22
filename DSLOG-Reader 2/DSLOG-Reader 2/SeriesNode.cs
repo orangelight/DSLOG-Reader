@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace DSLOG_Reader_2
 {
-    public abstract class SeriesNode
+    public class SeriesNode : ICloneable
     {
         public string Name { get; protected set; }
         public string Text { get; set; }
@@ -22,7 +19,25 @@ namespace DSLOG_Reader_2
             Color = color;
         }
 
-        public abstract TreeNode ToTreeNode();
+        protected SeriesNode(SeriesNode node)
+        {
+            this.Name = node.Name;
+            this.Text = node.Text;
+            this.Color = node.Color;
+        }
+
+        public virtual TreeNode ToTreeNode()
+        {
+            TreeNode node = new TreeNode(Text);
+            node.Name = Name;
+            node.BackColor = Color;
+            return node;
+        }
+
+        public virtual object Clone()
+        {
+            return new SeriesNode(this);
+        }
     }
 
 
@@ -30,44 +45,12 @@ namespace DSLOG_Reader_2
     {
        
         public SeriesGroupNode Parent { get; set; }
-        public bool Editable { get; private set; }
 
-        public ChartValueType XValueType { get; set; }
-        public AxisType YAxisType { get;  set; }
-        public SeriesChartType ChartType { get; set; }
-        public int BoarderWidth { get; set; }
-        public MarkerStyle MarkerStyle { get; set; }
-
-
-        public SeriesChildNode(string name, string text, Color backColor, bool edit, SeriesGroupNode parent) : base (name, text, backColor)
+        public SeriesChildNode(string name, string text, Color backColor, SeriesGroupNode parent) : base (name, text, backColor)
         {
             Name = name;
             Text = text;
             if (parent!= null) parent.AddChild(this);
-            Editable = edit;
-            BoarderWidth = -1;
-        }
-
-
-        public override TreeNode ToTreeNode()
-        {
-            TreeNode node = new TreeNode(Text);
-            node.Name = Name;
-            node.BackColor = Color;
-
-            return node;
-        }
-
-        public Series ToSeries()
-        {
-            Series series = new Series(Name);
-            series.XValueType = XValueType;
-            series.YAxisType = YAxisType;
-            series.ChartType = ChartType;
-            series.Color = Color;
-            if(BoarderWidth != -1) series.BorderWidth = BoarderWidth;
-            if (MarkerStyle != MarkerStyle.None) series.MarkerStyle = MarkerStyle;
-            return series;
         }
     }
 
@@ -80,22 +63,75 @@ namespace DSLOG_Reader_2
             Childern = new List<SeriesChildNode>();
         }
 
+
+
         public void AddChild(SeriesChildNode child)
         {
             child.Parent = this;
             Childern.Add(child);
         }
 
+        protected SeriesGroupNode(SeriesGroupNode group) : base(group)
+        {
+            this.Childern = new List<SeriesChildNode>();
+            foreach(var child in group.Childern)
+            {
+                new SeriesChildNode(child.Name, child.Text, child.Color, this);
+            }
+        }
+
         public override TreeNode ToTreeNode()
         {
-            TreeNode node = new TreeNode(Text);
-            node.Name = Name;
-            node.BackColor = Color;
+            var node = base.ToTreeNode();
             foreach (var child in Childern)
             {
                 node.Nodes.Add(child.ToTreeNode());
             }
             return node;
+        }
+
+        public override object Clone()
+        {
+            return new SeriesGroupNode(this);
+        }
+    }
+
+    public class GroupProfile : ICloneable
+    {
+        public string Name { get; set; }
+        public SeriesGroupNodes Groups { get; set; }
+        public GroupProfile(string name, SeriesGroupNodes groups)
+        {
+            Name = name;
+            Groups = groups;
+        }
+
+        public object Clone()
+        {
+            return new GroupProfile(Name, (SeriesGroupNodes)Groups.Clone());
+        }
+    }
+
+    public class SeriesGroupNodes : List<SeriesGroupNode>, ICloneable
+    {
+        public object Clone()
+        {
+            SeriesGroupNodes nodes = new SeriesGroupNodes();
+            foreach (var group in this)
+            {
+                nodes.Add((SeriesGroupNode)group.Clone());
+            }
+            return nodes;
+        }
+
+        public List<TreeNode> ToTreeNodes()
+        {
+            List<TreeNode> nodes = new List<TreeNode>();
+            foreach(var group in this)
+            {
+                nodes.Add(group.ToTreeNode());
+            }
+            return nodes;
         }
     }
 }

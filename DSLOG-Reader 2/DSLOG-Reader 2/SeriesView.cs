@@ -14,15 +14,18 @@ namespace DSLOG_Reader_2
     
     public partial class SeriesView : UserControl
     {
-        Color[] pdpColors = { Color.FromArgb(255, 113, 113), Color.FromArgb(255, 198, 89), Color.FromArgb(152, 255, 136), Color.FromArgb(136, 154, 255), Color.FromArgb(255, 52, 42), Color.FromArgb(255, 176, 42), Color.FromArgb(0, 255, 9), Color.FromArgb(0, 147, 255), Color.FromArgb(180, 8, 0), Color.FromArgb(239, 139, 0), Color.FromArgb(46, 220, 0), Color.FromArgb(57, 42, 255), Color.FromArgb(180, 8, 0), Color.FromArgb(200, 132, 0), Color.FromArgb(42, 159, 0), Color.FromArgb(0, 47, 239) };
+        
 
         private bool checkMode = false;
-        private Dictionary<string, SeriesChildNode> SeriesNodes;
+        private List<GroupProfile> Profiles;
+        private SeriesGroupNodes NonEditGroups;
 
         public SeriesView()
         {
             InitializeComponent();
-            SeriesNodes = new Dictionary<string, SeriesChildNode>();
+            Profiles = new List<GroupProfile>();
+            NonEditGroups = new SeriesGroupNodes();
+
         }
 
         public void LoadSeries()
@@ -30,50 +33,34 @@ namespace DSLOG_Reader_2
             SeriesGroupNode robotMode = new SeriesGroupNode("robotMode", "Robot Mode", SystemColors.ControlLightLight);
 
             List<SeriesChildNode> modes = new List<SeriesChildNode>();
-            modes.Add(new SeriesChildNode("dsDisabled", "DS Disabled", Color.DarkGray, false, robotMode));
-            modes.Add(new SeriesChildNode("dsAuto", "DS Auto", Color.Lime, false, robotMode));
-            modes.Add(new SeriesChildNode("dsTele", "DS Tele", Color.Cyan, false, robotMode));
-            modes.Add(new SeriesChildNode("robotDisabled", "Robot Disabled", Color.DarkGray, false, robotMode));
-            modes.Add(new SeriesChildNode("robotAuto", "Robot Auto", Color.Lime, false, robotMode));
-            modes.Add(new SeriesChildNode("robotTele", "Robot Tele", Color.Cyan, false, robotMode));
+            modes.Add(new SeriesChildNode("dsDisabled", "DS Disabled", Color.DarkGray, robotMode));
+            modes.Add(new SeriesChildNode("dsAuto", "DS Auto", Color.Lime, robotMode));
+            modes.Add(new SeriesChildNode("dsTele", "DS Tele", Color.Cyan, robotMode));
+            modes.Add(new SeriesChildNode("robotDisabled", "Robot Disabled", Color.DarkGray, robotMode));
+            modes.Add(new SeriesChildNode("robotAuto", "Robot Auto", Color.Lime, robotMode));
+            modes.Add(new SeriesChildNode("robotTele", "Robot Tele", Color.Cyan, robotMode));
 
-            modes.Add(new SeriesChildNode("brownout", "Brownout", Color.OrangeRed, false, robotMode));
-            modes.Add(new SeriesChildNode("watchdog", "Watchdog", Color.FromArgb(249, 0, 255), false, robotMode));
-            foreach(var mode in modes)
-            {
-                mode.ChartType = SeriesChartType.Line;
-                mode.XValueType = ChartValueType.DateTime;
-                mode.YAxisType = AxisType.Primary;
-                mode.BoarderWidth = 5;
-                
-            }
+            modes.Add(new SeriesChildNode("brownout", "Brownout", Color.OrangeRed, robotMode));
+            modes.Add(new SeriesChildNode("watchdog", "Watchdog", Color.FromArgb(249, 0, 255), robotMode));
+           
+            
             SeriesGroupNode basic = new SeriesGroupNode("basic", "Basic", SystemColors.ControlLightLight);
-            var voltage = new SeriesChildNode("voltage", "Voltage", Color.Yellow, false, basic);
-            voltage.XValueType = ChartValueType.DateTime;
-            voltage.YAxisType = AxisType.Primary;
-            voltage.ChartType = SeriesChartType.FastLine;
+            var voltage = new SeriesChildNode("voltage", "Voltage", Color.Yellow,  basic);
+           
 
-            var roboRIOCPU = new SeriesChildNode("roboRIOCPU", "roboRIO CPU", Color.Red, false, basic);
-            roboRIOCPU.XValueType = ChartValueType.DateTime;
-            roboRIOCPU.YAxisType = AxisType.Secondary;
-            roboRIOCPU.ChartType = SeriesChartType.FastLine;
+            var roboRIOCPU = new SeriesChildNode("roboRIOCPU", "roboRIO CPU", Color.Red, basic);
+            
 
-            var can = new SeriesChildNode("can", "CAN", Color.Silver, false, basic);
-            can.XValueType = ChartValueType.DateTime;
-            can.YAxisType = AxisType.Secondary;
-            can.ChartType = SeriesChartType.FastLine;
+            var can = new SeriesChildNode("can", "CAN", Color.Silver, basic);
+           
 
 
             SeriesGroupNode comms = new SeriesGroupNode("comms", "Comms", SystemColors.ControlLightLight);
-            var tripTime = new SeriesChildNode("tripTime", "Trip Time", Color.Lime, false, comms);
-            tripTime.XValueType = ChartValueType.DateTime;
-            tripTime.YAxisType = AxisType.Secondary;
-            tripTime.ChartType = SeriesChartType.FastLine;
+            var tripTime = new SeriesChildNode("tripTime", "Trip Time", Color.Lime, comms);
 
-            var lostPackets = new SeriesChildNode("lostPackets", "Lost Packets", Color.Chocolate, false, comms);
-            lostPackets.XValueType = ChartValueType.DateTime;
-            lostPackets.YAxisType = AxisType.Secondary;
-            lostPackets.ChartType = SeriesChartType.FastLine;
+
+            var lostPackets = new SeriesChildNode("lostPackets", "Lost Packets", Color.Chocolate, comms);
+
 
             SeriesGroupNode pdp03 = new SeriesGroupNode("pdp03", "PDP (0-3) 40A", SystemColors.ControlLightLight);
             SeriesGroupNode pdp47 = new SeriesGroupNode("pdp47", "PDP (4-7) 30A", SystemColors.ControlLightLight);
@@ -84,40 +71,40 @@ namespace DSLOG_Reader_2
             {
                 if (i < 4)
                 {
-                    pdps.Add(new SeriesChildNode($"pdp{i}", $"PDP {i}", pdpColors[i], true, pdp03));
+                    pdps.Add(new SeriesChildNode($"pdp{i}", $"PDP {i}", Util.PdpColors[i], pdp03));
                 }
                 else if(i < 8)
                 {
-                    pdps.Add(new SeriesChildNode($"pdp{i}", $"PDP {i}", pdpColors[i], true, pdp47));
+                    pdps.Add(new SeriesChildNode($"pdp{i}", $"PDP {i}", Util.PdpColors[i], pdp47));
                 }
                 else if (i < 12)
                 {
-                    pdps.Add(new SeriesChildNode($"pdp{i}", $"PDP {i}", pdpColors[i], true, pdp811));
+                    pdps.Add(new SeriesChildNode($"pdp{i}", $"PDP {i}", Util.PdpColors[i], pdp811));
                 }
                 else
                 {
-                    pdps.Add(new SeriesChildNode($"pdp{i}", $"PDP {i}", pdpColors[i], true, pdp1215));
+                    pdps.Add(new SeriesChildNode($"pdp{i}", $"PDP {i}", Util.PdpColors[i], pdp1215));
                 }
             }
 
-            foreach(var node in pdps)
-            {
-                node.XValueType = ChartValueType.DateTime;
-                node.YAxisType = AxisType.Secondary;
-                node.ChartType = SeriesChartType.FastLine;
-            }
+            SeriesGroupNodes defG = new SeriesGroupNodes();
+            defG.Add(pdp03);
+            defG.Add(pdp47);
+            defG.Add(pdp811);
+            defG.Add(pdp1215);
+            Profiles.Add(new GroupProfile("Default", defG));
 
-            var messages = new SeriesChildNode("messages", "Messages", Color.Gainsboro, false, null);
-            messages.XValueType = ChartValueType.DateTime;
-            messages.YAxisType = AxisType.Primary;
-            messages.ChartType = SeriesChartType.Point;
-            messages.MarkerStyle = MarkerStyle.Circle;
+            SeriesGroupNode other = new SeriesGroupNode("other", "Other", SystemColors.ControlLightLight);
+            var messages = new SeriesChildNode("messages", "Messages", Color.Gainsboro, other);
 
-            var totalPdp = new SeriesChildNode("totalPdp", "Total PDP", Color.FromArgb(249, 0, 255), false, null);
-            totalPdp.XValueType = ChartValueType.DateTime;
-            totalPdp.YAxisType = AxisType.Secondary;
-            totalPdp.ChartType = SeriesChartType.FastLine;
 
+            var totalPdp = new SeriesChildNode("totalPdp", "Total PDP", Color.FromArgb(249, 0, 255), other);
+
+
+            NonEditGroups.Add(comms);
+            NonEditGroups.Add(basic);
+            NonEditGroups.Add(robotMode);
+            NonEditGroups.Add(other);
 
             treeView.Nodes.Add(comms.ToTreeNode());
             treeView.Nodes.Add(basic.ToTreeNode());
@@ -126,11 +113,13 @@ namespace DSLOG_Reader_2
             treeView.Nodes.Add(pdp47.ToTreeNode());
             treeView.Nodes.Add(pdp811.ToTreeNode());
             treeView.Nodes.Add(pdp1215.ToTreeNode());
-            treeView.Nodes.Add(totalPdp.ToTreeNode());
-            treeView.Nodes.Add(messages.ToTreeNode());
+            treeView.Nodes.Add(other.ToTreeNode());
 
             treeView.ItemHeight = 20;
             treeView.ExpandAll();
+            comboBoxProfiles.Items.Clear();
+            comboBoxProfiles.Items.AddRange(Profiles.Select(e=> e.Name).ToArray());
+            comboBoxProfiles.SelectedIndex = 0;
         }
 
         private void treeView_BeforeSelect(object sender, TreeViewCancelEventArgs e)
@@ -195,6 +184,16 @@ namespace DSLOG_Reader_2
                     base.WndProc(ref m);
                 }
             }
+        }
+
+        private void buttonEditGroups_Click(object sender, EventArgs e)
+        {
+            GroupEditorDialog groupEditor = new GroupEditorDialog(Profiles);
+            groupEditor.ShowInTaskbar = false;
+            groupEditor.ShowDialog();
+            comboBoxProfiles.Items.Clear();
+            comboBoxProfiles.Items.AddRange(Profiles.Select(p => p.Name).ToArray());
+            comboBoxProfiles.SelectedIndex = 0;
         }
     }
 }
