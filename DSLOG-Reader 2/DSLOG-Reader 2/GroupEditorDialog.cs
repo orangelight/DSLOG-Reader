@@ -44,6 +44,7 @@ namespace DSLOG_Reader_2
                     buttonRemoveProfile.Enabled = true;
                     treeViewPDP.LabelEdit = true;
                     buttonAddGroup.Enabled = true;
+                    CheckGroupTotalAndDelta();
                 }
                 treeViewPDP.Nodes.Clear();
                 treeViewPDP.Nodes.AddRange(Profiles[comboBoxProfiles.SelectedIndex].Groups.ToTreeNodes().ToArray());
@@ -87,6 +88,7 @@ namespace DSLOG_Reader_2
         {
             if (comboBoxProfiles.SelectedIndex != 0)
             {
+                
                 if (e.Node.Parent != null)
                 {
                     buttonColor.Enabled = true;
@@ -105,12 +107,13 @@ namespace DSLOG_Reader_2
                         buttonRemoveGroup.Enabled = false;
                     }
                 }
+                
             }
         }
 
         private void treeViewPDP_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            if (((TreeNode)e.Item).Parent == null || ((TreeNode)e.Item).Name == "total" || comboBoxProfiles.SelectedIndex == 0)
+            if (((TreeNode)e.Item).Parent == null || ((TreeNode)e.Item).Name == "total" || ((TreeNode)e.Item).Name == "delta" || comboBoxProfiles.SelectedIndex == 0)
             {
                 return;
             }
@@ -166,6 +169,12 @@ namespace DSLOG_Reader_2
                 // location and add it to the node at the drop location.
                 if (e.Effect == DragDropEffects.Move)
                 {
+                    if (NumOfPDPNodes(draggedNode.Parent) <=2)
+                    {
+                        draggedNode.Parent.Nodes.RemoveByKey("total");
+                        draggedNode.Parent.Nodes.RemoveByKey("delta");
+                    }
+                    
                     draggedNode.Remove();
                     targetNode.Nodes.Add(draggedNode);
                 }
@@ -180,6 +189,7 @@ namespace DSLOG_Reader_2
                 // Expand the node at the location 
                 // to show the dropped node.
                 targetNode.Expand();
+                CheckGroupTotalAndDelta();
             }
         }
 
@@ -230,7 +240,7 @@ namespace DSLOG_Reader_2
             {
                 foreach(TreeNode node in group.Nodes)
                 {
-                    if (node.Bounds.Contains(e.Location) && node.Name != "total")
+                    if (node.Bounds.Contains(e.Location) && node.Name != "total" && node.Name != "delta")
                     {
                         System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.SizeAll;
                         return;
@@ -257,9 +267,10 @@ namespace DSLOG_Reader_2
         {
             if (treeViewPDP.SelectedNode.Nodes.Count > 0)
             {
+                treeViewPDP.SelectedNode.Nodes.RemoveByKey("total");
+                treeViewPDP.SelectedNode.Nodes.RemoveByKey("delta");
                 foreach (TreeNode node in treeViewPDP.SelectedNode.Nodes)
                 {
-                    if (node.Name == "total") continue;
                     if (treeViewPDP.SelectedNode.Index == 0)
                     {
                         treeViewPDP.Nodes[1].Nodes.Add((TreeNode)node.Clone());
@@ -278,6 +289,84 @@ namespace DSLOG_Reader_2
                 buttonRemoveGroup.Enabled = false;
             }
             treeViewPDP.ExpandAll();
+        }
+
+        private void CheckGroupTotalAndDelta()
+        {
+            if (treeViewPDP.SelectedNode != null && treeViewPDP.SelectedNode.Name.StartsWith("group") && comboBoxProfiles.SelectedIndex != 0 && NumOfPDPNodes(treeViewPDP.SelectedNode) > 1)
+            {
+                checkBoxDelta.Enabled = true;
+                checkBoxTotal.Enabled = true;
+
+                if (treeViewPDP.SelectedNode.Nodes.ContainsKey("total")) checkBoxTotal.Checked = true;
+                else checkBoxTotal.Checked = false;
+
+                if (treeViewPDP.SelectedNode.Nodes.ContainsKey("delta")) checkBoxDelta.Checked = true;
+                else checkBoxDelta.Checked = false;
+            }
+            else
+            {
+                checkBoxDelta.Enabled = false;
+                checkBoxTotal.Enabled = false;
+            }
+        }
+
+        private void treeViewPDP_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            CheckGroupTotalAndDelta();
+            if (treeViewPDP.SelectedNode != null && treeViewPDP.SelectedNode.Name.StartsWith("pdp"))
+            {
+                labelPDPSlot.Text = $"PDP Slot: {treeViewPDP.SelectedNode.Name.Replace("pdp", "")}";
+            }
+            else
+            {
+                labelPDPSlot.Text = $"PDP Slot:";
+            }
+        }
+
+        private void checkBoxTotal_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!treeViewPDP.SelectedNode.Nodes.ContainsKey("total") && checkBoxTotal.Checked)
+            {
+                TreeNode node = new TreeNode("Group Total");
+                node.BackColor = Color.LawnGreen;
+                node.ForeColor = Color.DarkRed;
+                node.Name = "total";
+                treeViewPDP.SelectedNode.Nodes.Add(node);
+            }
+            else if (treeViewPDP.SelectedNode.Nodes.ContainsKey("total") && !checkBoxTotal.Checked)
+            {
+                treeViewPDP.SelectedNode.Nodes.RemoveByKey("total");
+            }
+        }
+
+        private void checkBoxDelta_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!treeViewPDP.SelectedNode.Nodes.ContainsKey("delta") && checkBoxDelta.Checked)
+            {
+                TreeNode node = new TreeNode("Group Delta");
+                node.BackColor = Color.Magenta;
+                node.ForeColor = Color.DarkRed;
+                node.Name = "delta";
+                treeViewPDP.SelectedNode.Nodes.Add(node);
+            }
+            else if (treeViewPDP.SelectedNode.Nodes.ContainsKey("delta") && !checkBoxDelta.Checked)
+            {
+                treeViewPDP.SelectedNode.Nodes.RemoveByKey("delta");
+            }
+        }
+
+        private int NumOfPDPNodes(TreeNode parent)
+        {
+            int i = 0;
+            foreach(TreeNode node in parent.Nodes)
+            {
+                if (!node.Name.StartsWith("group") && node.Name != "total" && node.Name != "delta")
+                {
+                    i++;
+                }
+            }
+            return i;
         }
     }
 }

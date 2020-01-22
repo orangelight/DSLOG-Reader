@@ -47,7 +47,7 @@ namespace DSLOG_Reader_2
             SeriesGroupNode basic = new SeriesGroupNode("basic", "Basic", SystemColors.ControlLightLight);
             var voltage = new SeriesChildNode("voltage", "Voltage", Color.Yellow,  basic);
            
-
+            
             var roboRIOCPU = new SeriesChildNode("roboRIOCPU", "roboRIO CPU", Color.Red, basic);
             
 
