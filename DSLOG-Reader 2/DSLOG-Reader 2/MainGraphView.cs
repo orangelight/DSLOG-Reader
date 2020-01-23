@@ -20,11 +20,17 @@ namespace DSLOG_Reader_2
         private DateTime StartTime;
         private DateTime EndTime;
         private string LastPath, LastFile;
+        private const double TotalPDPScale = 50;
+        private Dictionary<string, int[]> IdToPDPGroup;
         public MainGraphView()
         {
             InitializeComponent();
             InitSeriesSettings();
-
+            for (double i = 0; i < 12; i++)
+            {
+                chart.ChartAreas[0].AxisY2.CustomLabels.Add(i*10, i*10+.001, $"{ i*10} ({i * TotalPDPScale})");
+            }
+            chart.ChartAreas[0].AxisY2.CustomLabels.Add(120, 120 - .001, $"{ 120} ({12 * TotalPDPScale})");
         }
 
         public void InitSeriesSettings()
@@ -65,7 +71,7 @@ namespace DSLOG_Reader_2
 
         public void SetSeries(SeriesGroupNodes basic, SeriesGroupNodes pdp)
         {
-            
+            IdToPDPGroup = new Dictionary<string, int[]>();
             ClearGraph();
             chart.Series.Clear();
             foreach (var group in basic)
@@ -113,6 +119,7 @@ namespace DSLOG_Reader_2
 
             foreach (var group in pdp)
             {
+                int[] pdpIds = group.Childern.Where(n => n.Name.StartsWith("pdp")).Select(n => int.Parse(n.Name.Replace("pdp", ""))).ToArray();
                 foreach (var node in group.Childern)
                 {
                     
@@ -120,6 +127,7 @@ namespace DSLOG_Reader_2
                     {
                        
                         var newSeries = MakeSeriesFromSettings(SeriesSettings["totallines"], node);
+                        IdToPDPGroup[node.Name] = pdpIds;
                         newSeries.BorderDashStyle = ChartDashStyle.Dash;
                         chart.Series.Add(newSeries);
                     }
@@ -248,7 +256,20 @@ namespace DSLOG_Reader_2
 
                         if (en.Brownout) chart.Series["brownout"].Points.AddXY(en.Time.ToOADate(), 15.6);
                         if (en.Watchdog) chart.Series["watchdog"].Points.AddXY(en.Time.ToOADate(), 15.3);
-                        chart.Series["totalPdp"].Points.AddXY(en.Time, en.GetDPDTotal() / 10.0);
+                        chart.Series["totalPdp"].Points.AddXY(en.Time.ToOADate(), en.GetDPDTotal() / (TotalPDPScale/10.0));
+
+                        foreach(var kv in IdToPDPGroup)
+                        {
+                            if(kv.Key.StartsWith("total"))
+                            {
+                                chart.Series[kv.Key].Points.AddXY(en.Time.ToOADate(), en.GetGroupPDPTotal(kv.Value) / (TotalPDPScale / 10.0));
+                            }
+                            else
+                            {
+                                chart.Series[kv.Key].Points.AddXY(en.Time.ToOADate(), en.GetGroupPDPSd(kv.Value)/ (TotalPDPScale / 10.0));
+                            }
+                            
+                        }
                     }
                     else
                     {
@@ -300,7 +321,27 @@ namespace DSLOG_Reader_2
 
                         if (reader.Entries.ElementAt(w - 1).GetDPDTotal() != en.GetDPDTotal() || reader.Entries.ElementAt(w + 1).GetDPDTotal() != en.GetDPDTotal())
                         {
-                            chart.Series["totalPdp"].Points.AddXY(en.Time.ToOADate(), en.GetDPDTotal()/10.0);
+                            chart.Series["totalPdp"].Points.AddXY(en.Time.ToOADate(), en.GetDPDTotal()/ (TotalPDPScale / 10.0));
+                        }
+
+                        foreach (var kv in IdToPDPGroup)
+                        {
+                            if (kv.Key.StartsWith("total"))
+                            {
+                                if (reader.Entries.ElementAt(w - 1).GetGroupPDPTotal(kv.Value) != en.GetGroupPDPTotal(kv.Value) || reader.Entries.ElementAt(w + 1).GetGroupPDPTotal(kv.Value) != en.GetGroupPDPTotal(kv.Value))
+                                {
+                                    chart.Series[kv.Key].Points.AddXY(en.Time.ToOADate(), en.GetGroupPDPTotal(kv.Value) / (TotalPDPScale / 10.0));
+                                }
+                                
+                            }
+                            else
+                            {
+                                if (reader.Entries.ElementAt(w - 1).GetGroupPDPSd(kv.Value) != en.GetGroupPDPSd(kv.Value) || reader.Entries.ElementAt(w + 1).GetGroupPDPSd(kv.Value) != en.GetGroupPDPSd(kv.Value))
+                                {
+                                    chart.Series[kv.Key].Points.AddXY(en.Time.ToOADate(), en.GetGroupPDPSd(kv.Value) / (TotalPDPScale / 10.0));
+                                }
+                            }
+
                         }
 
 
@@ -373,6 +414,7 @@ namespace DSLOG_Reader_2
                 }
             }
         }
+
     }
 
     

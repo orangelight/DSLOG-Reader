@@ -70,6 +70,7 @@
             chartArea1.AxisY.TitleFont = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
             chartArea1.AxisY.TitleForeColor = System.Drawing.Color.DarkGoldenrod;
             chartArea1.AxisY2.Interval = 10D;
+            chartArea1.AxisY2.IsLabelAutoFit = false;
             chartArea1.AxisY2.MajorGrid.Enabled = false;
             chartArea1.AxisY2.MajorTickMark.Interval = 10D;
             chartArea1.AxisY2.Maximum = 120D;

@@ -235,9 +235,16 @@ namespace DSLOG_Reader_2
         {
             treeView.BeginUpdate();
             treeView.Nodes.Clear();
-            foreach(var group in NonEditGroups)
+            
+            foreach (var group in NonEditGroups)
             {
-                treeView.Nodes.Add(group.ToTreeNode());
+                var tree = group.ToTreeNode();
+                tree.Checked = true;
+                foreach(TreeNode node in tree.Nodes)
+                {
+                    node.Checked = true;
+                }
+                treeView.Nodes.Add(tree);
                 
             }
             treeView.ExpandAll();
