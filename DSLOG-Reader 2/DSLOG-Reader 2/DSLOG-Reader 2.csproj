@@ -96,6 +96,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="SeriesView.resx">
       <DependentUpon>SeriesView.cs</DependentUpon>
@@ -121,6 +122,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="logo2.ico" />
+    <None Include="Resources\InformationSymbol_16xSM.png" />
+    <None Include="Resources\StatusHelp_16xMD.png" />
+    <None Include="Resources\Refresh_grey_16xMD.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

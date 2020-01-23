@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FileListView));
             this.listView = new System.Windows.Forms.ListView();
             this.columnFileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -38,6 +39,9 @@
             this.columnEventName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.filterSelectorCombo = new System.Windows.Forms.ComboBox();
             this.timerScrollToBottom = new System.Windows.Forms.Timer(this.components);
+            this.buttonSettings = new System.Windows.Forms.Button();
+            this.textBoxPath = new System.Windows.Forms.TextBox();
+            this.buttonRefreash = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listView
@@ -104,7 +108,7 @@
             this.filterSelectorCombo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.filterSelectorCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.filterSelectorCombo.FormattingEnabled = true;
-            this.filterSelectorCombo.Location = new System.Drawing.Point(209, 0);
+            this.filterSelectorCombo.Location = new System.Drawing.Point(183, 0);
             this.filterSelectorCombo.Name = "filterSelectorCombo";
             this.filterSelectorCombo.Size = new System.Drawing.Size(121, 21);
             this.filterSelectorCombo.TabIndex = 1;
@@ -115,16 +119,49 @@
             this.timerScrollToBottom.Interval = 10;
             this.timerScrollToBottom.Tick += new System.EventHandler(this.timerScrollToBottom_Tick);
             // 
+            // buttonSettings
+            // 
+            this.buttonSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonSettings.Image = ((System.Drawing.Image)(resources.GetObject("buttonSettings.Image")));
+            this.buttonSettings.Location = new System.Drawing.Point(304, -1);
+            this.buttonSettings.Name = "buttonSettings";
+            this.buttonSettings.Size = new System.Drawing.Size(27, 23);
+            this.buttonSettings.TabIndex = 2;
+            this.buttonSettings.UseVisualStyleBackColor = true;
+            // 
+            // textBoxPath
+            // 
+            this.textBoxPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxPath.Location = new System.Drawing.Point(27, 0);
+            this.textBoxPath.Name = "textBoxPath";
+            this.textBoxPath.ReadOnly = true;
+            this.textBoxPath.Size = new System.Drawing.Size(153, 21);
+            this.textBoxPath.TabIndex = 3;
+            // 
+            // buttonRefreash
+            // 
+            this.buttonRefreash.Image = global::DSLOG_Reader_2.Properties.Resources.Refresh_grey_16xMD;
+            this.buttonRefreash.Location = new System.Drawing.Point(-1, -1);
+            this.buttonRefreash.Name = "buttonRefreash";
+            this.buttonRefreash.Size = new System.Drawing.Size(27, 23);
+            this.buttonRefreash.TabIndex = 4;
+            this.buttonRefreash.UseVisualStyleBackColor = true;
+            // 
             // FileListView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.buttonRefreash);
+            this.Controls.Add(this.textBoxPath);
+            this.Controls.Add(this.buttonSettings);
             this.Controls.Add(this.filterSelectorCombo);
             this.Controls.Add(this.listView);
-            this.MinimumSize = new System.Drawing.Size(330, 540);
             this.Name = "FileListView";
             this.Size = new System.Drawing.Size(330, 540);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -139,5 +176,8 @@
         private System.Windows.Forms.ColumnHeader columnEventName;
         private System.Windows.Forms.ColumnHeader columnFileName;
         private System.Windows.Forms.Timer timerScrollToBottom;
+        private System.Windows.Forms.Button buttonSettings;
+        private System.Windows.Forms.TextBox textBoxPath;
+        private System.Windows.Forms.Button buttonRefreash;
     }
 }

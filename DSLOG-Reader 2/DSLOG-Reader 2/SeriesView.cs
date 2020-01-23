@@ -127,7 +127,7 @@ namespace DSLOG_Reader_2
                     Profiles = (GroupProfiles)profilesSerializer.Deserialize(fileStream);
                 } catch(Exception ex)
                 {
-                    MessageBox.Show("Setting file is corrupted!");
+                    MessageBox.Show($"Setting file is corrupted! {ex.Message}");
                     Profiles.Clear();
                     Profiles.Add(new GroupProfile("Default", defG));
                 }

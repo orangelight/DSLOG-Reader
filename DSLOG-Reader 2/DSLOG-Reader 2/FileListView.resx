@@ -120,4 +120,16 @@
   <metadata name="timerScrollToBottom.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="buttonSettings.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAEDSURBVDhPpZLBjYQwDEXnTFlwTh0IRAPcpoQRZ7gDRYzo
+        BCiCXL15rMMSlpnRLpY+Qt8/P7bjm4hcwvfnJKy1hcNdUSgdxC8DJ4wcegezLIut61oA/3Cai1QeGpBw
+        eA7DINM0yTiOEsfxCv7hyKHxJkeDHkGSJGKMkSzLNoM0TVeOnJr0ZwaGWxD6g0eQQ4M2MHBESZ+Uym1e
+        3LbtCm+a57nM84wBUewNHgxrf1vXdQhXYLLPVVUFfw8MmqYJRH81KB0s5VEmorMWaI829Vl/Wrg8RDUI
+        ntEPE1AV3KdnfLlItAanh88XiVCTbZUZlg6MeL/Kx3BCBvtQlEoHsRn8H3L7AihuZGzCOkUEAAAAAElF
+        TkSuQmCC
+</value>
+  </data>
 </root>

@@ -26,7 +26,7 @@ namespace DSLOG_Reader_2
         }
 
         public void SetMainForm(MainForm form) { MForm = form; }
-        public void SetPath(string path) { Path = path; }
+        public void SetPath(string path) { Path = path; textBoxPath.Text = path; }
 
         public void LoadFiles()
         {
@@ -129,7 +129,7 @@ namespace DSLOG_Reader_2
 
         private void InitFilterCombo()
         {
-            filterSelectorCombo.Items.Add("");
+            filterSelectorCombo.Items.Add("All Logs");
             var eventNames = DSLOGFiles.Where(e => e.IsFMSMatch).Select(e => e.EventName + " "+e.StartTime.ToString("yyyy")).Distinct();
             foreach(var name in eventNames)
             {
@@ -146,7 +146,7 @@ namespace DSLOG_Reader_2
             listView.BeginUpdate();
             listView.Items.Clear();
             
-            if (selectedEvent == "")
+            if (selectedEvent == "All Logs")
             {
                 foreach (var entry in DSLOGFiles)
                 {

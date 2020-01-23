@@ -39,6 +39,7 @@
             this.treeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.treeView.BackColor = System.Drawing.SystemColors.Control;
             this.treeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.treeView.CheckBoxes = true;
             this.treeView.Indent = 12;
@@ -79,7 +80,6 @@
             this.Controls.Add(this.comboBoxProfiles);
             this.Controls.Add(this.buttonEditGroups);
             this.Controls.Add(this.treeView);
-            this.MinimumSize = new System.Drawing.Size(162, 370);
             this.Name = "SeriesView";
             this.Size = new System.Drawing.Size(162, 370);
             this.ResumeLayout(false);
