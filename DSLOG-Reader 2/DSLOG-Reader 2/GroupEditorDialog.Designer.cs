@@ -56,6 +56,9 @@
             // treeViewPDP
             // 
             this.treeViewPDP.AllowDrop = true;
+            this.treeViewPDP.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.treeViewPDP.HideSelection = false;
             this.treeViewPDP.LabelEdit = true;
             this.treeViewPDP.Location = new System.Drawing.Point(193, 6);
@@ -64,6 +67,7 @@
             this.treeViewPDP.ShowRootLines = false;
             this.treeViewPDP.Size = new System.Drawing.Size(207, 305);
             this.treeViewPDP.TabIndex = 0;
+            this.treeViewPDP.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.treeViewPDP_AfterLabelEdit);
             this.treeViewPDP.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeViewPDP_BeforeCollapse);
             this.treeViewPDP.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.treeViewPDP_ItemDrag);
             this.treeViewPDP.NodeMouseHover += new System.Windows.Forms.TreeNodeMouseHoverEventHandler(this.treeViewPDP_NodeMouseHover);
@@ -196,6 +200,7 @@
             // 
             // buttonOkay
             // 
+            this.buttonOkay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOkay.Location = new System.Drawing.Point(243, 317);
             this.buttonOkay.Name = "buttonOkay";
             this.buttonOkay.Size = new System.Drawing.Size(75, 22);
@@ -230,6 +235,7 @@
             // 
             // buttonCancel
             // 
+            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.Location = new System.Drawing.Point(324, 317);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 22);
@@ -257,15 +263,16 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(403, 344);
+            this.ClientSize = new System.Drawing.Size(403, 343);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.buttonOkay);
             this.Controls.Add(this.treeViewPDP);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MinimumSize = new System.Drawing.Size(419, 382);
             this.Name = "GroupEditorDialog";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

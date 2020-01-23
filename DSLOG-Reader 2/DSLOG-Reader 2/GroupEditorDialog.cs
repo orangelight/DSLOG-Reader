@@ -354,7 +354,7 @@ namespace DSLOG_Reader_2
         {
             if (!treeViewPDP.SelectedNode.Nodes.ContainsKey("total") && checkBoxTotal.Checked)
             {
-                TreeNode node = new TreeNode("Group Total");
+                TreeNode node = new TreeNode($"{treeViewPDP.SelectedNode.Text} Total");
                 node.BackColor = Color.LawnGreen;
                 node.Name = "total";
                 node.NodeFont = TDFont;
@@ -370,7 +370,7 @@ namespace DSLOG_Reader_2
         {
             if (!treeViewPDP.SelectedNode.Nodes.ContainsKey("delta") && checkBoxDelta.Checked)
             {
-                TreeNode node = new TreeNode("Group Delta");
+                TreeNode node = new TreeNode($"{treeViewPDP.SelectedNode.Text} Delta");
                 node.BackColor = Color.Magenta;
                 node.NodeFont = TDFont;
                 node.Name = "delta";
@@ -407,6 +407,7 @@ namespace DSLOG_Reader_2
 
         private SeriesGroupNodes TreeNodesToSeriesGroupNodes(TreeNodeCollection nodes)
         {
+            int totalDeltaID = 0;
             SeriesGroupNodes groups = new SeriesGroupNodes();
             foreach(TreeNode treeGroup in nodes)
             {
@@ -414,7 +415,15 @@ namespace DSLOG_Reader_2
                 SeriesGroupNode groupNode = new SeriesGroupNode(treeGroup.Name, treeGroup.Text, treeGroup.BackColor);
                 foreach(TreeNode treeChild in treeGroup.Nodes)
                 {
-                    groupNode.Childern.Add(new SeriesChildNode(treeChild.Name, treeChild.Text, treeChild.BackColor));
+                    if (treeChild.Name.Contains("total") || treeChild.Name.Contains("delta"))
+                    {
+                        groupNode.Childern.Add(new SeriesChildNode($"{treeChild.Name}{totalDeltaID++}", treeChild.Text, treeChild.BackColor));
+                    }
+                    else
+                    {
+                        groupNode.Childern.Add(new SeriesChildNode(treeChild.Name, treeChild.Text, treeChild.BackColor));
+                    }
+                    
                 }
                 groups.Add(groupNode);
             }
@@ -452,6 +461,23 @@ namespace DSLOG_Reader_2
         private void treeViewPDP_BeforeCollapse(object sender, TreeViewCancelEventArgs e)
         {
             e.Cancel = true;
+        }
+
+        private void treeViewPDP_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
+        {
+            if (e.Node != null && e.Node.Nodes.Count > 0)
+            {
+                var totals = e.Node.Nodes.Find("total", true);
+                foreach(var total in totals)
+                {
+                    total.Text = $"{e.Label} Total";
+                }
+                var deltas = e.Node.Nodes.Find("delta", true);
+                foreach (var delta in deltas)
+                {
+                    delta.Text = $"{e.Label} Delta";
+                }
+            }
         }
     }
 }

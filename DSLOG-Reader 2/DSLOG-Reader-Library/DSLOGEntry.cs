@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace DSLOG_Reader_Library
@@ -46,6 +47,40 @@ namespace DSLOG_Reader_Library
                 throw new IndexOutOfRangeException();
             }
             return PdpValues[i];
+        }
+
+        public double GetDPDTotal()
+        {
+            double sum = 0;
+            foreach(double value in PdpValues)
+            {
+                sum += value;
+            }
+            return sum;
+        }
+
+        public double GetGroupPDPTotal(int[] slots)
+        {
+            double sum = 0;
+            foreach(int slot in slots)
+            {
+                sum += PdpValues[slot];
+            }
+            return sum;
+        }
+
+        public double GetGroupPDPSd(int[] slots)
+        {
+            List<double> group = new List<double>();
+            foreach(int slot in slots)
+            {
+                group.Add(PdpValues[slot]);
+            }
+            double avg = group.Average();
+            //Perform the Sum of (value-avg)_2_2      
+            double sum = group.Sum(d => Math.Pow(d - avg, 2));
+            //Put it all together      
+            return Math.Sqrt((sum) / (group.Count() - 1));
         }
     }
 }

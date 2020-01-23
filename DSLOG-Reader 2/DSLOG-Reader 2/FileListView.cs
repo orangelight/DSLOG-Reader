@@ -19,6 +19,8 @@ namespace DSLOG_Reader_2
         private string Path;
         List<DSLOGFileEntry> DSLOGFiles;
         private string lastFilter = "";
+        public MainGraphView MainChart { get; set; }
+        private int lastIndexSelectedFiles = 0;
         public FileListView()
         {
             InitializeComponent();
@@ -161,9 +163,30 @@ namespace DSLOG_Reader_2
                 }
             }
             listView.EndUpdate();
-            //sroll down to bottom (need to use timer cuz it's weird
+            //sroll down to bottom (need to use timer cuz it's weird)
+            lastIndexSelectedFiles = -1;
             timerScrollToBottom.Start();
             lastFilter = selectedEvent;
+        }
+
+        private void listView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listView.SelectedItems.Count != 0)
+            {
+                if (listView.SelectedItems[0].Index != lastIndexSelectedFiles)
+                {
+                    lastIndexSelectedFiles = listView.SelectedItems[0].Index;
+                    GraphLog(listView.SelectedItems[0].Text);
+                }
+            }
+        }
+
+        private void GraphLog(string file)
+        {
+            if (MainChart !=null)
+            {
+                MainChart.LoadLog(file, Path);
+            }
         }
     }
 

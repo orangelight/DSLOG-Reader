@@ -21,6 +21,7 @@ namespace DSLOG_Reader_2
         private bool checkMode = false;
         private GroupProfiles Profiles;
         private SeriesGroupNodes NonEditGroups;
+        public MainGraphView MainChart { get; set; }
 
         public SeriesView()
         {
@@ -182,13 +183,14 @@ namespace DSLOG_Reader_2
                             {
                                 e.Parent.Checked = false;
                                 checkMode = false;
+                                SetChartSeriesEnabled();
                                 return;
                             }
                         }
                         e.Parent.Checked = true;
                     }
                 }
-
+                SetChartSeriesEnabled();
                 checkMode = false;
             }
         }
@@ -244,6 +246,21 @@ namespace DSLOG_Reader_2
                 treeView.Nodes.Add(group.ToTreeNode());
             }
             treeView.EndUpdate();
+            SetChartSeries();
+            SetChartSeriesEnabled();
+        }
+
+        private void SetChartSeries()
+        {
+            if (MainChart != null)
+            {
+                MainChart.SetSeries(NonEditGroups, Profiles[comboBoxProfiles.SelectedIndex].Groups);
+            }
+        }
+
+        public void SetChartSeriesEnabled()
+        {
+            if (MainChart != null) MainChart.SetSeriesEnabled(treeView.Nodes);
         }
     }
 }
