@@ -31,6 +31,7 @@ namespace DSLOG_Reader_2
         public FMSMatchType MatchType { get; private set; }
         public int FMSMatchNum { get; private set; }
         public string EventName {  get; set; }
+        public bool FMSFilledIn { get; set; }
         public DSLOGFileEntry(string fileName, string dir)
         {
             Name = fileName;
@@ -47,7 +48,7 @@ namespace DSLOG_Reader_2
             
 
             Valid = true;
-            
+            FMSFilledIn = false;
         }
 
         private bool SetTime(string dir)
@@ -185,6 +186,89 @@ namespace DSLOG_Reader_2
             item.BackColor = backColor;
             if (IsFMSMatch) item.Font = FMSFont;
             return item;
+        }
+
+        public DSLOGFileEntry(string entry)
+        {
+            string[] data = entry.Split(',');
+            Name = data[0];
+            IsFMSMatch = bool.Parse(data[1]);
+            Seconds = long.Parse(data[2]);
+            StartTime = DateTime.Parse(data[3]);
+            if (IsFMSMatch)
+            {
+                FMSFilledIn = bool.Parse(data[4]);
+                MatchType = (FMSMatchType) Enum.Parse(typeof(FMSMatchType), data[5]);
+                FMSMatchNum = int.Parse(data[6]);
+                EventName = data[7];
+            }
+            Valid = true;
+        }
+
+        public string ToCacheEntry()
+        {
+            List<string> row = new List<string>();
+            row.Add(Name);
+            row.Add(IsFMSMatch.ToString());
+            row.Add(Seconds.ToString());
+            row.Add(StartTime.ToString());
+            
+            if(IsFMSMatch)
+            {
+                row.Add(FMSFilledIn.ToString());
+                row.Add(MatchType.ToString());
+                row.Add(FMSMatchNum.ToString());
+                row.Add(EventName);
+            }
+            return string.Join(",", row);
+        }
+    }
+
+    public class DSLOGFileEntryCache
+    {
+        private Dictionary<string, DSLOGFileEntry> Cache;
+        private List<DSLOGFileEntry> NewEntries;
+        public string Path { get; private set; }
+
+        public DSLOGFileEntryCache(string file)
+        {
+            Cache = new Dictionary<string, DSLOGFileEntry>();
+            if (File.Exists(file))
+            {
+                string[] lines = File.ReadAllLines(file);
+                foreach(var line in lines)
+                {
+                    var entry = new DSLOGFileEntry(line.Replace("\n", ""));
+                    Cache.Add(entry.Name, entry);
+                }
+            }
+            Path = file;
+            NewEntries = new List<DSLOGFileEntry>();
+        }
+
+        public bool TryGetEntry(string name, out DSLOGFileEntry entry)
+        {
+            return Cache.TryGetValue(name, out entry);
+        }
+        public DSLOGFileEntry AddEntry(string filename, string dir)
+        {
+            var entry = new DSLOGFileEntry(filename, dir);
+            Cache.Add(entry.Name, entry);
+            NewEntries.Add(entry);
+            return entry;
+        }
+
+        public void SaveCache()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach(var entry in NewEntries)
+            {
+                if (((entry.FMSFilledIn && entry.EventName == "???") || (entry.FMSFilledIn && Math.Abs((entry.StartTime-DateTime.Now).TotalDays) < 2)) || !entry.Valid) continue;
+                sb.Append(entry.ToCacheEntry());
+                sb.Append("\n");
+            }
+            File.AppendAllText(Path, sb.ToString());
+            NewEntries.Clear();
         }
     }
 }

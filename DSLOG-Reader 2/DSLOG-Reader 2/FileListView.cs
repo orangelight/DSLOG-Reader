@@ -38,20 +38,28 @@ namespace DSLOG_Reader_2
             {
                 DirectoryInfo dslogDir = new DirectoryInfo(Path);
                 FileInfo[] Files = dslogDir.GetFiles("*.dslog");
-
+                DSLOGFileEntryCache cahce = new DSLOGFileEntryCache(".dslog.cache");
                 for (int y = 0; y < Files.Count(); y++)
                 {
-                    
-                    var entry = new DSLOGFileEntry(Files[y].Name.Replace(".dslog", ""), Path);
-                    DSLOGFiles.Add(entry);
-                    
-                    
+                    DSLOGFileEntry entry;
+                    string name = Files[y].Name.Replace(".dslog", "");
+                    if (cahce.TryGetEntry(name, out entry))
+                    {
+                        DSLOGFiles.Add(entry);
+                    }
+                    else
+                    {
+                        DSLOGFiles.Add(cahce.AddEntry(name, Path));
+                    }                    
                 }
                 FillInMissingFMSEventInfo();
+                cahce.SaveCache();
+                listView.BeginUpdate();
                 foreach (var entry in DSLOGFiles)
                 {
                     listView.Items.Add(entry.ToListViewItem());
                 }
+                listView.EndUpdate();
                 //sroll down to bottom (need to use timer cuz it's weird
                 timerScrollToBottom.Start();
                 CreateFileWatcher();
@@ -77,9 +85,10 @@ namespace DSLOG_Reader_2
                         //}
 
                         match.EventName = nearestEvent.EventName;
+                        match.FMSFilledIn = true;
                         continue;
                     }
-
+                    match.FMSFilledIn = true;
                     match.EventName = "???";
                 }
             }
@@ -134,7 +143,7 @@ namespace DSLOG_Reader_2
             string selectedEvent = filterSelectorCombo.Items[filterSelectorCombo.SelectedIndex].ToString();
             if (lastFilter == selectedEvent) return;
 
-
+            listView.BeginUpdate();
             listView.Items.Clear();
             
             if (selectedEvent == "")
@@ -151,7 +160,7 @@ namespace DSLOG_Reader_2
                     listView.Items.Add(entry.ToListViewItem());
                 }
             }
-            
+            listView.EndUpdate();
             //sroll down to bottom (need to use timer cuz it's weird
             timerScrollToBottom.Start();
             lastFilter = selectedEvent;
