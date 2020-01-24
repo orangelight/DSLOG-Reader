@@ -35,6 +35,8 @@ namespace DSLOG_Reader_2
 
         public void LoadFiles()
         {
+            listView.Items.Clear();
+            DSLOGFiles.Clear();
             if (Path == null)
             {
                 return; //Throw something
@@ -42,7 +44,7 @@ namespace DSLOG_Reader_2
             if (Directory.Exists(Path))
             {
                
-                DSLOGFileEntryCache cache = new DSLOGFileEntryCache(".dslog.cache");
+                DSLOGFileEntryCache cache = new DSLOGFileEntryCache(@"C:\Users\Public\Documents\FRC\.dslog.cache");
                 CacheLoadingDialog dialog = new CacheLoadingDialog(cache, DSLOGFiles, Path);
                 dialog.ShowDialog();
                 FillInMissingFMSEventInfo();
@@ -126,6 +128,7 @@ namespace DSLOG_Reader_2
 
         private void InitFilterCombo()
         {
+            filterSelectorCombo.Items.Clear();
             filterSelectorCombo.Items.Add("All Logs");
             var eventNames = DSLOGFiles.Where(e => e.IsFMSMatch).Select(e => e.EventName + " "+e.StartTime.ToString("yyyy")).Distinct();
             foreach(var name in eventNames)
@@ -183,6 +186,7 @@ namespace DSLOG_Reader_2
             listView.BeginUpdate();
             listView.Items.Clear();
             
+            
             if (selectedEvent == "All Logs")
             {
                 foreach (var entry in DSLOGFiles.Where(e=>!(e.Useless && filterUseless)))
@@ -202,6 +206,11 @@ namespace DSLOG_Reader_2
             lastIndexSelectedFiles = -1;
             timerScrollToBottom.Start();
             lastFilter = selectedEvent;
+        }
+
+        private void buttonRefreash_Click(object sender, EventArgs e)
+        {
+            LoadFiles();
         }
     }
 

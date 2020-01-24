@@ -152,6 +152,7 @@
             this.buttonRefreash.Size = new System.Drawing.Size(27, 23);
             this.buttonRefreash.TabIndex = 4;
             this.buttonRefreash.UseVisualStyleBackColor = true;
+            this.buttonRefreash.Click += new System.EventHandler(this.buttonRefreash_Click);
             // 
             // buttonSettings
             // 

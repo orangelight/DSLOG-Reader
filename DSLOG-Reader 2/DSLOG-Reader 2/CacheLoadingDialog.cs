@@ -19,6 +19,8 @@ namespace DSLOG_Reader_2
         private string Path;
         private FileInfo[] Files;
         private int UselessFiles = 0;
+        private Stopwatch stopWatch = new Stopwatch();
+        List<double> lastEst = new List<double>();
         public CacheLoadingDialog(DSLOGFileEntryCache cache, List<DSLOGFileEntry> fileList, string path)
         {
             InitializeComponent();
@@ -28,13 +30,15 @@ namespace DSLOG_Reader_2
             DirectoryInfo dslogDir = new DirectoryInfo(Path);
             Files = dslogDir.GetFiles("*.dslog");
             backgroundWorker1.WorkerReportsProgress = true;
-            
+
+            this.Visible = false;
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
             timer1.Stop();
             backgroundWorker1.RunWorkerAsync();
+            stopWatch.Start();
         }
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
@@ -66,9 +70,32 @@ namespace DSLOG_Reader_2
 
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            progressBar1.Value = e.ProgressPercentage;
-            label2.Text = $"{(int)(((double)e.ProgressPercentage / 100.0) * Files.Count())}/{Files.Count()} Logs";
-            label3.Text = $"{UselessFiles} Useless logs found!";
+            int deltaP = e.ProgressPercentage - progressBar1.Value;
+           
+            if (deltaP > 0)
+            {
+                int left = 100 - e.ProgressPercentage;
+                stopWatch.Stop();
+                TimeSpan timeTaken = stopWatch.Elapsed;
+                stopWatch.Reset();
+                stopWatch.Start();
+                double estMili = (timeTaken.TotalMilliseconds / (double)deltaP) * (double)left;
+                progressBar1.Value = e.ProgressPercentage;
+                
+                label2.Text = $"{(int)(((double)e.ProgressPercentage / 100.0) * Files.Count())}/{Files.Count()} Logs";
+                if(lastEst.Count != 0)
+                {
+                    double alpha = .05;
+                    lastEst.Add(estMili);
+                    label4.Text = $"Estimated time left: {(int)(lastEst.Aggregate((ema, est) => alpha * est + (1 - alpha) * ema) / 1000)} Seconds";
+                }
+                else
+                {
+                    lastEst.Add(estMili);
+                }
+                label3.Text = $"{UselessFiles} Useless logs found!";
+            }
+           
         }
 
         private void CacheLoadingDialog_Shown(object sender, EventArgs e)
@@ -80,6 +107,11 @@ namespace DSLOG_Reader_2
         {
             this.Close();
             this.Dispose();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            button1.Text =  "Too Bad...";
         }
     }
 }
