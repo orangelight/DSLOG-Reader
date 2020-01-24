@@ -39,11 +39,12 @@ namespace DSLOG_Reader_2
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            
-            
+
+          
             for (int y = 0; y < Files.Count(); y++)
             {
                 DSLOGFileEntry entry;
+                
                 string name = Files[y].Name.Replace(".dslog", "");
                 if (Cache.TryGetEntry(name, out entry))
                 {

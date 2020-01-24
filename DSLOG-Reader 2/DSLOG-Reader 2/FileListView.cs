@@ -116,7 +116,11 @@ namespace DSLOG_Reader_2
 
         private void timerScrollToBottom_Tick(object sender, EventArgs e)
         {
-            listView.EnsureVisible(listView.Items.Count - 1);
+            if(listView.Items.Count != 0)
+            {
+                listView.EnsureVisible(listView.Items.Count - 1);
+            }
+           
             timerScrollToBottom.Stop();
         }
 
