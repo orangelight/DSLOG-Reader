@@ -50,6 +50,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CacheLoadingDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CacheLoadingDialog.Designer.cs">
+      <DependentUpon>CacheLoadingDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="DSLOGFileEntry.cs" />
     <Compile Include="FileListView.cs">
       <SubType>UserControl</SubType>
@@ -85,6 +91,9 @@
       <DependentUpon>SeriesView.cs</DependentUpon>
     </Compile>
     <Compile Include="Util.cs" />
+    <EmbeddedResource Include="CacheLoadingDialog.resx">
+      <DependentUpon>CacheLoadingDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FileListView.resx">
       <DependentUpon>FileListView.cs</DependentUpon>
     </EmbeddedResource>
@@ -131,6 +140,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="logo2.ico" />
+    <None Include="Resources\StopFilter_16x.png" />
+    <None Include="Resources\RunFilter_16x.png" />
     <None Include="Resources\InformationSymbol_16xSM.png" />
     <None Include="Resources\StatusHelp_16xMD.png" />
     <None Include="Resources\Refresh_grey_16xMD.png" />

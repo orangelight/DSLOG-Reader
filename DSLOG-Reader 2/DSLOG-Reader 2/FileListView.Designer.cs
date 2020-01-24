@@ -39,9 +39,11 @@
             this.columnEventName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.filterSelectorCombo = new System.Windows.Forms.ComboBox();
             this.timerScrollToBottom = new System.Windows.Forms.Timer(this.components);
-            this.buttonSettings = new System.Windows.Forms.Button();
             this.textBoxPath = new System.Windows.Forms.TextBox();
+            this.buttonFilter = new System.Windows.Forms.Button();
             this.buttonRefreash = new System.Windows.Forms.Button();
+            this.buttonSettings = new System.Windows.Forms.Button();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // listView
@@ -63,7 +65,7 @@
             this.listView.Location = new System.Drawing.Point(0, 21);
             this.listView.MultiSelect = false;
             this.listView.Name = "listView";
-            this.listView.Size = new System.Drawing.Size(330, 519);
+            this.listView.Size = new System.Drawing.Size(330, 496);
             this.listView.TabIndex = 0;
             this.listView.UseCompatibleStateImageBehavior = false;
             this.listView.View = System.Windows.Forms.View.Details;
@@ -120,26 +122,27 @@
             this.timerScrollToBottom.Interval = 10;
             this.timerScrollToBottom.Tick += new System.EventHandler(this.timerScrollToBottom_Tick);
             // 
-            // buttonSettings
-            // 
-            this.buttonSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSettings.Image = ((System.Drawing.Image)(resources.GetObject("buttonSettings.Image")));
-            this.buttonSettings.Location = new System.Drawing.Point(304, -1);
-            this.buttonSettings.Name = "buttonSettings";
-            this.buttonSettings.Size = new System.Drawing.Size(27, 23);
-            this.buttonSettings.TabIndex = 2;
-            this.buttonSettings.UseVisualStyleBackColor = true;
-            // 
             // textBoxPath
             // 
-            this.textBoxPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBoxPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxPath.Location = new System.Drawing.Point(27, 0);
+            this.textBoxPath.Location = new System.Drawing.Point(0, 519);
             this.textBoxPath.Name = "textBoxPath";
             this.textBoxPath.ReadOnly = true;
-            this.textBoxPath.Size = new System.Drawing.Size(153, 21);
+            this.textBoxPath.Size = new System.Drawing.Size(330, 21);
             this.textBoxPath.TabIndex = 3;
+            // 
+            // buttonFilter
+            // 
+            this.buttonFilter.BackgroundImage = global::DSLOG_Reader_2.Properties.Resources.RunFilter_16x;
+            this.buttonFilter.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.buttonFilter.Location = new System.Drawing.Point(25, -1);
+            this.buttonFilter.Name = "buttonFilter";
+            this.buttonFilter.Size = new System.Drawing.Size(27, 23);
+            this.buttonFilter.TabIndex = 6;
+            this.buttonFilter.UseVisualStyleBackColor = true;
+            this.buttonFilter.Click += new System.EventHandler(this.buttonFilter_Click);
             // 
             // buttonRefreash
             // 
@@ -150,10 +153,21 @@
             this.buttonRefreash.TabIndex = 4;
             this.buttonRefreash.UseVisualStyleBackColor = true;
             // 
+            // buttonSettings
+            // 
+            this.buttonSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonSettings.Image = ((System.Drawing.Image)(resources.GetObject("buttonSettings.Image")));
+            this.buttonSettings.Location = new System.Drawing.Point(304, -1);
+            this.buttonSettings.Name = "buttonSettings";
+            this.buttonSettings.Size = new System.Drawing.Size(27, 23);
+            this.buttonSettings.TabIndex = 2;
+            this.buttonSettings.UseVisualStyleBackColor = true;
+            // 
             // FileListView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.buttonFilter);
             this.Controls.Add(this.buttonRefreash);
             this.Controls.Add(this.textBoxPath);
             this.Controls.Add(this.buttonSettings);
@@ -180,5 +194,7 @@
         private System.Windows.Forms.Button buttonSettings;
         private System.Windows.Forms.TextBox textBoxPath;
         private System.Windows.Forms.Button buttonRefreash;
+        private System.Windows.Forms.Button buttonFilter;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

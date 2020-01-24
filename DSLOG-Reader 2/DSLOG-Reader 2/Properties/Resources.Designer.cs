@@ -83,9 +83,29 @@ namespace DSLOG_Reader_2.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap RunFilter_16x {
+            get {
+                object obj = ResourceManager.GetObject("RunFilter_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap StatusHelp_16xMD {
             get {
                 object obj = ResourceManager.GetObject("StatusHelp_16xMD", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap StopFilter_16x {
+            get {
+                object obj = ResourceManager.GetObject("StopFilter_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

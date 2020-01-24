@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Globalization;
 using DSLOG_Reader_Library;
+using DSLOG_Reader_2.Properties;
 
 namespace DSLOG_Reader_2
 {
@@ -21,10 +22,12 @@ namespace DSLOG_Reader_2
         private string lastFilter = "";
         public MainGraphView MainChart { get; set; }
         private int lastIndexSelectedFiles = 0;
+        private bool filterUseless = false;
         public FileListView()
         {
             InitializeComponent();
             DSLOGFiles = new List<DSLOGFileEntry>();
+            toolTip1.SetToolTip(buttonFilter, "Filter Useless Logs");
         }
 
         public void SetMainForm(MainForm form) { MForm = form; }
@@ -38,24 +41,12 @@ namespace DSLOG_Reader_2
             }
             if (Directory.Exists(Path))
             {
-                DirectoryInfo dslogDir = new DirectoryInfo(Path);
-                FileInfo[] Files = dslogDir.GetFiles("*.dslog");
-                DSLOGFileEntryCache cahce = new DSLOGFileEntryCache(".dslog.cache");
-                for (int y = 0; y < Files.Count(); y++)
-                {
-                    DSLOGFileEntry entry;
-                    string name = Files[y].Name.Replace(".dslog", "");
-                    if (cahce.TryGetEntry(name, out entry))
-                    {
-                        DSLOGFiles.Add(entry);
-                    }
-                    else
-                    {
-                        DSLOGFiles.Add(cahce.AddEntry(name, Path));
-                    }                    
-                }
+               
+                DSLOGFileEntryCache cache = new DSLOGFileEntryCache(".dslog.cache");
+                CacheLoadingDialog dialog = new CacheLoadingDialog(cache, DSLOGFiles, Path);
+                dialog.ShowDialog();
                 FillInMissingFMSEventInfo();
-                cahce.SaveCache();
+                cache.SaveCache();
                 listView.BeginUpdate();
                 foreach (var entry in DSLOGFiles)
                 {
@@ -142,31 +133,7 @@ namespace DSLOG_Reader_2
 
         private void filterSelectorCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string selectedEvent = filterSelectorCombo.Items[filterSelectorCombo.SelectedIndex].ToString();
-            if (lastFilter == selectedEvent) return;
-
-            listView.BeginUpdate();
-            listView.Items.Clear();
-            
-            if (selectedEvent == "All Logs")
-            {
-                foreach (var entry in DSLOGFiles)
-                {
-                    listView.Items.Add(entry.ToListViewItem());
-                }
-            }
-            else
-            {
-                foreach (var entry in DSLOGFiles.Where(en => en.EventName == selectedEvent.Substring(0, selectedEvent.Length-5) && en.StartTime.ToString("yyyy") == selectedEvent.GetLast(4)))
-                {
-                    listView.Items.Add(entry.ToListViewItem());
-                }
-            }
-            listView.EndUpdate();
-            //sroll down to bottom (need to use timer cuz it's weird)
-            lastIndexSelectedFiles = -1;
-            timerScrollToBottom.Start();
-            lastFilter = selectedEvent;
+            FilterLogs();
         }
 
         private void listView_SelectedIndexChanged(object sender, EventArgs e)
@@ -187,6 +154,50 @@ namespace DSLOG_Reader_2
             {
                 MainChart.LoadLog(file, Path);
             }
+        }
+
+        private void buttonFilter_Click(object sender, EventArgs e)
+        {
+            if (!filterUseless)
+            {
+                filterUseless = true;
+                buttonFilter.BackgroundImage = Resources.StopFilter_16x;
+            }
+            else
+            {
+                filterUseless = false;
+                buttonFilter.BackgroundImage = Resources.RunFilter_16x;
+            }
+            FilterLogs(true);
+        }
+
+        private void FilterLogs(bool force = false)
+        {
+            string selectedEvent = filterSelectorCombo.Items[filterSelectorCombo.SelectedIndex].ToString();
+            if (lastFilter == selectedEvent && !force) return;
+
+            listView.BeginUpdate();
+            listView.Items.Clear();
+            
+            if (selectedEvent == "All Logs")
+            {
+                foreach (var entry in DSLOGFiles.Where(e=>!(e.Useless && filterUseless)))
+                {
+                    listView.Items.Add(entry.ToListViewItem());
+                }
+            }
+            else
+            {
+                foreach (var entry in DSLOGFiles.Where(e => !(e.Useless && filterUseless)).Where(en => en.EventName == selectedEvent.Substring(0, selectedEvent.Length-5) && en.StartTime.ToString("yyyy") == selectedEvent.GetLast(4)))
+                {
+                    listView.Items.Add(entry.ToListViewItem());
+                }
+            }
+            listView.EndUpdate();
+            //sroll down to bottom (need to use timer cuz it's weird)
+            lastIndexSelectedFiles = -1;
+            timerScrollToBottom.Start();
+            lastFilter = selectedEvent;
         }
     }
 

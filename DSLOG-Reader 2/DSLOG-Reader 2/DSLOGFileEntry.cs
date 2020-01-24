@@ -32,18 +32,20 @@ namespace DSLOG_Reader_2
         public int FMSMatchNum { get; private set; }
         public string EventName {  get; set; }
         public bool FMSFilledIn { get; set; }
+        public bool Useless { get; set; }
         public DSLOGFileEntry(string fileName, string dir)
         {
             Name = fileName;
             MatchType = FMSMatchType.NA;
             IsFMSMatch = false;
             EventName = "";
-            if (!SetTime(dir) || !SetFMS(dir))
+            SetSeconds(dir);
+            if (!SetTime(dir) || !SetFMS(dir) || !SetUseless(dir))
             {
                 Valid = false;
                 return;
             }
-            SetSeconds(dir);
+           
 
             
 
@@ -140,6 +142,48 @@ namespace DSLOG_Reader_2
             return true;
         }
 
+        private bool SetUseless(string dir)
+        {
+            string dslogPath = dir + "\\" + Name + ".dslog";
+            if (File.Exists(dslogPath))
+            {
+                if (Seconds <= 20 && !IsFMSMatch)
+                {
+                    Useless = true;
+                    return true;
+                }
+                if (IsFMSMatch)
+                {
+                    DSLOGReader reader = new DSLOGReader(dslogPath);
+                    reader.Read();
+                    if (reader.Version == 3)
+                    {
+
+                        foreach (var entry in reader.Entries)
+                        {
+                            if (entry.RobotAuto || entry.RobotDisabled || entry.RobotTele)
+                            {
+                                Useless = false;
+                                return true;
+                            }
+                        }
+                        Useless = true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    Useless = false;
+                }
+                
+                return true;
+            }
+            return false;
+        }
+
         public ListViewItem ToListViewItem()
         {
             string[] subItems = new string[6];
@@ -195,12 +239,13 @@ namespace DSLOG_Reader_2
             IsFMSMatch = bool.Parse(data[1]);
             Seconds = long.Parse(data[2]);
             StartTime = DateTime.Parse(data[3]);
+            Useless = bool.Parse(data[4]);
             if (IsFMSMatch)
             {
-                FMSFilledIn = bool.Parse(data[4]);
-                MatchType = (FMSMatchType) Enum.Parse(typeof(FMSMatchType), data[5]);
-                FMSMatchNum = int.Parse(data[6]);
-                EventName = data[7];
+                FMSFilledIn = bool.Parse(data[5]);
+                MatchType = (FMSMatchType) Enum.Parse(typeof(FMSMatchType), data[6]);
+                FMSMatchNum = int.Parse(data[7]);
+                EventName = data[8];
             }
             Valid = true;
         }
@@ -212,8 +257,9 @@ namespace DSLOG_Reader_2
             row.Add(IsFMSMatch.ToString());
             row.Add(Seconds.ToString());
             row.Add(StartTime.ToString());
-            
-            if(IsFMSMatch)
+            row.Add(Useless.ToString());
+
+            if (IsFMSMatch)
             {
                 row.Add(FMSFilledIn.ToString());
                 row.Add(MatchType.ToString());
@@ -230,6 +276,8 @@ namespace DSLOG_Reader_2
         private List<DSLOGFileEntry> NewEntries;
         public string Path { get; private set; }
 
+        public bool New { get; private set; }
+
         public DSLOGFileEntryCache(string file)
         {
             Cache = new Dictionary<string, DSLOGFileEntry>();
@@ -241,6 +289,11 @@ namespace DSLOG_Reader_2
                     var entry = new DSLOGFileEntry(line.Replace("\n", ""));
                     Cache.Add(entry.Name, entry);
                 }
+                New = false;
+            }
+            else
+            {
+                New = true;
             }
             Path = file;
             NewEntries = new List<DSLOGFileEntry>();

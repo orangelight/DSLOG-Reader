@@ -40,9 +40,9 @@
             this.seriesView = new DSLOG_Reader_2.SeriesView();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.mainGraphView = new DSLOG_Reader_2.MainGraphView();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.buttonHelp = new System.Windows.Forms.Button();
-            this.mainGraphView = new DSLOG_Reader_2.MainGraphView();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -59,7 +59,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(355, 561);
+            this.tabControl1.Size = new System.Drawing.Size(350, 561);
             this.tabControl1.TabIndex = 2;
             // 
             // tabPage1
@@ -68,7 +68,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(347, 535);
+            this.tabPage1.Size = new System.Drawing.Size(342, 535);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Log Files";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -77,8 +77,9 @@
             // 
             this.fileListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.fileListView.Location = new System.Drawing.Point(3, 3);
+            this.fileListView.MainChart = null;
             this.fileListView.Name = "fileListView";
-            this.fileListView.Size = new System.Drawing.Size(341, 529);
+            this.fileListView.Size = new System.Drawing.Size(336, 529);
             this.fileListView.TabIndex = 0;
             // 
             // tabPage2
@@ -138,6 +139,7 @@
             // 
             this.seriesView.Dock = System.Windows.Forms.DockStyle.Right;
             this.seriesView.Location = new System.Drawing.Point(182, 3);
+            this.seriesView.MainChart = null;
             this.seriesView.Name = "seriesView";
             this.seriesView.Size = new System.Drawing.Size(162, 529);
             this.seriesView.TabIndex = 1;
@@ -147,10 +149,10 @@
             this.tabControl2.Controls.Add(this.tabPage3);
             this.tabControl2.Controls.Add(this.tabPage4);
             this.tabControl2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl2.Location = new System.Drawing.Point(355, 0);
+            this.tabControl2.Location = new System.Drawing.Point(350, 0);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(753, 561);
+            this.tabControl2.Size = new System.Drawing.Size(758, 561);
             this.tabControl2.TabIndex = 3;
             // 
             // tabPage3
@@ -159,10 +161,18 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(745, 535);
+            this.tabPage3.Size = new System.Drawing.Size(750, 535);
             this.tabPage3.TabIndex = 0;
             this.tabPage3.Text = "Graph";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // mainGraphView
+            // 
+            this.mainGraphView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mainGraphView.Location = new System.Drawing.Point(3, 3);
+            this.mainGraphView.Name = "mainGraphView";
+            this.mainGraphView.Size = new System.Drawing.Size(744, 529);
+            this.mainGraphView.TabIndex = 0;
             // 
             // tabPage4
             // 
@@ -183,14 +193,6 @@
             this.buttonHelp.Size = new System.Drawing.Size(23, 23);
             this.buttonHelp.TabIndex = 0;
             this.buttonHelp.UseVisualStyleBackColor = true;
-            // 
-            // mainGraphView
-            // 
-            this.mainGraphView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mainGraphView.Location = new System.Drawing.Point(3, 3);
-            this.mainGraphView.Name = "mainGraphView";
-            this.mainGraphView.Size = new System.Drawing.Size(739, 529);
-            this.mainGraphView.TabIndex = 0;
             // 
             // MainForm
             // 
