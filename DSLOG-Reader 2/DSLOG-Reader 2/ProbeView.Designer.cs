@@ -32,10 +32,10 @@
             // 
             // ProbeView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "ProbeView";
-            this.Size = new System.Drawing.Size(170, 282);
+            this.Size = new System.Drawing.Size(227, 347);
             this.ResumeLayout(false);
 
         }

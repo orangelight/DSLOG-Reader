@@ -18,7 +18,7 @@ namespace DSLOG_Reader_2
     {
         private MainForm MForm;
         private string Path;
-        List<DSLOGFileEntry> DSLOGFiles;
+        private List<DSLOGFileEntry> DSLOGFiles;
         private string lastFilter = "";
         public MainGraphView MainChart { get; set; }
         private int lastIndexSelectedFiles = 0;
@@ -57,6 +57,7 @@ namespace DSLOG_Reader_2
                 listView.EndUpdate();
                 //sroll down to bottom (need to use timer cuz it's weird
                 timerScrollToBottom.Start();
+                ResizeColumns();
                 CreateFileWatcher();
             }
 
@@ -212,7 +213,30 @@ namespace DSLOG_Reader_2
         {
             LoadFiles();
         }
-    }
 
-        
+        public bool HasFMSMatch()
+        {
+            if (DSLOGFiles != null && DSLOGFiles.Count > 0)
+            {
+                return DSLOGFiles.Any(e => e.IsFMSMatch);
+            }
+            return false;
+        }
+
+        private void ResizeColumns()
+        {
+            for(int i = 0; i < listView.Columns.Count; i++)
+            {
+                if (i == 2 || i == 3 || i == 5)
+                {
+                    listView.AutoResizeColumn(i, ColumnHeaderAutoResizeStyle.HeaderSize);
+                }
+                else
+                {
+                    listView.AutoResizeColumn(i, ColumnHeaderAutoResizeStyle.ColumnContent);
+                }
+                
+            }
+        }
+    }        
 }

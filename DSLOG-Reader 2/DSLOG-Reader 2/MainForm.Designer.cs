@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -45,6 +46,8 @@
             this.probeView1 = new DSLOG_Reader_2.ProbeView();
             this.exportView1 = new DSLOG_Reader_2.ExportView();
             this.seriesView = new DSLOG_Reader_2.SeriesView();
+            this.buttonCompMode = new System.Windows.Forms.Button();
+            this.timerCompMode = new System.Windows.Forms.Timer(this.components);
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -61,18 +64,20 @@
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Left;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(354, 561);
+            this.tabControl1.Size = new System.Drawing.Size(472, 690);
             this.tabControl1.TabIndex = 2;
             // 
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.fileListView);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Location = new System.Drawing.Point(4, 25);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(346, 535);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage1.Size = new System.Drawing.Size(464, 661);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Log Files";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -82,10 +87,11 @@
             this.tabPage2.Controls.Add(this.tabControl3);
             this.tabPage2.Controls.Add(this.richTextBox1);
             this.tabPage2.Controls.Add(this.seriesView);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Location = new System.Drawing.Point(4, 25);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(344, 535);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage2.Size = new System.Drawing.Size(464, 661);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Graph";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -96,19 +102,21 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.tabControl3.Controls.Add(this.tabPage5);
             this.tabControl3.Controls.Add(this.tabPage6);
-            this.tabControl3.Location = new System.Drawing.Point(3, 3);
+            this.tabControl3.Location = new System.Drawing.Point(4, 4);
+            this.tabControl3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabControl3.Name = "tabControl3";
             this.tabControl3.SelectedIndex = 0;
-            this.tabControl3.Size = new System.Drawing.Size(174, 419);
+            this.tabControl3.Size = new System.Drawing.Size(232, 516);
             this.tabControl3.TabIndex = 3;
             // 
             // tabPage5
             // 
             this.tabPage5.Controls.Add(this.probeView1);
-            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Location = new System.Drawing.Point(4, 25);
+            this.tabPage5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(166, 393);
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage5.Size = new System.Drawing.Size(224, 487);
             this.tabPage5.TabIndex = 0;
             this.tabPage5.Text = "Probe";
             this.tabPage5.UseVisualStyleBackColor = true;
@@ -116,10 +124,11 @@
             // tabPage6
             // 
             this.tabPage6.Controls.Add(this.exportView1);
-            this.tabPage6.Location = new System.Drawing.Point(4, 22);
+            this.tabPage6.Location = new System.Drawing.Point(4, 25);
+            this.tabPage6.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(166, 393);
+            this.tabPage6.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage6.Size = new System.Drawing.Size(224, 487);
             this.tabPage6.TabIndex = 1;
             this.tabPage6.Text = "Export";
             this.tabPage6.UseVisualStyleBackColor = true;
@@ -127,9 +136,10 @@
             // richTextBox1
             // 
             this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.richTextBox1.Location = new System.Drawing.Point(3, 422);
+            this.richTextBox1.Location = new System.Drawing.Point(4, 519);
+            this.richTextBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(337, 110);
+            this.richTextBox1.Size = new System.Drawing.Size(448, 134);
             this.richTextBox1.TabIndex = 2;
             this.richTextBox1.Text = "";
             // 
@@ -140,29 +150,32 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl2.Controls.Add(this.tabPage3);
             this.tabControl2.Controls.Add(this.tabPage4);
-            this.tabControl2.Location = new System.Drawing.Point(350, 0);
+            this.tabControl2.Location = new System.Drawing.Point(467, 0);
+            this.tabControl2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(758, 561);
+            this.tabControl2.Size = new System.Drawing.Size(1011, 690);
             this.tabControl2.TabIndex = 3;
             // 
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.mainGraphView);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Location = new System.Drawing.Point(4, 25);
+            this.tabPage3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(750, 535);
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage3.Size = new System.Drawing.Size(1003, 661);
             this.tabPage3.TabIndex = 0;
             this.tabPage3.Text = "Graph";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // tabPage4
             // 
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Location = new System.Drawing.Point(4, 25);
+            this.tabPage4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(750, 535);
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage4.Size = new System.Drawing.Size(1003, 661);
             this.tabPage4.TabIndex = 1;
             this.tabPage4.Text = "Events";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -171,67 +184,93 @@
             // 
             this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonHelp.Image = global::DSLOG_Reader_2.Properties.Resources.StatusHelp_16xMD;
-            this.buttonHelp.Location = new System.Drawing.Point(1084, -1);
+            this.buttonHelp.Location = new System.Drawing.Point(1445, -1);
+            this.buttonHelp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonHelp.Name = "buttonHelp";
-            this.buttonHelp.Size = new System.Drawing.Size(23, 23);
+            this.buttonHelp.Size = new System.Drawing.Size(31, 26);
             this.buttonHelp.TabIndex = 0;
             this.buttonHelp.UseVisualStyleBackColor = true;
             // 
             // mainGraphView
             // 
             this.mainGraphView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mainGraphView.Location = new System.Drawing.Point(3, 3);
+            this.mainGraphView.Location = new System.Drawing.Point(4, 4);
+            this.mainGraphView.Margin = new System.Windows.Forms.Padding(5);
             this.mainGraphView.Name = "mainGraphView";
-            this.mainGraphView.Size = new System.Drawing.Size(744, 529);
+            this.mainGraphView.Size = new System.Drawing.Size(995, 653);
             this.mainGraphView.TabIndex = 0;
             // 
             // fileListView
             // 
             this.fileListView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.fileListView.Location = new System.Drawing.Point(3, 3);
+            this.fileListView.Location = new System.Drawing.Point(4, 4);
             this.fileListView.MainChart = null;
+            this.fileListView.Margin = new System.Windows.Forms.Padding(5);
             this.fileListView.Name = "fileListView";
-            this.fileListView.Size = new System.Drawing.Size(340, 529);
+            this.fileListView.Size = new System.Drawing.Size(456, 653);
             this.fileListView.TabIndex = 0;
             // 
             // probeView1
             // 
             this.probeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.probeView1.Location = new System.Drawing.Point(3, 3);
+            this.probeView1.Location = new System.Drawing.Point(4, 4);
+            this.probeView1.Margin = new System.Windows.Forms.Padding(5);
             this.probeView1.Name = "probeView1";
-            this.probeView1.Size = new System.Drawing.Size(160, 387);
+            this.probeView1.Size = new System.Drawing.Size(216, 479);
             this.probeView1.TabIndex = 0;
             // 
             // exportView1
             // 
             this.exportView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.exportView1.Location = new System.Drawing.Point(3, 3);
+            this.exportView1.Location = new System.Drawing.Point(4, 4);
+            this.exportView1.Margin = new System.Windows.Forms.Padding(5);
             this.exportView1.Name = "exportView1";
-            this.exportView1.Size = new System.Drawing.Size(164, 387);
+            this.exportView1.Size = new System.Drawing.Size(219, 473);
             this.exportView1.TabIndex = 0;
             // 
             // seriesView
             // 
-            this.seriesView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.seriesView.Location = new System.Drawing.Point(177, 3);
+            this.seriesView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.seriesView.Location = new System.Drawing.Point(236, 4);
             this.seriesView.MainChart = null;
+            this.seriesView.Margin = new System.Windows.Forms.Padding(5);
             this.seriesView.Name = "seriesView";
-            this.seriesView.Size = new System.Drawing.Size(162, 419);
+            this.seriesView.Size = new System.Drawing.Size(216, 516);
             this.seriesView.TabIndex = 1;
+            // 
+            // buttonCompMode
+            // 
+            this.buttonCompMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCompMode.Location = new System.Drawing.Point(1295, -1);
+            this.buttonCompMode.Name = "buttonCompMode";
+            this.buttonCompMode.Size = new System.Drawing.Size(150, 26);
+            this.buttonCompMode.TabIndex = 1;
+            this.buttonCompMode.Text = "Regular Mode";
+            this.buttonCompMode.UseVisualStyleBackColor = true;
+            this.buttonCompMode.Click += new System.EventHandler(this.ButtonCompMode_Click);
+            // 
+            // timerCompMode
+            // 
+            this.timerCompMode.Enabled = true;
+            this.timerCompMode.Interval = 1000;
+            this.timerCompMode.Tick += new System.EventHandler(this.TimerCompMode_Tick);
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1108, 561);
+            this.ClientSize = new System.Drawing.Size(1477, 690);
+            this.Controls.Add(this.buttonCompMode);
             this.Controls.Add(this.buttonHelp);
             this.Controls.Add(this.tabControl2);
             this.Controls.Add(this.tabControl1);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(770, 260);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.MinimumSize = new System.Drawing.Size(1021, 309);
             this.Name = "MainForm";
             this.Text = "MainForm";
             this.tabControl1.ResumeLayout(false);
@@ -264,5 +303,7 @@
         private MainGraphView mainGraphView;
         private ProbeView probeView1;
         private ExportView exportView1;
+        private System.Windows.Forms.Button buttonCompMode;
+        private System.Windows.Forms.Timer timerCompMode;
     }
 }
