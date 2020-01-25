@@ -44,6 +44,9 @@
             this.buttonCompMode = new System.Windows.Forms.Button();
             this.timerCompMode = new System.Windows.Forms.Timer(this.components);
             this.textBoxSearch = new System.Windows.Forms.TextBox();
+            this.buttonFindMatch = new System.Windows.Forms.Button();
+            this.buttonResetZoom = new System.Windows.Forms.Button();
+            this.buttonMatchTime = new System.Windows.Forms.Button();
             this.mainGraphView = new DSLOG_Reader_2.MainGraphView();
             this.eventsView1 = new DSLOG_Reader_2.EventsView();
             this.fileListView = new DSLOG_Reader_2.FileListView();
@@ -188,7 +191,8 @@
             // buttonHelp
             // 
             this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonHelp.Image = global::DSLOG_Reader_2.Properties.Resources.StatusHelp_16xMD;
+            this.buttonHelp.BackgroundImage = global::DSLOG_Reader_2.Properties.Resources.StatusHelp_16xMD;
+            this.buttonHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.buttonHelp.Location = new System.Drawing.Point(1445, -1);
             this.buttonHelp.Margin = new System.Windows.Forms.Padding(4);
             this.buttonHelp.Name = "buttonHelp";
@@ -199,12 +203,12 @@
             // buttonCompMode
             // 
             this.buttonCompMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCompMode.Location = new System.Drawing.Point(1221, -1);
+            this.buttonCompMode.Location = new System.Drawing.Point(1267, -1);
             this.buttonCompMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonCompMode.Name = "buttonCompMode";
-            this.buttonCompMode.Size = new System.Drawing.Size(223, 26);
+            this.buttonCompMode.Size = new System.Drawing.Size(177, 26);
             this.buttonCompMode.TabIndex = 1;
-            this.buttonCompMode.Text = "Switch to Competition Mode";
+            this.buttonCompMode.Text = "Open Competition View";
             this.buttonCompMode.UseVisualStyleBackColor = true;
             this.buttonCompMode.Click += new System.EventHandler(this.ButtonCompMode_Click);
             // 
@@ -218,17 +222,49 @@
             // 
             this.textBoxSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxSearch.Location = new System.Drawing.Point(944, 0);
+            this.textBoxSearch.Location = new System.Drawing.Point(990, 0);
             this.textBoxSearch.Name = "textBoxSearch";
             this.textBoxSearch.Size = new System.Drawing.Size(276, 23);
             this.textBoxSearch.TabIndex = 1;
             this.textBoxSearch.TextChanged += new System.EventHandler(this.TextBoxSearch_TextChanged);
             // 
+            // buttonFindMatch
+            // 
+            this.buttonFindMatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonFindMatch.Location = new System.Drawing.Point(928, -1);
+            this.buttonFindMatch.Name = "buttonFindMatch";
+            this.buttonFindMatch.Size = new System.Drawing.Size(31, 26);
+            this.buttonFindMatch.TabIndex = 1;
+            this.buttonFindMatch.Text = "button1";
+            this.buttonFindMatch.UseVisualStyleBackColor = true;
+            // 
+            // buttonResetZoom
+            // 
+            this.buttonResetZoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonResetZoom.Location = new System.Drawing.Point(958, -1);
+            this.buttonResetZoom.Name = "buttonResetZoom";
+            this.buttonResetZoom.Size = new System.Drawing.Size(31, 26);
+            this.buttonResetZoom.TabIndex = 2;
+            this.buttonResetZoom.Text = "button2";
+            this.buttonResetZoom.UseVisualStyleBackColor = true;
+            // 
+            // buttonMatchTime
+            // 
+            this.buttonMatchTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonMatchTime.Location = new System.Drawing.Point(898, -1);
+            this.buttonMatchTime.Name = "buttonMatchTime";
+            this.buttonMatchTime.Size = new System.Drawing.Size(31, 26);
+            this.buttonMatchTime.TabIndex = 1;
+            this.buttonMatchTime.Text = "button1";
+            this.buttonMatchTime.UseVisualStyleBackColor = true;
+            // 
             // mainGraphView
             // 
             this.mainGraphView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mainGraphView.EventsView = null;
             this.mainGraphView.Location = new System.Drawing.Point(4, 4);
             this.mainGraphView.Margin = new System.Windows.Forms.Padding(5);
+            this.mainGraphView.MForm = null;
             this.mainGraphView.Name = "mainGraphView";
             this.mainGraphView.Size = new System.Drawing.Size(995, 653);
             this.mainGraphView.TabIndex = 0;
@@ -289,17 +325,20 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1477, 690);
+            this.Controls.Add(this.buttonResetZoom);
+            this.Controls.Add(this.buttonFindMatch);
             this.Controls.Add(this.textBoxSearch);
             this.Controls.Add(this.buttonCompMode);
             this.Controls.Add(this.buttonHelp);
+            this.Controls.Add(this.buttonMatchTime);
             this.Controls.Add(this.tabControl2);
             this.Controls.Add(this.tabControl1);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4);
-            this.MinimumSize = new System.Drawing.Size(1021, 307);
+            this.MinimumSize = new System.Drawing.Size(1200, 307);
             this.Name = "MainForm";
-            this.Text = "MainForm";
+            this.Text = "DSLOG Reader 2";
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
@@ -336,5 +375,8 @@
         private System.Windows.Forms.Timer timerCompMode;
         private EventsView eventsView1;
         private System.Windows.Forms.TextBox textBoxSearch;
+        private System.Windows.Forms.Button buttonFindMatch;
+        private System.Windows.Forms.Button buttonResetZoom;
+        private System.Windows.Forms.Button buttonMatchTime;
     }
 }

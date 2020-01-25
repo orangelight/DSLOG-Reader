@@ -7,20 +7,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DSLOG_Reader_2.CompView;
 
 namespace DSLOG_Reader_2
 {
     public partial class MainForm : Form
     {
         private bool CompMode = false;
+        private CompForm compForm;
         public MainForm()
         {
             InitializeComponent();
+            compForm = new CompForm();
+            compForm.MForm = this;
+            fileListView.ComForm = compForm;
             fileListView.MainChart = mainGraphView;
             fileListView.EventView = eventsView1;
             fileListView.SetPath(@"C:\Users\Public\Documents\FRC\Log Files");
             fileListView.LoadFiles();
             seriesView.MainChart = mainGraphView;
+            seriesView.ComForm = compForm;
             eventsView1.GraphView = mainGraphView;
             mainGraphView.MForm = this;
             mainGraphView.EventsView = eventsView1;
@@ -66,25 +72,8 @@ namespace DSLOG_Reader_2
 
         private void ButtonCompMode_Click(object sender, EventArgs e)
         {
-            if (!CompMode)
-            {
-                CompMode = true;
-                HideReg(false);
-                buttonCompMode.Text = "Switch to Regular Mode";
-            }
-            else
-            {
-                CompMode = false;
-                HideReg(true); 
-                buttonCompMode.Text = "Switch to Competition Mode";
-            }
-        }
-
-        private void HideReg(bool vis)
-        {
-            tabControl1.Visible = vis;
-            tabControl2.Visible = vis;
-            textBoxSearch.Visible = vis;
+            compForm.Show();
+            compForm.Focus();
         }
 
         private void TextBoxSearch_TextChanged(object sender, EventArgs e)

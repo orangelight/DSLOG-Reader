@@ -58,10 +58,10 @@
             this.listViewEvents.FullRowSelect = true;
             this.listViewEvents.GridLines = true;
             this.listViewEvents.HideSelection = false;
-            this.listViewEvents.Location = new System.Drawing.Point(0, 26);
+            this.listViewEvents.Location = new System.Drawing.Point(0, 3);
             this.listViewEvents.MultiSelect = false;
             this.listViewEvents.Name = "listViewEvents";
-            this.listViewEvents.Size = new System.Drawing.Size(1078, 490);
+            this.listViewEvents.Size = new System.Drawing.Size(1078, 513);
             this.listViewEvents.TabIndex = 1;
             this.listViewEvents.UseCompatibleStateImageBehavior = false;
             this.listViewEvents.View = System.Windows.Forms.View.Details;

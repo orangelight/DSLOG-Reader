@@ -11,6 +11,7 @@ using System.IO;
 using System.Globalization;
 using DSLOG_Reader_Library;
 using DSLOG_Reader_2.Properties;
+using DSLOG_Reader_2.CompView;
 
 namespace DSLOG_Reader_2
 {
@@ -25,6 +26,7 @@ namespace DSLOG_Reader_2
         private int lastIndexSelectedFiles = 0;
         private bool filterUseless = false;
         private bool firstColumnResize = true;
+        public CompForm ComForm { get; set; }
         public FileListView()
         {
             InitializeComponent();
@@ -147,6 +149,7 @@ namespace DSLOG_Reader_2
             {
                 filterSelectorCombo.Items.Add(name);
             }
+            ComForm.SetEvents(eventNames.ToList());
             filterSelectorCombo.SelectedIndex = 0;
         }
 
