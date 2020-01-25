@@ -25,6 +25,7 @@ namespace DSLOG_Reader_2
         private Point? prevPosition = null;
         public MainForm MForm {get;set; }
         public EventsView EventsView { get; set; }
+        private int PointCount = 1;
         public MainGraphView()
         {
             InitializeComponent();
@@ -180,6 +181,7 @@ namespace DSLOG_Reader_2
                 area.AxisX.Minimum = StartTime.ToOADate();
                 area.CursorX.IntervalOffset = reader.StartTime.Millisecond % 20;
                 PlotLog(reader);
+                PointCount = reader.Entries.Count;
                 area.AxisX.Maximum = EndTime.ToOADate();
                 ChangeChartLabels();
                 area.AxisX.ScaleView.ZoomReset();
@@ -459,6 +461,31 @@ namespace DSLOG_Reader_2
                     }
                 }
             }
+        }
+
+        private void Chart_AxisViewChanged(object sender, ViewEventArgs e)
+        {
+            if (StartTime != null)
+            {
+                if (chart.ChartAreas[0].AxisX.ScaleView.ViewMinimum < chart.ChartAreas[0].AxisX.Minimum || chart.ChartAreas[0].AxisX.ScaleView.ViewMaximum > chart.ChartAreas[0].AxisX.Maximum) chart.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+                ChangeChartLabels();
+            }
+        }
+
+        private void Chart_AxisViewChanging(object sender, ViewEventArgs e)
+        {
+            if (!Double.IsNaN(e.NewPosition) && StartTime != null && !Double.IsNaN(e.NewSize))
+            {
+                if (((int)(DateTime.FromOADate(e.NewPosition + e.NewSize).Subtract(StartTime).TotalMilliseconds / 20)) > PointCount)
+                {
+                    e.NewPosition = EndTime.ToOADate() - e.NewSize;
+                }
+            }
+        }
+
+        private void Chart_CursorPositionChanged(object sender, CursorEventArgs e)
+        {
+
         }
 
         public void AddMessage(DataPoint dp)
