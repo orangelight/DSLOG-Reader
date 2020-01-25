@@ -32,24 +32,24 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.fileListView = new DSLOG_Reader_2.FileListView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabControl3 = new System.Windows.Forms.TabControl();
             this.tabPage5 = new System.Windows.Forms.TabPage();
-            this.probeView1 = new DSLOG_Reader_2.ProbeView();
             this.tabPage6 = new System.Windows.Forms.TabPage();
-            this.exportView1 = new DSLOG_Reader_2.ExportView();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            this.seriesView = new DSLOG_Reader_2.SeriesView();
+            this.richTextBoxGraph = new System.Windows.Forms.RichTextBox();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.mainGraphView = new DSLOG_Reader_2.MainGraphView();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.eventsView1 = new DSLOG_Reader_2.EventsView();
             this.buttonHelp = new System.Windows.Forms.Button();
             this.buttonCompMode = new System.Windows.Forms.Button();
             this.timerCompMode = new System.Windows.Forms.Timer(this.components);
             this.textBoxSearch = new System.Windows.Forms.TextBox();
+            this.mainGraphView = new DSLOG_Reader_2.MainGraphView();
+            this.eventsView1 = new DSLOG_Reader_2.EventsView();
+            this.fileListView = new DSLOG_Reader_2.FileListView();
+            this.probeView1 = new DSLOG_Reader_2.ProbeView();
+            this.exportView1 = new DSLOG_Reader_2.ExportView();
+            this.seriesView = new DSLOG_Reader_2.SeriesView();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -86,20 +86,10 @@
             this.tabPage1.Text = "Log Files";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // fileListView
-            // 
-            this.fileListView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.fileListView.Location = new System.Drawing.Point(4, 4);
-            this.fileListView.MainChart = null;
-            this.fileListView.Margin = new System.Windows.Forms.Padding(5);
-            this.fileListView.Name = "fileListView";
-            this.fileListView.Size = new System.Drawing.Size(456, 653);
-            this.fileListView.TabIndex = 0;
-            // 
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.tabControl3);
-            this.tabPage2.Controls.Add(this.richTextBox1);
+            this.tabPage2.Controls.Add(this.richTextBoxGraph);
             this.tabPage2.Controls.Add(this.seriesView);
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
@@ -135,15 +125,6 @@
             this.tabPage5.Text = "Probe";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
-            // probeView1
-            // 
-            this.probeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.probeView1.Location = new System.Drawing.Point(4, 4);
-            this.probeView1.Margin = new System.Windows.Forms.Padding(5);
-            this.probeView1.Name = "probeView1";
-            this.probeView1.Size = new System.Drawing.Size(216, 479);
-            this.probeView1.TabIndex = 0;
-            // 
             // tabPage6
             // 
             this.tabPage6.Controls.Add(this.exportView1);
@@ -156,37 +137,15 @@
             this.tabPage6.Text = "Export";
             this.tabPage6.UseVisualStyleBackColor = true;
             // 
-            // exportView1
+            // richTextBoxGraph
             // 
-            this.exportView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.exportView1.Location = new System.Drawing.Point(4, 4);
-            this.exportView1.Margin = new System.Windows.Forms.Padding(5);
-            this.exportView1.Name = "exportView1";
-            this.exportView1.Size = new System.Drawing.Size(219, 473);
-            this.exportView1.TabIndex = 0;
-            // 
-            // richTextBox1
-            // 
-            this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.richTextBox1.Location = new System.Drawing.Point(4, 519);
-            this.richTextBox1.Margin = new System.Windows.Forms.Padding(4);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(448, 134);
-            this.richTextBox1.TabIndex = 2;
-            this.richTextBox1.Text = "";
-            // 
-            // seriesView
-            // 
-            this.seriesView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.seriesView.Location = new System.Drawing.Point(236, 4);
-            this.seriesView.MainChart = null;
-            this.seriesView.Margin = new System.Windows.Forms.Padding(5);
-            this.seriesView.Name = "seriesView";
-            this.seriesView.Size = new System.Drawing.Size(216, 516);
-            this.seriesView.TabIndex = 1;
+            this.richTextBoxGraph.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.richTextBoxGraph.Location = new System.Drawing.Point(4, 519);
+            this.richTextBoxGraph.Margin = new System.Windows.Forms.Padding(4);
+            this.richTextBoxGraph.Name = "richTextBoxGraph";
+            this.richTextBoxGraph.Size = new System.Drawing.Size(448, 134);
+            this.richTextBoxGraph.TabIndex = 2;
+            this.richTextBoxGraph.Text = "";
             // 
             // tabControl2
             // 
@@ -214,15 +173,6 @@
             this.tabPage3.Text = "Graph";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // mainGraphView
-            // 
-            this.mainGraphView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mainGraphView.Location = new System.Drawing.Point(4, 4);
-            this.mainGraphView.Margin = new System.Windows.Forms.Padding(5);
-            this.mainGraphView.Name = "mainGraphView";
-            this.mainGraphView.Size = new System.Drawing.Size(995, 653);
-            this.mainGraphView.TabIndex = 0;
-            // 
             // tabPage4
             // 
             this.tabPage4.Controls.Add(this.eventsView1);
@@ -234,14 +184,6 @@
             this.tabPage4.TabIndex = 1;
             this.tabPage4.Text = "Events";
             this.tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // eventsView1
-            // 
-            this.eventsView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.eventsView1.Location = new System.Drawing.Point(4, 4);
-            this.eventsView1.Name = "eventsView1";
-            this.eventsView1.Size = new System.Drawing.Size(995, 653);
-            this.eventsView1.TabIndex = 0;
             // 
             // buttonHelp
             // 
@@ -282,6 +224,66 @@
             this.textBoxSearch.TabIndex = 1;
             this.textBoxSearch.TextChanged += new System.EventHandler(this.TextBoxSearch_TextChanged);
             // 
+            // mainGraphView
+            // 
+            this.mainGraphView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mainGraphView.Location = new System.Drawing.Point(4, 4);
+            this.mainGraphView.Margin = new System.Windows.Forms.Padding(5);
+            this.mainGraphView.Name = "mainGraphView";
+            this.mainGraphView.Size = new System.Drawing.Size(995, 653);
+            this.mainGraphView.TabIndex = 0;
+            // 
+            // eventsView1
+            // 
+            this.eventsView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.eventsView1.GraphView = null;
+            this.eventsView1.Location = new System.Drawing.Point(4, 4);
+            this.eventsView1.Name = "eventsView1";
+            this.eventsView1.Size = new System.Drawing.Size(995, 653);
+            this.eventsView1.TabIndex = 0;
+            // 
+            // fileListView
+            // 
+            this.fileListView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.fileListView.EventView = null;
+            this.fileListView.Location = new System.Drawing.Point(4, 4);
+            this.fileListView.MainChart = null;
+            this.fileListView.Margin = new System.Windows.Forms.Padding(5);
+            this.fileListView.Name = "fileListView";
+            this.fileListView.Size = new System.Drawing.Size(456, 653);
+            this.fileListView.TabIndex = 0;
+            // 
+            // probeView1
+            // 
+            this.probeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.probeView1.Location = new System.Drawing.Point(4, 4);
+            this.probeView1.Margin = new System.Windows.Forms.Padding(5);
+            this.probeView1.Name = "probeView1";
+            this.probeView1.Size = new System.Drawing.Size(216, 479);
+            this.probeView1.TabIndex = 0;
+            // 
+            // exportView1
+            // 
+            this.exportView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.exportView1.Location = new System.Drawing.Point(4, 4);
+            this.exportView1.Margin = new System.Windows.Forms.Padding(5);
+            this.exportView1.Name = "exportView1";
+            this.exportView1.Size = new System.Drawing.Size(219, 473);
+            this.exportView1.TabIndex = 0;
+            // 
+            // seriesView
+            // 
+            this.seriesView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.seriesView.Location = new System.Drawing.Point(236, 4);
+            this.seriesView.MainChart = null;
+            this.seriesView.Margin = new System.Windows.Forms.Padding(5);
+            this.seriesView.Name = "seriesView";
+            this.seriesView.Size = new System.Drawing.Size(216, 516);
+            this.seriesView.TabIndex = 1;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -319,7 +321,7 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.RichTextBox richTextBoxGraph;
         private System.Windows.Forms.TabControl tabControl2;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.TabPage tabPage4;

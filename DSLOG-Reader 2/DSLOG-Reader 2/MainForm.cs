@@ -21,7 +21,10 @@ namespace DSLOG_Reader_2
             fileListView.SetPath(@"C:\Users\Public\Documents\FRC\Log Files");
             fileListView.LoadFiles();
             seriesView.MainChart = mainGraphView;
-            
+            eventsView1.GraphView = mainGraphView;
+            mainGraphView.MForm = this;
+            mainGraphView.EventsView = eventsView1;
+
             seriesView.LoadSeries();
             
         }
@@ -87,6 +90,12 @@ namespace DSLOG_Reader_2
         private void TextBoxSearch_TextChanged(object sender, EventArgs e)
         {
             eventsView1.SetFilter(textBoxSearch.Text);
+        }
+
+        public void SetGraphRichText(string text, Color c)
+        {
+            richTextBoxGraph.Text = text;
+            richTextBoxGraph.BackColor = c;
         }
     }
 }

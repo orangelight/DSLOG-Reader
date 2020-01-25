@@ -15,7 +15,7 @@ namespace DSLOG_Reader_2
 {
     public partial class EventsView : UserControl
     {
-        //private List<DSEVENTSEntry> LogEvents;
+        public MainGraphView GraphView { get; set; }
         private Dictionary<Double, String> EventsDict = new Dictionary<double, string>();
         private int lastIndexSelectedEvents = -1;
         private string Filter = "";
@@ -52,6 +52,7 @@ namespace DSLOG_Reader_2
             listViewEvents.BeginUpdate();
             listViewEvents.ListViewItemSorter = null;
             lastIndexSelectedEvents = -1;
+            GraphView.ClearMessages();
             listViewEvents.Items.Clear();
             var test = EventsDict.Where(e => e.Value.Contains(Filter));
             foreach (var entry in EventsDict.Where(e=>e.Value.Contains(Filter)).AsParallel().ToList())
@@ -93,7 +94,7 @@ namespace DSLOG_Reader_2
                             pRL.MarkerSize = 6;
                             pRL.MarkerStyle = MarkerStyle.Square;
                             pRL.YValues[0] = 14.7;
-                            //chartMain.Series["Messages"].Points.Add(pRL);
+                            GraphView.AddMessage(pRL);
                             EventsDict[newTime.ToOADate()] = "Radio Lost";
                         }
                     }
@@ -110,7 +111,7 @@ namespace DSLOG_Reader_2
                                 pRL.MarkerSize = 6;
                                 pRL.MarkerStyle = MarkerStyle.Square;
                                 pRL.YValues[0] = 14.7;
-                                //chartMain.Series["Messages"].Points.Add(pRL);
+                                GraphView.AddMessage(pRL);
                                 EventsDict[newTime.ToOADate()] = "Radio Seen";
                             }
                         }
@@ -128,8 +129,8 @@ namespace DSLOG_Reader_2
                 }
                 item.SubItems.Add("" + entry.Key);
                 listViewEvents.Items.Add(item);
-                //chartMain.Series["Messages"].Points.Add(po);
-                //EventsDict[en.Time.ToOADate()] = en.Data;
+                GraphView.AddMessage(po);
+                EventsDict[entry.Key] = entry.Value;
             }
             listViewEvents.Columns[0].Width = -2;
             listViewEvents.EndUpdate();
@@ -167,6 +168,11 @@ namespace DSLOG_Reader_2
             {
                 listViewEvents.Columns[1].Width = 1000;
             }
+        }
+
+        public bool TryGetEvent(double key, out string data)
+        {
+            return EventsDict.TryGetValue(key, out data);
         }
     }
 }

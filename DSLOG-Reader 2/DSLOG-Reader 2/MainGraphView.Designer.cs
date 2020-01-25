@@ -92,7 +92,7 @@
             this.chart.ChartAreas.Add(chartArea1);
             this.chart.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chart.Location = new System.Drawing.Point(0, 0);
-            this.chart.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chart.Margin = new System.Windows.Forms.Padding(4);
             this.chart.Name = "chart";
             series1.ChartArea = "ChartArea";
             series1.Name = "Series1";
@@ -100,13 +100,14 @@
             this.chart.Size = new System.Drawing.Size(1368, 713);
             this.chart.TabIndex = 0;
             this.chart.Text = "chart1";
+            this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Chart_MouseMove);
             // 
             // MainGraphView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(119F, 119F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.chart);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MainGraphView";
             this.Size = new System.Drawing.Size(1368, 713);
             ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();

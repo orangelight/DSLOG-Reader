@@ -22,6 +22,9 @@ namespace DSLOG_Reader_2
         private string LastPath, LastFile;
         private const double TotalPDPScale = 50;
         private Dictionary<string, int[]> IdToPDPGroup;
+        private Point? prevPosition = null;
+        public MainForm MForm {get;set; }
+        public EventsView EventsView { get; set; }
         public MainGraphView()
         {
             InitializeComponent();
@@ -413,6 +416,54 @@ namespace DSLOG_Reader_2
                     chart.Series[node.Name].Enabled = node.Checked;
                 }
             }
+        }
+
+        public void ClearMessages()
+        {
+            Util.ClearPointsQuick(chart.Series["messages"]);
+        }
+
+        private void Chart_MouseMove(object sender, MouseEventArgs e)
+        {
+            var pos = e.Location;
+            if (prevPosition.HasValue && pos == prevPosition.Value) return;
+            prevPosition = pos;
+            var results = chart.HitTest(pos.X, pos.Y, false, ChartElementType.DataPoint);
+            foreach (var result in results)
+            {
+                if (result.ChartElementType == ChartElementType.DataPoint)
+                {
+                    var prop = result.Object as DataPoint;
+                    if (prop != null)
+                    {
+                        if (prop.YValues[0] == 15 || prop.YValues[0] == 14.7)
+                        {
+                            var pointXPixel = result.ChartArea.AxisX.ValueToPixelPosition(prop.XValue);
+                            var pointYPixel = result.ChartArea.AxisY.ValueToPixelPosition(prop.YValues[0]);
+
+                            // check if the cursor is really close to the point (25 pixels around the point)
+                            if (Math.Abs(pos.X - pointXPixel) < 25 &&
+                                Math.Abs(pos.Y - pointYPixel) < 25)
+                            {
+                                string data = "";
+                                if (EventsView.TryGetEvent(prop.XValue, out data))
+                                {
+                                    MForm.SetGraphRichText(data, Util.MessageColor(data));
+                                }
+                                else
+                                {
+                                    MForm.SetGraphRichText("", SystemColors.Window);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public void AddMessage(DataPoint dp)
+        {
+            chart.Series["messages"].Points.Add(dp);
         }
 
     }
