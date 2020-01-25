@@ -1322,9 +1322,15 @@ namespace Dslog
         private Dictionary<Double, String> EventsDict;
         private void readDSEVENTS(string path)
         {
+           
             Dsevents = new DSEVENTSReader(path.Replace(".dslog", ".dsevents"), -1);
+            
             EventsDict = new Dictionary<double, string>();
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
             addEventPointsAndListView();
+            watch.Stop();
+            Debug.WriteLine("" + watch.ElapsedMilliseconds);
         }
 
         private void addEventPointsAndListView()
@@ -1884,6 +1890,11 @@ namespace Dslog
         {
             settings.PDPConfigSelected = comboBox1.SelectedIndex;
             addSeriesPlotCheckBoxs();
+        }
+
+        private void ToolStripTextBox1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

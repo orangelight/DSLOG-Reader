@@ -78,6 +78,12 @@
       <DependentUpon>CacheLoadingDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="DSLOGFileEntry.cs" />
+    <Compile Include="EventsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EventsView.Designer.cs">
+      <DependentUpon>EventsView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ExportView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -126,6 +132,9 @@
     <Compile Include="Util.cs" />
     <EmbeddedResource Include="CacheLoadingDialog.resx">
       <DependentUpon>CacheLoadingDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EventsView.resx">
+      <DependentUpon>EventsView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ExportView.resx">
       <DependentUpon>ExportView.cs</DependentUpon>

@@ -161,7 +161,7 @@ namespace DSLOG_Reader_2
 
                         foreach (var entry in reader.Entries)
                         {
-                            if (entry.RobotAuto || entry.RobotDisabled || entry.RobotTele)
+                            if (entry.RobotAuto || entry.RobotTele || entry.DSAuto || entry.DSTele)
                             {
                                 Useless = false;
                                 return true;

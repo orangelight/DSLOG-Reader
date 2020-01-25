@@ -17,12 +17,14 @@ namespace DSLOG_Reader_2
     public partial class FileListView : UserControl
     {
         private MainForm MForm;
+        public EventsView EventView { get; set; }
         private string Path;
         private List<DSLOGFileEntry> DSLOGFiles;
         private string lastFilter = "";
         public MainGraphView MainChart { get; set; }
         private int lastIndexSelectedFiles = 0;
         private bool filterUseless = false;
+        private bool firstColumnResize = true;
         public FileListView()
         {
             InitializeComponent();
@@ -35,6 +37,8 @@ namespace DSLOG_Reader_2
 
         public void LoadFiles()
         {
+            filterUseless = false;
+            firstColumnResize = true;
             listView.Items.Clear();
             DSLOGFiles.Clear();
             if (Path == null)
@@ -57,7 +61,6 @@ namespace DSLOG_Reader_2
                 listView.EndUpdate();
                 //sroll down to bottom (need to use timer cuz it's weird
                 timerScrollToBottom.Start();
-                ResizeColumns();
                 CreateFileWatcher();
             }
 
@@ -119,11 +122,19 @@ namespace DSLOG_Reader_2
 
         private void timerScrollToBottom_Tick(object sender, EventArgs e)
         {
-            if(listView.Items.Count != 0)
+            listView.BeginUpdate();
+            if (listView.Items.Count != 0)
             {
                 listView.EnsureVisible(listView.Items.Count - 1);
+                
+                
             }
-           
+            if (firstColumnResize)
+            {
+                ResizeColumns();
+                firstColumnResize = false;
+            }
+            listView.EndUpdate();
             timerScrollToBottom.Stop();
         }
 
@@ -161,26 +172,27 @@ namespace DSLOG_Reader_2
             if (MainChart !=null)
             {
                 MainChart.LoadLog(file, Path);
+                EventView.LoadLog(file, Path);
             }
         }
 
         private void buttonFilter_Click(object sender, EventArgs e)
         {
-            if (!filterUseless)
-            {
-                filterUseless = true;
-                buttonFilter.BackgroundImage = Resources.StopFilter_16x;
-            }
-            else
-            {
-                filterUseless = false;
-                buttonFilter.BackgroundImage = Resources.RunFilter_16x;
-            }
+            filterUseless = !filterUseless;
             FilterLogs(true);
         }
 
         private void FilterLogs(bool force = false)
         {
+            if (filterUseless)
+            {
+               
+                buttonFilter.BackgroundImage = Resources.StopFilter_16x;
+            }
+            else
+            {
+                buttonFilter.BackgroundImage = Resources.RunFilter_16x;
+            }
             string selectedEvent = filterSelectorCombo.Items[filterSelectorCombo.SelectedIndex].ToString();
             if (lastFilter == selectedEvent && !force) return;
 
@@ -227,15 +239,24 @@ namespace DSLOG_Reader_2
         {
             for(int i = 0; i < listView.Columns.Count; i++)
             {
-                if (i == 2 || i == 3 || i == 5)
+                listView.Columns[i].Width = -2;
+                if (i != 2 && i!= 3)
                 {
-                    listView.AutoResizeColumn(i, ColumnHeaderAutoResizeStyle.HeaderSize);
+                    listView.Columns[i].Width = (int)Math.Ceiling(listView.Columns[i].Width * 1.06);
                 }
-                else
+                if (i == 4)
                 {
-                    listView.AutoResizeColumn(i, ColumnHeaderAutoResizeStyle.ColumnContent);
+                    listView.Columns[i].Width = (int)Math.Ceiling(listView.Columns[i].Width * 1.05);
                 }
-                
+               
+                //listView.AutoResizeColumn(i, ColumnHeaderAutoResizeStyle.HeaderSize);
+                //int headerWidth = listView.Columns[i].Width;
+                //listView.AutoResizeColumn(i, ColumnHeaderAutoResizeStyle.ColumnContent);
+                //if (headerWidth > listView.Columns[i].Width)
+                //{
+                //    listView.AutoResizeColumn(i, ColumnHeaderAutoResizeStyle.HeaderSize);
+                //}
+
             }
         }
     }        

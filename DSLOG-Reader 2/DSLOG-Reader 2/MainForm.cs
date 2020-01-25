@@ -17,11 +17,13 @@ namespace DSLOG_Reader_2
         {
             InitializeComponent();
             fileListView.MainChart = mainGraphView;
+            fileListView.EventView = eventsView1;
             fileListView.SetPath(@"C:\Users\Public\Documents\FRC\Log Files");
             fileListView.LoadFiles();
             seriesView.MainChart = mainGraphView;
+            
             seriesView.LoadSeries();
-           
+            
         }
 
         private void TimerCompMode_Tick(object sender, EventArgs e)
@@ -65,13 +67,13 @@ namespace DSLOG_Reader_2
             {
                 CompMode = true;
                 HideReg(false);
-                buttonCompMode.Text = "Competition Mode";
+                buttonCompMode.Text = "Switch to Regular Mode";
             }
             else
             {
                 CompMode = false;
                 HideReg(true); 
-                buttonCompMode.Text = "Regular Mode";
+                buttonCompMode.Text = "Switch to Competition Mode";
             }
         }
 
@@ -79,6 +81,12 @@ namespace DSLOG_Reader_2
         {
             tabControl1.Visible = vis;
             tabControl2.Visible = vis;
+            textBoxSearch.Visible = vis;
+        }
+
+        private void TextBoxSearch_TextChanged(object sender, EventArgs e)
+        {
+            eventsView1.SetFilter(textBoxSearch.Text);
         }
     }
 }

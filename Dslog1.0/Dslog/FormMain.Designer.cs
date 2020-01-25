@@ -178,7 +178,7 @@
             this.chartMain.Location = new System.Drawing.Point(3, 3);
             this.chartMain.Margin = new System.Windows.Forms.Padding(2);
             this.chartMain.Name = "chartMain";
-            this.chartMain.Size = new System.Drawing.Size(734, 508);
+            this.chartMain.Size = new System.Drawing.Size(734, 502);
             this.chartMain.TabIndex = 2;
             this.chartMain.Text = "chart2";
             this.chartMain.CursorPositionChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.chartMain_CursorPositionChanged);
@@ -208,10 +208,10 @@
             this.tabPage1.Controls.Add(this.checkBox3);
             this.tabPage1.Controls.Add(this.checkBox2);
             this.tabPage1.Controls.Add(this.checkBox1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Location = new System.Drawing.Point(4, 28);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(154, 344);
+            this.tabPage1.Size = new System.Drawing.Size(154, 338);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Groups";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -221,7 +221,7 @@
             this.checkBox7.AutoSize = true;
             this.checkBox7.Location = new System.Drawing.Point(7, 152);
             this.checkBox7.Name = "checkBox7";
-            this.checkBox7.Size = new System.Drawing.Size(117, 17);
+            this.checkBox7.Size = new System.Drawing.Size(144, 23);
             this.checkBox7.TabIndex = 6;
             this.checkBox7.Text = "Power (12-15) 40A";
             this.checkBox7.UseVisualStyleBackColor = true;
@@ -232,7 +232,7 @@
             this.checkBox6.AutoSize = true;
             this.checkBox6.Location = new System.Drawing.Point(7, 127);
             this.checkBox6.Name = "checkBox6";
-            this.checkBox6.Size = new System.Drawing.Size(111, 17);
+            this.checkBox6.Size = new System.Drawing.Size(136, 23);
             this.checkBox6.TabIndex = 5;
             this.checkBox6.Text = "Power (8-11) 30A";
             this.checkBox6.UseVisualStyleBackColor = true;
@@ -243,7 +243,7 @@
             this.checkBox5.AutoSize = true;
             this.checkBox5.Location = new System.Drawing.Point(7, 103);
             this.checkBox5.Name = "checkBox5";
-            this.checkBox5.Size = new System.Drawing.Size(105, 17);
+            this.checkBox5.Size = new System.Drawing.Size(128, 23);
             this.checkBox5.TabIndex = 4;
             this.checkBox5.Text = "Power (4-7) 30A";
             this.checkBox5.UseVisualStyleBackColor = true;
@@ -254,7 +254,7 @@
             this.checkBox4.AutoSize = true;
             this.checkBox4.Location = new System.Drawing.Point(7, 79);
             this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(105, 17);
+            this.checkBox4.Size = new System.Drawing.Size(128, 23);
             this.checkBox4.TabIndex = 3;
             this.checkBox4.Text = "Power (0-3) 40A";
             this.checkBox4.UseVisualStyleBackColor = true;
@@ -267,7 +267,7 @@
             this.checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox3.Location = new System.Drawing.Point(7, 55);
             this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(63, 17);
+            this.checkBox3.Size = new System.Drawing.Size(75, 23);
             this.checkBox3.TabIndex = 2;
             this.checkBox3.Text = "Comms";
             this.checkBox3.UseVisualStyleBackColor = true;
@@ -280,7 +280,7 @@
             this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox2.Location = new System.Drawing.Point(7, 30);
             this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(52, 17);
+            this.checkBox2.Size = new System.Drawing.Size(58, 23);
             this.checkBox2.TabIndex = 1;
             this.checkBox2.Text = "Basic";
             this.checkBox2.UseVisualStyleBackColor = true;
@@ -293,7 +293,7 @@
             this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox1.Location = new System.Drawing.Point(7, 8);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(91, 17);
+            this.checkBox1.Size = new System.Drawing.Size(105, 23);
             this.checkBox1.TabIndex = 0;
             this.checkBox1.Text = "Robot Mode";
             this.checkBox1.UseVisualStyleBackColor = true;
@@ -302,10 +302,10 @@
             // tabPage2
             // 
             this.tabPage2.AutoScroll = true;
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Location = new System.Drawing.Point(4, 28);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(154, 344);
+            this.tabPage2.Size = new System.Drawing.Size(154, 338);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Plots";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -325,7 +325,7 @@
             this.labelColumns.AutoSize = true;
             this.labelColumns.Location = new System.Drawing.Point(3, 26);
             this.labelColumns.Name = "labelColumns";
-            this.labelColumns.Size = new System.Drawing.Size(94, 13);
+            this.labelColumns.Size = new System.Drawing.Size(115, 19);
             this.labelColumns.TabIndex = 11;
             this.labelColumns.Text = "Total  Columns: 0";
             // 
@@ -334,7 +334,7 @@
             this.checkBoxTotalCurrent.AutoSize = true;
             this.checkBoxTotalCurrent.Location = new System.Drawing.Point(6, 8);
             this.checkBoxTotalCurrent.Name = "checkBoxTotalCurrent";
-            this.checkBoxTotalCurrent.Size = new System.Drawing.Size(116, 17);
+            this.checkBoxTotalCurrent.Size = new System.Drawing.Size(137, 23);
             this.checkBoxTotalCurrent.TabIndex = 7;
             this.checkBoxTotalCurrent.Text = "Add Total Current";
             this.checkBoxTotalCurrent.UseVisualStyleBackColor = true;
@@ -350,7 +350,7 @@
             "PNG"});
             this.comboBoxExport.Location = new System.Drawing.Point(6, 42);
             this.comboBoxExport.Name = "comboBoxExport";
-            this.comboBoxExport.Size = new System.Drawing.Size(141, 21);
+            this.comboBoxExport.Size = new System.Drawing.Size(141, 27);
             this.comboBoxExport.TabIndex = 8;
             // 
             // listViewDSLOGFolder
@@ -370,7 +370,7 @@
             this.listViewDSLOGFolder.Location = new System.Drawing.Point(3, 3);
             this.listViewDSLOGFolder.MultiSelect = false;
             this.listViewDSLOGFolder.Name = "listViewDSLOGFolder";
-            this.listViewDSLOGFolder.Size = new System.Drawing.Size(341, 508);
+            this.listViewDSLOGFolder.Size = new System.Drawing.Size(341, 502);
             this.listViewDSLOGFolder.TabIndex = 9;
             this.listViewDSLOGFolder.UseCompatibleStateImageBehavior = false;
             this.listViewDSLOGFolder.View = System.Windows.Forms.View.Details;
@@ -426,10 +426,10 @@
             // tabPage3
             // 
             this.tabPage3.AutoScroll = true;
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Location = new System.Drawing.Point(4, 28);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(169, 366);
+            this.tabPage3.Size = new System.Drawing.Size(169, 360);
             this.tabPage3.TabIndex = 0;
             this.tabPage3.Text = "Probe";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -440,10 +440,10 @@
             this.tabPage4.Controls.Add(this.labelColumns);
             this.tabPage4.Controls.Add(this.checkBoxTotalCurrent);
             this.tabPage4.Controls.Add(this.comboBoxExport);
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Location = new System.Drawing.Point(4, 28);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(169, 366);
+            this.tabPage4.Size = new System.Drawing.Size(169, 360);
             this.tabPage4.TabIndex = 1;
             this.tabPage4.Text = "Export";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -463,10 +463,10 @@
             // tabPage5
             // 
             this.tabPage5.Controls.Add(this.listViewDSLOGFolder);
-            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Location = new System.Drawing.Point(4, 28);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(347, 514);
+            this.tabPage5.Size = new System.Drawing.Size(347, 508);
             this.tabPage5.TabIndex = 0;
             this.tabPage5.Text = "Log Files";
             this.tabPage5.UseVisualStyleBackColor = true;
@@ -478,10 +478,10 @@
             this.tabPage6.Controls.Add(this.GraphRichTextBox);
             this.tabPage6.Controls.Add(this.tabControlProbeExport);
             this.tabPage6.Controls.Add(this.tabControlChartCheckBox);
-            this.tabPage6.Location = new System.Drawing.Point(4, 22);
+            this.tabPage6.Location = new System.Drawing.Point(4, 28);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(347, 514);
+            this.tabPage6.Size = new System.Drawing.Size(347, 508);
             this.tabPage6.TabIndex = 1;
             this.tabPage6.Text = "Graph";
             this.tabPage6.UseVisualStyleBackColor = true;
@@ -493,7 +493,7 @@
             this.label1.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(179, 378);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(48, 12);
+            this.label1.Size = new System.Drawing.Size(65, 15);
             this.label1.TabIndex = 14;
             this.label1.Text = "PDP Labels";
             // 
@@ -504,14 +504,14 @@
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Location = new System.Drawing.Point(229, 374);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(115, 21);
+            this.comboBox1.Size = new System.Drawing.Size(115, 27);
             this.comboBox1.TabIndex = 13;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // GraphRichTextBox
             // 
             this.GraphRichTextBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.GraphRichTextBox.Location = new System.Drawing.Point(3, 401);
+            this.GraphRichTextBox.Location = new System.Drawing.Point(3, 395);
             this.GraphRichTextBox.Name = "GraphRichTextBox";
             this.GraphRichTextBox.ReadOnly = true;
             this.GraphRichTextBox.Size = new System.Drawing.Size(341, 110);
@@ -540,14 +540,14 @@
             // loadLogToolStripMenuItem
             // 
             this.loadLogToolStripMenuItem.Name = "loadLogToolStripMenuItem";
-            this.loadLogToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.loadLogToolStripMenuItem.Size = new System.Drawing.Size(182, 26);
             this.loadLogToolStripMenuItem.Text = "Load Log";
             this.loadLogToolStripMenuItem.Click += new System.EventHandler(this.loadLogToolStripMenuItem_Click);
             // 
             // changeLogFilePathToolStripMenuItem
             // 
             this.changeLogFilePathToolStripMenuItem.Name = "changeLogFilePathToolStripMenuItem";
-            this.changeLogFilePathToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.changeLogFilePathToolStripMenuItem.Size = new System.Drawing.Size(182, 26);
             this.changeLogFilePathToolStripMenuItem.Text = "Log Files Path";
             this.changeLogFilePathToolStripMenuItem.Click += new System.EventHandler(this.changeLogFilePathToolStripMenuItem_Click);
             // 
@@ -562,7 +562,7 @@
             // resetZoomToolStripMenuItem
             // 
             this.resetZoomToolStripMenuItem.Name = "resetZoomToolStripMenuItem";
-            this.resetZoomToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.resetZoomToolStripMenuItem.Size = new System.Drawing.Size(172, 26);
             this.resetZoomToolStripMenuItem.Text = "Reset Zoom";
             this.resetZoomToolStripMenuItem.Click += new System.EventHandler(this.resetZoomToolStripMenuItem_Click);
             // 
@@ -636,6 +636,7 @@
             // 
             // menuStrip1
             // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem2,
             this.viewToolStripMenuItem2,
@@ -643,7 +644,7 @@
             this.toolStripTextBox1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1108, 27);
+            this.menuStrip1.Size = new System.Drawing.Size(1108, 31);
             this.menuStrip1.TabIndex = 13;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -655,34 +656,34 @@
             this.refreshPathToolStripMenuItem,
             this.settingsToolStripMenuItem1});
             this.fileToolStripMenuItem2.Name = "fileToolStripMenuItem2";
-            this.fileToolStripMenuItem2.Size = new System.Drawing.Size(37, 23);
+            this.fileToolStripMenuItem2.Size = new System.Drawing.Size(46, 27);
             this.fileToolStripMenuItem2.Text = "File";
             // 
             // loadLogToolStripMenuItem1
             // 
             this.loadLogToolStripMenuItem1.Name = "loadLogToolStripMenuItem1";
-            this.loadLogToolStripMenuItem1.Size = new System.Drawing.Size(147, 22);
+            this.loadLogToolStripMenuItem1.Size = new System.Drawing.Size(182, 26);
             this.loadLogToolStripMenuItem1.Text = "Load Log";
             this.loadLogToolStripMenuItem1.Click += new System.EventHandler(this.loadLogToolStripMenuItem_Click);
             // 
             // fileToolStripMenuItem3
             // 
             this.fileToolStripMenuItem3.Name = "fileToolStripMenuItem3";
-            this.fileToolStripMenuItem3.Size = new System.Drawing.Size(147, 22);
+            this.fileToolStripMenuItem3.Size = new System.Drawing.Size(182, 26);
             this.fileToolStripMenuItem3.Text = "Log Files Path";
             this.fileToolStripMenuItem3.Click += new System.EventHandler(this.changeLogFilePathToolStripMenuItem_Click);
             // 
             // refreshPathToolStripMenuItem
             // 
             this.refreshPathToolStripMenuItem.Name = "refreshPathToolStripMenuItem";
-            this.refreshPathToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.refreshPathToolStripMenuItem.Size = new System.Drawing.Size(182, 26);
             this.refreshPathToolStripMenuItem.Text = "Refresh Path";
             this.refreshPathToolStripMenuItem.Click += new System.EventHandler(this.refreshPathToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem1
             // 
             this.settingsToolStripMenuItem1.Name = "settingsToolStripMenuItem1";
-            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(147, 22);
+            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(182, 26);
             this.settingsToolStripMenuItem1.Text = "Settings";
             this.settingsToolStripMenuItem1.Click += new System.EventHandler(this.settingsToolStripMenuItem1_Click);
             // 
@@ -693,20 +694,20 @@
             this.resetZoomToolStripMenuItem2,
             this.autoScrollToolStripMenuItem});
             this.viewToolStripMenuItem2.Name = "viewToolStripMenuItem2";
-            this.viewToolStripMenuItem2.Size = new System.Drawing.Size(44, 23);
+            this.viewToolStripMenuItem2.Size = new System.Drawing.Size(55, 27);
             this.viewToolStripMenuItem2.Text = "View";
             // 
             // matchLengthToolStripMenuItem
             // 
             this.matchLengthToolStripMenuItem.Name = "matchLengthToolStripMenuItem";
-            this.matchLengthToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.matchLengthToolStripMenuItem.Size = new System.Drawing.Size(212, 26);
             this.matchLengthToolStripMenuItem.Text = "Match Length";
             this.matchLengthToolStripMenuItem.Click += new System.EventHandler(this.matchLengthToolStripMenuItem_Click);
             // 
             // resetZoomToolStripMenuItem2
             // 
             this.resetZoomToolStripMenuItem2.Name = "resetZoomToolStripMenuItem2";
-            this.resetZoomToolStripMenuItem2.Size = new System.Drawing.Size(169, 22);
+            this.resetZoomToolStripMenuItem2.Size = new System.Drawing.Size(212, 26);
             this.resetZoomToolStripMenuItem2.Text = "Reset Zoom";
             this.resetZoomToolStripMenuItem2.Click += new System.EventHandler(this.resetZoomToolStripMenuItem_Click);
             // 
@@ -716,7 +717,7 @@
             this.autoScrollToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.autoScrollToolStripMenuItem.Enabled = false;
             this.autoScrollToolStripMenuItem.Name = "autoScrollToolStripMenuItem";
-            this.autoScrollToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.autoScrollToolStripMenuItem.Size = new System.Drawing.Size(212, 26);
             this.autoScrollToolStripMenuItem.Text = "Stream AutoScroll";
             this.autoScrollToolStripMenuItem.Click += new System.EventHandler(this.autoScrollToolStripMenuItem_Click);
             // 
@@ -726,20 +727,20 @@
             this.viewHelpToolStripMenuItem2,
             this.aboutToolStripMenuItem2});
             this.helpToolStripMenuItem2.Name = "helpToolStripMenuItem2";
-            this.helpToolStripMenuItem2.Size = new System.Drawing.Size(44, 23);
+            this.helpToolStripMenuItem2.Size = new System.Drawing.Size(55, 27);
             this.helpToolStripMenuItem2.Text = "Help";
             // 
             // viewHelpToolStripMenuItem2
             // 
             this.viewHelpToolStripMenuItem2.Name = "viewHelpToolStripMenuItem2";
-            this.viewHelpToolStripMenuItem2.Size = new System.Drawing.Size(127, 22);
+            this.viewHelpToolStripMenuItem2.Size = new System.Drawing.Size(160, 26);
             this.viewHelpToolStripMenuItem2.Text = "View Help";
             this.viewHelpToolStripMenuItem2.Click += new System.EventHandler(this.viewHelpToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem2
             // 
             this.aboutToolStripMenuItem2.Name = "aboutToolStripMenuItem2";
-            this.aboutToolStripMenuItem2.Size = new System.Drawing.Size(127, 22);
+            this.aboutToolStripMenuItem2.Size = new System.Drawing.Size(160, 26);
             this.aboutToolStripMenuItem2.Text = "About";
             this.aboutToolStripMenuItem2.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -749,9 +750,11 @@
             this.toolStripTextBox1.AutoSize = false;
             this.toolStripTextBox1.BackColor = System.Drawing.SystemColors.Window;
             this.toolStripTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.toolStripTextBox1.Font = new System.Drawing.Font("Segoe UI", 9.07563F);
             this.toolStripTextBox1.Margin = new System.Windows.Forms.Padding(0);
             this.toolStripTextBox1.Name = "toolStripTextBox1";
-            this.toolStripTextBox1.Size = new System.Drawing.Size(250, 23);
+            this.toolStripTextBox1.Size = new System.Drawing.Size(250, 27);
+            this.toolStripTextBox1.Click += new System.EventHandler(this.ToolStripTextBox1_Click);
             this.toolStripTextBox1.TextChanged += new System.EventHandler(this.toolStripTextBox1_TextChanged);
             // 
             // tabControlChart
@@ -771,10 +774,10 @@
             // 
             this.tabPageChart.BackColor = System.Drawing.Color.Transparent;
             this.tabPageChart.Controls.Add(this.chartMain);
-            this.tabPageChart.Location = new System.Drawing.Point(4, 22);
+            this.tabPageChart.Location = new System.Drawing.Point(4, 28);
             this.tabPageChart.Name = "tabPageChart";
             this.tabPageChart.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageChart.Size = new System.Drawing.Size(740, 514);
+            this.tabPageChart.Size = new System.Drawing.Size(740, 508);
             this.tabPageChart.TabIndex = 0;
             this.tabPageChart.Text = "Graph";
             // 
@@ -782,10 +785,10 @@
             // 
             this.tabPageMessages.Controls.Add(this.EventRichTextBox);
             this.tabPageMessages.Controls.Add(this.listViewEvents);
-            this.tabPageMessages.Location = new System.Drawing.Point(4, 22);
+            this.tabPageMessages.Location = new System.Drawing.Point(4, 28);
             this.tabPageMessages.Name = "tabPageMessages";
             this.tabPageMessages.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageMessages.Size = new System.Drawing.Size(740, 514);
+            this.tabPageMessages.Size = new System.Drawing.Size(740, 508);
             this.tabPageMessages.TabIndex = 1;
             this.tabPageMessages.Text = "Events";
             this.tabPageMessages.UseVisualStyleBackColor = true;
@@ -793,7 +796,7 @@
             // EventRichTextBox
             // 
             this.EventRichTextBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.EventRichTextBox.Location = new System.Drawing.Point(3, 406);
+            this.EventRichTextBox.Location = new System.Drawing.Point(3, 400);
             this.EventRichTextBox.Name = "EventRichTextBox";
             this.EventRichTextBox.ReadOnly = true;
             this.EventRichTextBox.Size = new System.Drawing.Size(734, 105);
@@ -852,7 +855,7 @@
             // 
             // FormMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(1108, 568);
