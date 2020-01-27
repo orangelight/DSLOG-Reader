@@ -43,10 +43,9 @@
             this.treeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.treeView.CheckBoxes = true;
             this.treeView.Indent = 12;
-            this.treeView.Location = new System.Drawing.Point(0, 25);
-            this.treeView.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.treeView.Location = new System.Drawing.Point(0, 20);
             this.treeView.Name = "treeView";
-            this.treeView.Size = new System.Drawing.Size(216, 431);
+            this.treeView.Size = new System.Drawing.Size(216, 348);
             this.treeView.TabIndex = 0;
             this.treeView.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeView_AfterCheck);
             this.treeView.BeforeSelect += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeView_BeforeSelect);
@@ -55,37 +54,36 @@
             // 
             this.buttonEditGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonEditGroups.Image = ((System.Drawing.Image)(resources.GetObject("buttonEditGroups.Image")));
-            this.buttonEditGroups.Location = new System.Drawing.Point(181, -1);
-            this.buttonEditGroups.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonEditGroups.Location = new System.Drawing.Point(188, -1);
             this.buttonEditGroups.Name = "buttonEditGroups";
-            this.buttonEditGroups.Size = new System.Drawing.Size(36, 28);
+            this.buttonEditGroups.Size = new System.Drawing.Size(29, 23);
             this.buttonEditGroups.TabIndex = 1;
             this.buttonEditGroups.UseVisualStyleBackColor = true;
             this.buttonEditGroups.Click += new System.EventHandler(this.buttonEditGroups_Click);
             // 
             // comboBoxProfiles
             // 
+            this.comboBoxProfiles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxProfiles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxProfiles.FormattingEnabled = true;
             this.comboBoxProfiles.Items.AddRange(new object[] {
             "Default"});
             this.comboBoxProfiles.Location = new System.Drawing.Point(0, 0);
-            this.comboBoxProfiles.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxProfiles.Name = "comboBoxProfiles";
-            this.comboBoxProfiles.Size = new System.Drawing.Size(181, 24);
+            this.comboBoxProfiles.Size = new System.Drawing.Size(189, 21);
             this.comboBoxProfiles.TabIndex = 2;
             this.comboBoxProfiles.SelectedIndexChanged += new System.EventHandler(this.comboBoxProfiles_SelectedIndexChanged);
             // 
             // SeriesView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(119F, 119F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.comboBoxProfiles);
             this.Controls.Add(this.buttonEditGroups);
             this.Controls.Add(this.treeView);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "SeriesView";
-            this.Size = new System.Drawing.Size(216, 455);
+            this.Size = new System.Drawing.Size(216, 367);
             this.ResumeLayout(false);
 
         }
