@@ -8,15 +8,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using DSLOG_Reader_Library;
 
 namespace DSLOG_Reader_2.CompView
 {
     public partial class CompForm : Form
     {
         public MainForm MForm { get; set; }
+        public FileListView FileView { get; set; }
         private GroupProfiles Profiles;
         private SeriesGroupNodes NonEditGroups;
         private bool checkMode = false;
+        private int lastSelectedEvent = -1;
 
         public CompForm()
         {
@@ -110,7 +113,11 @@ namespace DSLOG_Reader_2.CompView
 
         private void ComboBoxEvents_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            if (lastSelectedEvent != comboBoxEvents.SelectedIndex)
+            {
+                PlotMatches(FileView.GetMatches(comboBoxEvents.SelectedItem.ToString()));
+               lastSelectedEvent = comboBoxEvents.SelectedIndex;
+            }
         }
 
         public void SetEvents(List<string> events)
@@ -131,47 +138,55 @@ namespace DSLOG_Reader_2.CompView
         private void SetSeries()
         {
             chart.Series.Clear();
-            foreach (var group in NonEditGroups)
+            Series s = new Series("boxplot");
+            s.ChartType = SeriesChartType.BoxPlot;
+            s.BorderColor = Color.White;
+            s.Color = Color.Transparent;
+            s.BorderWidth = 1;
+            chart.Series.Add(s);
+           
+           
+        }
+
+        private void PlotMatches(List<DSLOGFileEntry> matches)
+        {
+            
+            Series boxPlots = chart.Series["boxplot"];
+            Util.ClearPointsQuick(boxPlots);
+            for(int i = 0; i < matches.Count; i++)
             {
-                if (group.Name == "robotMode") continue;
-                foreach(var node in group.Childern)
+                var match = matches[i];
+                DSLOGReader reader = new DSLOGReader($"{FileView.GetPath()}\\{match.Name}.dslog");
+                reader.Read();
+                List<double> data = reader.Entries.Where(en => en.RobotAuto || en.RobotTele).Select(en=> en.CANUtil).ToList();
+                if (data.Count == 0)
                 {
-                    if (group.Name == "other" && node.Name == "messages") continue;
-                    Series s = new Series(node.Name);
-                    s.ChartType = SeriesChartType.BoxPlot;
-                    s.BorderColor = node.Color;
-                    s.Color = Color.Transparent;
-                    s.BorderWidth = 1;
-                    chart.Series.Add(s);
-
+                    continue;
                 }
-            }
-
-            foreach (var group in Profiles[comboBoxProfiles.SelectedIndex].Groups)
-            {
-                foreach (var node in group.Childern)
-                {
-                    Series s = new Series(node.Name);
-                    s.ChartType = SeriesChartType.BoxPlot;
-                    s.BorderColor = node.Color;
-                    s.Color= Color.Transparent;
-                    s.BorderWidth = 1;
-                    if (node.Name.StartsWith("total") || node.Name.StartsWith("delta")) s.BorderDashStyle = ChartDashStyle.Dash;
-                    chart.Series.Add(s);
-                }
-            }
-            Random r = new Random();
-            for (int i = 0; i < chart.Series.Count*5; i++)
-            {
-                var num = i% chart.Series.Count + i/ chart.Series.Count;
-                var d = new DataPoint(i, new double[] { 0+ num, 10 + num, 2 + num, 8 + num, 4 + num, 6 + num });
-                d.BorderColor = chart.Series[i% chart.Series.Count].BorderColor;
-                d.BorderDashStyle = chart.Series[i % chart.Series.Count].BorderDashStyle;
-                //d.Color = Color.Transparent;
-                chart.Series[0].Points.Add(d);
-                //chart.Series[0]["PointWidth"] = "2";
+                data.Sort();
+                double min = data.Min();
+                double max = data.Max();
+                double mean = data.Average();
+                double median = data[data.Count / 2];
+                double q1 = data[data.Count / 4];
+                double q3 = data[(3*data.Count) / 4];
+                var d = new DataPoint(i, new double[] { min, max, q1, q3, mean, median });
+                boxPlots.Points.Add(d);
 
             }
+            //Random r = new Random();
+
+            //for (int i = 0; i < 20; i++)
+            //{
+            //    var num = i % chart.Series.Count + i / chart.Series.Count;
+            //    var d = new DataPoint(i, new double[] { 0 + num, 10 + num, 2 + num, 8 + num, 4 + num, 6 + num });
+            //    d.BorderColor = chart.Series[i % chart.Series.Count].BorderColor;
+            //    d.BorderDashStyle = chart.Series[i % chart.Series.Count].BorderDashStyle;
+            //    //d.Color = Color.Transparent;
+            //    chart.Series[0].Points.Add(d);
+            //    //chart.Series[0]["PointWidth"] = "2";
+
+            //}
         }
     }
 }

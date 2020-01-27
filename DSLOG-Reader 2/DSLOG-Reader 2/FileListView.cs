@@ -262,5 +262,15 @@ namespace DSLOG_Reader_2
 
             }
         }
+
+        public List<DSLOGFileEntry> GetMatches(string eventName)
+        {
+            return DSLOGFiles.Where(en => en.EventName == eventName.Substring(0, eventName.Length - 5) && en.StartTime.ToString("yyyy") == eventName.GetLast(4) && !en.Useless).ToList();
+        }
+
+        public string GetPath()
+        {
+            return Path;
+        }
     }        
 }
