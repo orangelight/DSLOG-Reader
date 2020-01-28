@@ -138,55 +138,92 @@ namespace DSLOG_Reader_2.CompView
         private void SetSeries()
         {
             chart.Series.Clear();
-            Series s = new Series("boxplot");
+            Series s = new Series("boxplotPDP");
             s.ChartType = SeriesChartType.BoxPlot;
             s.BorderColor = Color.White;
             s.Color = Color.Transparent;
             s.BorderWidth = 1;
             chart.Series.Add(s);
-           
-           
-        }
 
+            Series sv = new Series("boxplotV");
+            sv.ChartType = SeriesChartType.BoxPlot;
+            sv.BorderColor = Color.White;
+            sv.Color = Color.Transparent;
+            sv.BorderWidth = 1;
+            chart.Series.Add(sv);
+
+
+        }
+        int xOffset = 0;
         private void PlotMatches(List<DSLOGFileEntry> matches)
         {
-            
-            Series boxPlots = chart.Series["boxplot"];
-            Util.ClearPointsQuick(boxPlots);
-            for(int i = 0; i < matches.Count; i++)
+            xOffset = 0;
+            //Series boxPlots = chart.Series["boxplot"];
+            Util.ClearPointsQuick(chart.Series[0]);
+            Util.ClearPointsQuick(chart.Series[1]);
+
+            foreach (var match in matches)
             {
-                var match = matches[i];
                 DSLOGReader reader = new DSLOGReader($"{FileView.GetPath()}\\{match.Name}.dslog");
                 reader.Read();
-                List<double> data = reader.Entries.Where(en => en.RobotAuto || en.RobotTele).Select(en=> en.CANUtil).ToList();
-                if (data.Count == 0)
+                if (reader.Entries.Where(en => en.RobotAuto || en.RobotTele || en.Brownout).Count() < 10)
                 {
                     continue;
                 }
-                data.Sort();
-                double min = data.Min();
-                double max = data.Max();
-                double mean = data.Average();
-                double median = data[data.Count / 2];
-                double q1 = data[data.Count / 4];
-                double q3 = data[(3*data.Count) / 4];
-                var d = new DataPoint(i, new double[] { min, max, q1, q3, mean, median });
-                boxPlots.Points.Add(d);
-
+                PlotMatch(reader.Entries.Where(en => en.RobotAuto || en.RobotTele || en.Brownout));
+                xOffset += 1;
             }
-            //Random r = new Random();
 
-            //for (int i = 0; i < 20; i++)
-            //{
-            //    var num = i % chart.Series.Count + i / chart.Series.Count;
-            //    var d = new DataPoint(i, new double[] { 0 + num, 10 + num, 2 + num, 8 + num, 4 + num, 6 + num });
-            //    d.BorderColor = chart.Series[i % chart.Series.Count].BorderColor;
-            //    d.BorderDashStyle = chart.Series[i % chart.Series.Count].BorderDashStyle;
-            //    //d.Color = Color.Transparent;
-            //    chart.Series[0].Points.Add(d);
-            //    //chart.Series[0]["PointWidth"] = "2";
+        }
 
-            //}
+        private void PlotMatch(IEnumerable<DSLOGEntry> data)
+        {
+            foreach(TreeNode group in treeView.Nodes)
+            {
+                foreach(TreeNode node in group.Nodes)
+                {
+                    if (!node.Checked) continue;
+                    if (node.Name.StartsWith("pdp"))
+                    {
+                        int id = int.Parse(node.Name.Replace("pdp", ""));
+                        var d = new DataPoint(xOffset, GenerateBoxPlotData(data.Select(en=>en.GetPDPChannel(id)).ToList()));
+                        d.BorderColor = node.BackColor;
+                        chart.Series[0].Points.Add(d);
+                    }
+                   
+                    xOffset += 1;
+                }
+            }
+        }
+
+        private double[] GenerateBoxPlotData(List<double> data)
+        {
+            data.Sort();
+            List<double> outliers = new List<double>();
+            double min = data.Min();
+            double max = data.Max();
+            double mean = data.Average();
+            double median = data[data.Count / 2];
+            double q1 = data[data.Count / 4];
+            double q3 = data[(3 * data.Count) / 4];
+            double iqr = q3 - q1;
+            int i = 0;
+            double awayOff = 2;
+            while(min < q1 - awayOff * iqr)
+            {
+                outliers.Add(data[i++]);
+                min = data[i];
+            }
+            i = data.Count - 1;
+            while (max > q3 + awayOff * iqr)
+            {
+                outliers.Add(data[i--]);
+                max = data[i];
+            }
+            List<double> output = new List<double>();
+            output.AddRange(new double[]{ min, max, q1, q3, mean, median});
+            output.AddRange(outliers);
+            return output.ToArray();
         }
     }
 }
