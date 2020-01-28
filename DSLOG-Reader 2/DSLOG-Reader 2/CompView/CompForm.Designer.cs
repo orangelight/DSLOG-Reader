@@ -42,7 +42,7 @@
             this.comboBoxProfiles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxProfiles.FormattingEnabled = true;
             this.comboBoxProfiles.Location = new System.Drawing.Point(10, 10);
-            this.comboBoxProfiles.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.comboBoxProfiles.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxProfiles.Name = "comboBoxProfiles";
             this.comboBoxProfiles.Size = new System.Drawing.Size(139, 21);
             this.comboBoxProfiles.TabIndex = 0;
@@ -62,11 +62,15 @@
             chartArea1.AxisY.LabelStyle.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
             chartArea1.AxisY.LabelStyle.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
             chartArea1.AxisY.MajorGrid.Enabled = false;
+            chartArea1.AxisY.Maximum = 120D;
+            chartArea1.AxisY.Minimum = -0.5D;
+            chartArea1.AxisY2.Maximum = 17D;
+            chartArea1.AxisY2.Minimum = -0.5D;
             chartArea1.BackColor = System.Drawing.Color.Black;
             chartArea1.Name = "ChartArea1";
             this.chart.ChartAreas.Add(chartArea1);
             this.chart.Location = new System.Drawing.Point(153, 34);
-            this.chart.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.chart.Margin = new System.Windows.Forms.Padding(2);
             this.chart.Name = "chart";
             this.chart.Size = new System.Drawing.Size(694, 423);
             this.chart.TabIndex = 1;
@@ -80,7 +84,7 @@
             this.treeView.CheckBoxes = true;
             this.treeView.Indent = 12;
             this.treeView.Location = new System.Drawing.Point(10, 34);
-            this.treeView.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.treeView.Margin = new System.Windows.Forms.Padding(2);
             this.treeView.Name = "treeView";
             this.treeView.Size = new System.Drawing.Size(138, 423);
             this.treeView.TabIndex = 2;
@@ -92,7 +96,7 @@
             this.comboBoxEvents.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxEvents.FormattingEnabled = true;
             this.comboBoxEvents.Location = new System.Drawing.Point(277, 10);
-            this.comboBoxEvents.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.comboBoxEvents.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxEvents.Name = "comboBoxEvents";
             this.comboBoxEvents.Size = new System.Drawing.Size(131, 21);
             this.comboBoxEvents.TabIndex = 3;
@@ -108,7 +112,7 @@
             this.Controls.Add(this.chart);
             this.Controls.Add(this.comboBoxProfiles);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "CompForm";
             this.Text = "DSLOG Reader 2 - Competition View";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CompForm_FormClosing);

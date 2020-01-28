@@ -20,10 +20,12 @@ namespace DSLOG_Reader_2.CompView
         private SeriesGroupNodes NonEditGroups;
         private bool checkMode = false;
         private int lastSelectedEvent = -1;
+        private const double TotalPDPScale = 50;
 
         public CompForm()
         {
             InitializeComponent();
+            treeView.Enabled = false;
         }
 
         public void SetProfiles(GroupProfiles profiles)
@@ -99,20 +101,24 @@ namespace DSLOG_Reader_2.CompView
                             {
                                 e.Parent.Checked = false;
                                 checkMode = false;
-                                //SetChartSeriesEnabled();
+                                PlotMatches(FileView.GetMatches(comboBoxEvents.SelectedItem.ToString()));
                                 return;
                             }
                         }
                         e.Parent.Checked = true;
                     }
                 }
-                //SetChartSeriesEnabled();
+                PlotMatches(FileView.GetMatches(comboBoxEvents.SelectedItem.ToString()));
                 checkMode = false;
             }
         }
 
         private void ComboBoxEvents_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (comboBoxEvents.SelectedIndex != 0)
+            {
+                treeView.Enabled = true;
+            }
             if (lastSelectedEvent != comboBoxEvents.SelectedIndex)
             {
                 PlotMatches(FileView.GetMatches(comboBoxEvents.SelectedItem.ToString()));
@@ -150,6 +156,7 @@ namespace DSLOG_Reader_2.CompView
             sv.BorderColor = Color.White;
             sv.Color = Color.Transparent;
             sv.BorderWidth = 1;
+            sv.YAxisType = AxisType.Secondary;
             chart.Series.Add(sv);
 
 
@@ -161,6 +168,7 @@ namespace DSLOG_Reader_2.CompView
             //Series boxPlots = chart.Series["boxplot"];
             Util.ClearPointsQuick(chart.Series[0]);
             Util.ClearPointsQuick(chart.Series[1]);
+            chart.ChartAreas[0].AxisX.CustomLabels.Clear();
 
             foreach (var match in matches)
             {
@@ -170,7 +178,11 @@ namespace DSLOG_Reader_2.CompView
                 {
                     continue;
                 }
+                int oldOffset = xOffset-1;
                 PlotMatch(reader.Entries.Where(en => en.RobotAuto || en.RobotTele || en.Brownout));
+                var custom = new CustomLabel(oldOffset, xOffset, $"{match.MatchType} {match.FMSMatchNum}", 0, LabelMarkStyle.None);
+                custom.ForeColor = match.GetMatchTypeColor();
+                chart.ChartAreas[0].AxisX.CustomLabels.Add(custom);
                 xOffset += 1;
             }
 
@@ -183,14 +195,82 @@ namespace DSLOG_Reader_2.CompView
                 foreach(TreeNode node in group.Nodes)
                 {
                     if (!node.Checked) continue;
+                    
                     if (node.Name.StartsWith("pdp"))
                     {
                         int id = int.Parse(node.Name.Replace("pdp", ""));
                         var d = new DataPoint(xOffset, GenerateBoxPlotData(data.Select(en=>en.GetPDPChannel(id)).ToList()));
                         d.BorderColor = node.BackColor;
                         chart.Series[0].Points.Add(d);
+
                     }
-                   
+                    else if (group.Name == "basic")
+                    {
+                        if (node.Name == "voltage")
+                        {
+                            var d = new DataPoint(xOffset, GenerateBoxPlotData(data.Select(en => en.Voltage).ToList()));
+                            d.BorderColor = node.BackColor;
+                            chart.Series[0].Points.Add(d);
+                        }
+                        else if (node.Name == "can")
+                        {
+                            var d = new DataPoint(xOffset, GenerateBoxPlotData(data.Select(en => en.CANUtil*100.0).ToList()));
+                            d.BorderColor = node.BackColor;
+                            chart.Series[0].Points.Add(d);
+                        }
+                        else
+                        {
+                            var d = new DataPoint(xOffset, GenerateBoxPlotData(data.Select(en => en.RoboRioCPU * 100.0).ToList()));
+                            d.BorderColor = node.BackColor;
+                            chart.Series[0].Points.Add(d);
+                        }
+                    }
+                    else if (group.Name == "comms")
+                    {
+                        if (node.Name == "tripTime")
+                        {
+                            var d = new DataPoint(xOffset, GenerateBoxPlotData(data.Select(en => en.TripTime).ToList()));
+                            d.BorderColor = node.BackColor;
+                            chart.Series[0].Points.Add(d);
+                        }
+                        else
+                        {
+                            var d = new DataPoint(xOffset, GenerateBoxPlotData(data.Select(en => Math.Max(0, en.LostPackets)*100.0).ToList()));
+                            d.BorderColor = node.BackColor;
+                            chart.Series[0].Points.Add(d);
+                        }
+                    }
+                    else if (node.Name == "totalPdp")
+                    {
+                        var d = new DataPoint(xOffset, GenerateBoxPlotData(data.Select(en => en.GetDPDTotal() / (TotalPDPScale / 10.0)).ToList()));
+                        d.BorderColor = node.BackColor;
+                        chart.Series[0].Points.Add(d);
+                    }
+                    else if (group.Name.StartsWith("group"))
+                    {
+                        
+                        List<int> pdpIds = new List<int>();
+                        foreach(TreeNode n in group.Nodes)
+                        {
+                            if (n.Name.StartsWith("pdp")) pdpIds.Add(int.Parse(n.Name.Replace("pdp", "")));
+                        }
+
+                        if (node.Name.Contains("total") || node.Name.Contains("delta"))
+                        {
+                            
+                            var d = new DataPoint(xOffset, GenerateBoxPlotData(data.Select(en => en.GetGroupPDPTotal(pdpIds.ToArray()) / (TotalPDPScale / 10.0)).ToList()));
+                            d.BorderColor = node.BackColor;
+                            d.BorderDashStyle = ChartDashStyle.Dash;
+                            chart.Series[0].Points.Add(d);
+                        }
+                        else
+                        {
+                            var d = new DataPoint(xOffset, GenerateBoxPlotData(data.Select(en => en.GetGroupPDPSd(pdpIds.ToArray()) / (TotalPDPScale / 10.0)).ToList()));
+                            d.BorderColor = node.BackColor;
+                            d.BorderDashStyle = ChartDashStyle.Dash;
+                            chart.Series[0].Points.Add(d);
+                        }
+                    }
                     xOffset += 1;
                 }
             }

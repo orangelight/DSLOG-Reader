@@ -206,21 +206,7 @@ namespace DSLOG_Reader_2
                 {
                     subItems[3] = FMSMatchNum.ToString();
                     subItems[5] = EventName;
-                    switch (MatchType)
-                    {
-                        case FMSMatchType.Qualification:
-                            backColor = Color.Khaki;
-                            break;
-                        case FMSMatchType.Elimination:
-                            backColor = Color.LightCoral;
-                            break;
-                        case FMSMatchType.Practice:
-                            backColor = Color.LightGreen;
-                            break;
-                        case FMSMatchType.None:
-                            backColor = Color.LightSkyBlue;
-                            break;
-                    }
+                    backColor = GetMatchTypeColor();
                 }
                
                 TimeSpan sub = DateTime.Now.Subtract(StartTime);
@@ -230,6 +216,26 @@ namespace DSLOG_Reader_2
             item.BackColor = backColor;
             if (IsFMSMatch) item.Font = FMSFont;
             return item;
+        }
+
+        public Color GetMatchTypeColor()
+        {
+            switch (MatchType)
+            {
+                case FMSMatchType.Qualification:
+                    return Color.Khaki;
+
+                case FMSMatchType.Elimination:
+                    return Color.LightCoral;
+
+                case FMSMatchType.Practice:
+                    return Color.LightGreen;
+
+                case FMSMatchType.None:
+                    return Color.LightSkyBlue;
+                default:
+                    return SystemColors.ControlLightLight;
+            }
         }
 
         public DSLOGFileEntry(string entry)
