@@ -21,11 +21,15 @@ namespace DSLOG_Reader_2.CompView
         private bool checkMode = false;
         private int lastSelectedEvent = -1;
         private const double TotalPDPScale = 50;
+        private List<DSLOGReader> MatchReaders;
+        private List<DSLOGFileEntry> Matches;
 
         public CompForm()
         {
             InitializeComponent();
             treeView.Enabled = false;
+            MatchReaders = new List<DSLOGReader>();
+            Matches = new List<DSLOGFileEntry>();
         }
 
         public void SetProfiles(GroupProfiles profiles)
@@ -101,14 +105,14 @@ namespace DSLOG_Reader_2.CompView
                             {
                                 e.Parent.Checked = false;
                                 checkMode = false;
-                                PlotMatches(FileView.GetMatches(comboBoxEvents.SelectedItem.ToString()));
+                                PlotMatches();
                                 return;
                             }
                         }
                         e.Parent.Checked = true;
                     }
                 }
-                PlotMatches(FileView.GetMatches(comboBoxEvents.SelectedItem.ToString()));
+                PlotMatches();
                 checkMode = false;
             }
         }
@@ -121,7 +125,9 @@ namespace DSLOG_Reader_2.CompView
             }
             if (lastSelectedEvent != comboBoxEvents.SelectedIndex)
             {
-                PlotMatches(FileView.GetMatches(comboBoxEvents.SelectedItem.ToString()));
+                Matches = FileView.GetMatches(comboBoxEvents.SelectedItem.ToString());
+                ReadMatches(Matches);
+                PlotMatches();
                lastSelectedEvent = comboBoxEvents.SelectedIndex;
             }
         }
@@ -149,6 +155,7 @@ namespace DSLOG_Reader_2.CompView
             s.BorderColor = Color.White;
             s.Color = Color.Transparent;
             s.BorderWidth = 1;
+            s.MarkerSize = 2;
             chart.Series.Add(s);
 
             Series sv = new Series("boxplotV");
@@ -162,18 +169,29 @@ namespace DSLOG_Reader_2.CompView
 
         }
         int xOffset = 0;
-        private void PlotMatches(List<DSLOGFileEntry> matches)
+
+        private void ReadMatches(List<DSLOGFileEntry> matches)
+        {
+            MatchReaders.Clear();
+            foreach (var match in matches)
+            {
+                DSLOGReader reader = new DSLOGReader($"{FileView.GetPath()}\\{match.Name}.dslog");
+                reader.Read();
+                MatchReaders.Add(reader);
+            }
+        }
+        private void PlotMatches()
         {
             xOffset = 0;
             //Series boxPlots = chart.Series["boxplot"];
             Util.ClearPointsQuick(chart.Series[0]);
             Util.ClearPointsQuick(chart.Series[1]);
             chart.ChartAreas[0].AxisX.CustomLabels.Clear();
-
-            foreach (var match in matches)
+            chart.Annotations.Clear();
+            for (int i = 0; i < Matches.Count; i++)
             {
-                DSLOGReader reader = new DSLOGReader($"{FileView.GetPath()}\\{match.Name}.dslog");
-                reader.Read();
+                var reader = MatchReaders[i];
+                var match = Matches[i];
                 if (reader.Entries.Where(en => en.RobotAuto || en.RobotTele || en.Brownout).Count() < 10)
                 {
                     continue;
@@ -183,6 +201,20 @@ namespace DSLOG_Reader_2.CompView
                 var custom = new CustomLabel(oldOffset, xOffset, $"{match.MatchType} {match.FMSMatchNum}", 0, LabelMarkStyle.None);
                 custom.ForeColor = match.GetMatchTypeColor();
                 chart.ChartAreas[0].AxisX.CustomLabels.Add(custom);
+                LineAnnotation annotation = new LineAnnotation();
+                annotation.IsSizeAlwaysRelative = false;
+                annotation.AxisX = chart.ChartAreas[0].AxisX;
+                annotation.AxisY = chart.ChartAreas[0].AxisY;
+                annotation.AnchorX = xOffset;
+                annotation.AnchorY = 0;
+                annotation.Height = 120;
+                annotation.Width = 0;
+                annotation.LineWidth = 1;
+                annotation.StartCap = LineAnchorCapStyle.None;
+                annotation.EndCap = LineAnchorCapStyle.None;
+                annotation.LineColor = Color.White;
+                
+                chart.Annotations.Add(annotation);
                 xOffset += 1;
             }
 
@@ -190,12 +222,13 @@ namespace DSLOG_Reader_2.CompView
 
         private void PlotMatch(IEnumerable<DSLOGEntry> data)
         {
+            List<string> title = new List<string>();
             foreach(TreeNode group in treeView.Nodes)
             {
                 foreach(TreeNode node in group.Nodes)
                 {
                     if (!node.Checked) continue;
-                    
+                    title.Add(node.Text);
                     if (node.Name.StartsWith("pdp"))
                     {
                         int id = int.Parse(node.Name.Replace("pdp", ""));
@@ -274,6 +307,8 @@ namespace DSLOG_Reader_2.CompView
                     xOffset += 1;
                 }
             }
+            chart.Titles.Clear();
+            chart.Titles.Add(new Title(string.Join(", ", title), Docking.Top, new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold), Color.White));
         }
 
         private double[] GenerateBoxPlotData(List<double> data)
@@ -304,6 +339,12 @@ namespace DSLOG_Reader_2.CompView
             output.AddRange(new double[]{ min, max, q1, q3, mean, median});
             output.AddRange(outliers);
             return output.ToArray();
+        }
+
+        private void buttonSave_Click(object sender, EventArgs e)
+        {
+            //TODO Add save dialog
+            chart.SaveImage("chart.png", ChartImageFormat.Png);
         }
     }
 }

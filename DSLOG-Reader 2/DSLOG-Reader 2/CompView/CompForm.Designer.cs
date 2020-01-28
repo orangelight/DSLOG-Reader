@@ -34,6 +34,7 @@
             this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.treeView = new System.Windows.Forms.TreeView();
             this.comboBoxEvents = new System.Windows.Forms.ComboBox();
+            this.buttonSave = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
             this.SuspendLayout();
             // 
@@ -102,11 +103,22 @@
             this.comboBoxEvents.TabIndex = 3;
             this.comboBoxEvents.SelectedIndexChanged += new System.EventHandler(this.ComboBoxEvents_SelectedIndexChanged);
             // 
+            // buttonSave
+            // 
+            this.buttonSave.Location = new System.Drawing.Point(770, 6);
+            this.buttonSave.Name = "buttonSave";
+            this.buttonSave.Size = new System.Drawing.Size(75, 23);
+            this.buttonSave.TabIndex = 4;
+            this.buttonSave.Text = "Save Chart";
+            this.buttonSave.UseVisualStyleBackColor = true;
+            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+            // 
             // CompForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(857, 466);
+            this.Controls.Add(this.buttonSave);
             this.Controls.Add(this.comboBoxEvents);
             this.Controls.Add(this.treeView);
             this.Controls.Add(this.chart);
@@ -127,5 +139,6 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart chart;
         private System.Windows.Forms.TreeView treeView;
         private System.Windows.Forms.ComboBox comboBoxEvents;
+        private System.Windows.Forms.Button buttonSave;
     }
 }
