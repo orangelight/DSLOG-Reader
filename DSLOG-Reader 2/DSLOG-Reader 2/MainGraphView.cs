@@ -25,7 +25,9 @@ namespace DSLOG_Reader_2
         private Point? prevPosition = null;
         public MainForm MForm {get;set; }
         public EventsView EventsView { get; set; }
+        public ProbeView ProbeView { get; set; }
         private int PointCount = 1;
+        private List<DSLOGEntry> LogEntries;
         public MainGraphView()
         {
             InitializeComponent();
@@ -162,10 +164,12 @@ namespace DSLOG_Reader_2
 
         public void LoadLog(string name, string dir)
         {
+
             LastPath = dir;
             LastFile = name;
             string dslogFile = $"{dir}\\{name}.dslog";
             InitChart();
+            LogEntries = null;
             if (File.Exists(dslogFile))
             {
                 DSLOGReader reader = new DSLOGReader(dslogFile);
@@ -174,14 +178,15 @@ namespace DSLOG_Reader_2
                 {
                     return;
                 }
-
+                
                 ChartArea area = chart.ChartAreas[0];
                 StartTime = reader.StartTime;
                 EndTime = reader.Entries.Last().Time;
+                LogEntries = reader.Entries;
                 area.AxisX.Minimum = StartTime.ToOADate();
                 area.CursorX.IntervalOffset = reader.StartTime.Millisecond % 20;
-                PlotLog(reader);
-                PointCount = reader.Entries.Count;
+                PlotLog();
+                PointCount = LogEntries.Count;
                 area.AxisX.Maximum = EndTime.ToOADate();
                 ChangeChartLabels();
                 area.AxisX.ScaleView.ZoomReset();
@@ -229,18 +234,18 @@ namespace DSLOG_Reader_2
             return (int)(DateTime.FromOADate(chart.ChartAreas[0].AxisX.ScaleView.ViewMaximum).Subtract(StartTime).TotalMilliseconds / 20);
         }
 
-        private void PlotLog(DSLOGReader reader)
+        private void PlotLog()
         {
-            if (reader != null && reader.Version == 3)
+            if (LogEntries != null)
             {
                 int packetnum = 0;
-                for (int w = 0; w < reader.Entries.Count; w++)
+                for (int w = 0; w < LogEntries.Count; w++)
                 {
-                    DSLOGEntry en = reader.Entries.ElementAt(w);
+                    DSLOGEntry en = LogEntries.ElementAt(w);
 
 
                     //Adds points to first and last x values
-                    if (w == 0 || w == reader.Entries.Count - 1)
+                    if (w == 0 || w == LogEntries.Count - 1)
                     {
                         chart.Series["tripTime"].Points.AddXY(en.Time.ToOADate(), en.TripTime);
                         chart.Series["voltage"].Points.AddXY(en.Time.ToOADate(), en.Voltage);
@@ -279,11 +284,11 @@ namespace DSLOG_Reader_2
                     else
                     {
                         //Checks if value is differnt around it so we don't plot everypoint
-                        if (reader.Entries.ElementAt(w - 1).TripTime != en.TripTime || reader.Entries.ElementAt(w + 1).TripTime != en.TripTime)
+                        if (LogEntries.ElementAt(w - 1).TripTime != en.TripTime || LogEntries.ElementAt(w + 1).TripTime != en.TripTime)
                         {
                             chart.Series["tripTime"].Points.AddXY(en.Time.ToOADate(), en.TripTime);
                         }
-                        if ((reader.Entries.ElementAt(w - 1).LostPackets != en.LostPackets || reader.Entries.ElementAt(w + 1).LostPackets != en.LostPackets) || reader.Entries.ElementAt(w - 1).LostPackets != 0)
+                        if ((LogEntries.ElementAt(w - 1).LostPackets != en.LostPackets || LogEntries.ElementAt(w + 1).LostPackets != en.LostPackets) || LogEntries.ElementAt(w - 1).LostPackets != 0)
                         {
                             //the bar graphs are too much so we have to do this
                             if (packetnum % 4 == 0)
@@ -299,7 +304,7 @@ namespace DSLOG_Reader_2
                         }
 
                         
-                        if (reader.Entries.ElementAt(w - 1).Voltage != en.Voltage || reader.Entries.ElementAt(w + 1).Voltage != en.Voltage && en.Voltage < 17)
+                        if (LogEntries.ElementAt(w - 1).Voltage != en.Voltage || LogEntries.ElementAt(w + 1).Voltage != en.Voltage && en.Voltage < 17)
                         {
                             chart.Series["voltage"].Points.AddXY(en.Time.ToOADate(), en.Voltage);
                         }
@@ -308,23 +313,23 @@ namespace DSLOG_Reader_2
                         
 
 
-                        if (reader.Entries.ElementAt(w - 1).RoboRioCPU != en.RoboRioCPU || reader.Entries.ElementAt(w + 1).RoboRioCPU != en.RoboRioCPU)
+                        if (LogEntries.ElementAt(w - 1).RoboRioCPU != en.RoboRioCPU || LogEntries.ElementAt(w + 1).RoboRioCPU != en.RoboRioCPU)
                         {
                             chart.Series["roboRIOCPU"].Points.AddXY(en.Time.ToOADate(), en.RoboRioCPU * 100);
                         }
-                        if (reader.Entries.ElementAt(w - 1).CANUtil != en.CANUtil || reader.Entries.ElementAt(w + 1).CANUtil != en.CANUtil)
+                        if (LogEntries.ElementAt(w - 1).CANUtil != en.CANUtil || LogEntries.ElementAt(w + 1).CANUtil != en.CANUtil)
                         {
                             chart.Series["can"].Points.AddXY(en.Time.ToOADate(), en.CANUtil * 100);
                         }
                         for (int i = 0; i < 16; i++)
                         {
-                            if (reader.Entries.ElementAt(w - 1).GetPDPChannel(i) != en.GetPDPChannel(i) || reader.Entries.ElementAt(w + 1).GetPDPChannel(i) != en.GetPDPChannel(i))
+                            if (LogEntries.ElementAt(w - 1).GetPDPChannel(i) != en.GetPDPChannel(i) || LogEntries.ElementAt(w + 1).GetPDPChannel(i) != en.GetPDPChannel(i))
                             {
                                 chart.Series["pdp" + i].Points.AddXY(en.Time.ToOADate(), en.GetPDPChannel(i));
                             }
                         }
 
-                        if (reader.Entries.ElementAt(w - 1).GetDPDTotal() != en.GetDPDTotal() || reader.Entries.ElementAt(w + 1).GetDPDTotal() != en.GetDPDTotal())
+                        if (LogEntries.ElementAt(w - 1).GetDPDTotal() != en.GetDPDTotal() || LogEntries.ElementAt(w + 1).GetDPDTotal() != en.GetDPDTotal())
                         {
                             chart.Series["totalPdp"].Points.AddXY(en.Time.ToOADate(), en.GetDPDTotal()/ (TotalPDPScale / 10.0));
                         }
@@ -333,7 +338,7 @@ namespace DSLOG_Reader_2
                         {
                             if (kv.Key.StartsWith("total"))
                             {
-                                if (reader.Entries.ElementAt(w - 1).GetGroupPDPTotal(kv.Value) != en.GetGroupPDPTotal(kv.Value) || reader.Entries.ElementAt(w + 1).GetGroupPDPTotal(kv.Value) != en.GetGroupPDPTotal(kv.Value))
+                                if (LogEntries.ElementAt(w - 1).GetGroupPDPTotal(kv.Value) != en.GetGroupPDPTotal(kv.Value) || LogEntries.ElementAt(w + 1).GetGroupPDPTotal(kv.Value) != en.GetGroupPDPTotal(kv.Value))
                                 {
                                     chart.Series[kv.Key].Points.AddXY(en.Time.ToOADate(), en.GetGroupPDPTotal(kv.Value) / (TotalPDPScale / 10.0));
                                 }
@@ -341,7 +346,7 @@ namespace DSLOG_Reader_2
                             }
                             else
                             {
-                                if (reader.Entries.ElementAt(w - 1).GetGroupPDPSd(kv.Value) != en.GetGroupPDPSd(kv.Value) || reader.Entries.ElementAt(w + 1).GetGroupPDPSd(kv.Value) != en.GetGroupPDPSd(kv.Value))
+                                if (LogEntries.ElementAt(w - 1).GetGroupPDPSd(kv.Value) != en.GetGroupPDPSd(kv.Value) || LogEntries.ElementAt(w + 1).GetGroupPDPSd(kv.Value) != en.GetGroupPDPSd(kv.Value))
                                 {
                                     chart.Series[kv.Key].Points.AddXY(en.Time.ToOADate(), en.GetGroupPDPSd(kv.Value) / (TotalPDPScale / 10.0));
                                 }
@@ -350,56 +355,56 @@ namespace DSLOG_Reader_2
                         }
 
 
-                        if (reader.Entries.ElementAt(w - 1).DSDisabled != en.DSDisabled || reader.Entries.ElementAt(w + 1).DSDisabled != en.DSDisabled)
+                        if (LogEntries.ElementAt(w - 1).DSDisabled != en.DSDisabled || LogEntries.ElementAt(w + 1).DSDisabled != en.DSDisabled)
                             {
                                 DataPoint po = new DataPoint(en.Time.ToOADate(), 15.9);
-                                if (!en.DSDisabled || !reader.Entries.ElementAt(w - 1).DSDisabled) po.Color = Color.Transparent;
+                                if (!en.DSDisabled || !LogEntries.ElementAt(w - 1).DSDisabled) po.Color = Color.Transparent;
                                 chart.Series["dsDisabled"].Points.Add(po);
                                 //chart.Series["dsDisabled"].Points.AddXY(en.Time.ToOADate(), 15.9);
                             }
-                            if (reader.Entries.ElementAt(w - 1).DSAuto != en.DSAuto || reader.Entries.ElementAt(w + 1).DSAuto != en.DSAuto)
+                            if (LogEntries.ElementAt(w - 1).DSAuto != en.DSAuto || LogEntries.ElementAt(w + 1).DSAuto != en.DSAuto)
                             {
                                 DataPoint po = new DataPoint(en.Time.ToOADate(), 15.9);
-                                if (!en.DSAuto || reader.Entries.ElementAt(w - 1).DSAuto == false) po.Color = Color.Transparent;
+                                if (!en.DSAuto || LogEntries.ElementAt(w - 1).DSAuto == false) po.Color = Color.Transparent;
                                 chart.Series["dsAuto"].Points.Add(po);
                             }
-                            if (reader.Entries.ElementAt(w - 1).DSTele != en.DSTele || reader.Entries.ElementAt(w + 1).DSTele != en.DSTele)
+                            if (LogEntries.ElementAt(w - 1).DSTele != en.DSTele || LogEntries.ElementAt(w + 1).DSTele != en.DSTele)
                             {
                                 DataPoint po = new DataPoint(en.Time.ToOADate(), 15.9);
-                                if (!en.DSTele || reader.Entries.ElementAt(w - 1).DSTele == false) po.Color = Color.Transparent;
+                                if (!en.DSTele || LogEntries.ElementAt(w - 1).DSTele == false) po.Color = Color.Transparent;
                                 chart.Series["dsTele"].Points.Add(po);
                             }
 
-                            if (reader.Entries.ElementAt(w - 1).RobotDisabled != en.RobotDisabled || reader.Entries.ElementAt(w + 1).RobotDisabled != en.RobotDisabled)
+                            if (LogEntries.ElementAt(w - 1).RobotDisabled != en.RobotDisabled || LogEntries.ElementAt(w + 1).RobotDisabled != en.RobotDisabled)
                             {
                                 DataPoint po = new DataPoint(en.Time.ToOADate(), 16.8);
-                                if (!en.RobotDisabled || !reader.Entries.ElementAt(w - 1).RobotDisabled) po.Color = Color.Transparent;
+                                if (!en.RobotDisabled || !LogEntries.ElementAt(w - 1).RobotDisabled) po.Color = Color.Transparent;
                                 chart.Series["robotDisabled"].Points.Add(po);
                                 //chart.Series["robotDisabled"].Points.AddXY(en.Time.ToOADate(), 15.9);
                             }
-                            if (reader.Entries.ElementAt(w - 1).RobotAuto != en.RobotAuto || reader.Entries.ElementAt(w + 1).RobotAuto != en.RobotAuto)
+                            if (LogEntries.ElementAt(w - 1).RobotAuto != en.RobotAuto || LogEntries.ElementAt(w + 1).RobotAuto != en.RobotAuto)
                             {
                                 DataPoint po = new DataPoint(en.Time.ToOADate(), 16.5);
-                                if (!en.RobotAuto || reader.Entries.ElementAt(w - 1).RobotAuto == false) po.Color = Color.Transparent;
+                                if (!en.RobotAuto || LogEntries.ElementAt(w - 1).RobotAuto == false) po.Color = Color.Transparent;
                                 chart.Series["robotAuto"].Points.Add(po);
                             }
-                            if (reader.Entries.ElementAt(w - 1).RobotTele != en.RobotTele || reader.Entries.ElementAt(w + 1).RobotTele != en.RobotTele)
+                            if (LogEntries.ElementAt(w - 1).RobotTele != en.RobotTele || LogEntries.ElementAt(w + 1).RobotTele != en.RobotTele)
                             {
                                 DataPoint po = new DataPoint(en.Time.ToOADate(), 16.2);
-                                if (!en.RobotTele || reader.Entries.ElementAt(w - 1).RobotTele == false) po.Color = Color.Transparent;
+                                if (!en.RobotTele || LogEntries.ElementAt(w - 1).RobotTele == false) po.Color = Color.Transparent;
                                 chart.Series["robotTele"].Points.Add(po);
                             }
 
-                            if (reader.Entries.ElementAt(w - 1).Brownout != en.Brownout || reader.Entries.ElementAt(w + 1).Brownout != en.Brownout)
+                            if (LogEntries.ElementAt(w - 1).Brownout != en.Brownout || LogEntries.ElementAt(w + 1).Brownout != en.Brownout)
                             {
                                 DataPoint po = new DataPoint(en.Time.ToOADate(), 15.6);
-                                if (!en.Brownout || reader.Entries.ElementAt(w - 1).Brownout == false) po.Color = Color.Transparent;
+                                if (!en.Brownout || LogEntries.ElementAt(w - 1).Brownout == false) po.Color = Color.Transparent;
                                 chart.Series["brownout"].Points.Add(po);
                             }
-                            if (reader.Entries.ElementAt(w - 1).Watchdog != en.Watchdog || reader.Entries.ElementAt(w + 1).Watchdog != en.Watchdog)
+                            if (LogEntries.ElementAt(w - 1).Watchdog != en.Watchdog || LogEntries.ElementAt(w + 1).Watchdog != en.Watchdog)
                             {
                                 DataPoint po = new DataPoint(en.Time.ToOADate(), 15.3);
-                                if (!en.Watchdog || reader.Entries.ElementAt(w - 1).Watchdog == false) po.Color = Color.Transparent;
+                                if (!en.Watchdog || LogEntries.ElementAt(w - 1).Watchdog == false) po.Color = Color.Transparent;
                                 chart.Series["watchdog"].Points.Add(po);
                             }
                         
@@ -465,7 +470,7 @@ namespace DSLOG_Reader_2
 
         private void Chart_AxisViewChanged(object sender, ViewEventArgs e)
         {
-            if (StartTime != null)
+            if (LogEntries != null)
             {
                 if (chart.ChartAreas[0].AxisX.ScaleView.ViewMinimum < chart.ChartAreas[0].AxisX.Minimum || chart.ChartAreas[0].AxisX.ScaleView.ViewMaximum > chart.ChartAreas[0].AxisX.Maximum) chart.ChartAreas[0].AxisX.ScaleView.ZoomReset();
                 ChangeChartLabels();
@@ -485,9 +490,39 @@ namespace DSLOG_Reader_2
 
         private void Chart_CursorPositionChanged(object sender, CursorEventArgs e)
         {
-
+            if (LogEntries != null)
+            {
+                if (!Double.IsNaN(e.NewPosition))
+                {
+                    SetCursorLineRed();
+                    DateTime xValue = DateTime.FromOADate(e.NewPosition);
+                    ProbeView.SetProbe(LogEntries.ElementAt((int)(xValue.Subtract(StartTime).TotalMilliseconds / 20)), chart.Series, IdToPDPGroup);
+                }
+            }
         }
 
+        private void SetCursorLineRed()
+        {
+            chart.ChartAreas[0].CursorX.LineColor = Color.Red;
+            GraphCorsorLine.Stop();
+            GraphCorsorLine.Start();
+        }
+
+        private void GraphCorsorLine_Tick(object sender, EventArgs e)
+        {
+            if (chart.ChartAreas[0].CursorX.LineColor == Color.Red)
+            {
+                chart.ChartAreas[0].CursorX.LineColor = Color.Transparent;
+                GraphCorsorLine.Interval = 500;
+
+            }
+            else
+            {
+                chart.ChartAreas[0].CursorX.LineColor = Color.Red;
+                GraphCorsorLine.Interval = 500;
+            }
+        }
+        
         public void AddMessage(DataPoint dp)
         {
             chart.Series["messages"].Points.Add(dp);

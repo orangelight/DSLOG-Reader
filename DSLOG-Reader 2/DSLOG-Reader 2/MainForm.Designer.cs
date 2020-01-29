@@ -81,7 +81,7 @@
             this.tabPage1.Controls.Add(this.fileListView);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(346, 535);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Log Files";
@@ -94,7 +94,7 @@
             this.fileListView.EventView = null;
             this.fileListView.Location = new System.Drawing.Point(3, 3);
             this.fileListView.MainChart = null;
-            this.fileListView.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.fileListView.Margin = new System.Windows.Forms.Padding(4);
             this.fileListView.Name = "fileListView";
             this.fileListView.Size = new System.Drawing.Size(340, 529);
             this.fileListView.TabIndex = 0;
@@ -106,7 +106,7 @@
             this.tabPage2.Controls.Add(this.seriesView);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(346, 535);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Graph";
@@ -129,7 +129,7 @@
             this.tabPage5.Controls.Add(this.probeView1);
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage5.Size = new System.Drawing.Size(166, 393);
             this.tabPage5.TabIndex = 0;
             this.tabPage5.Text = "Probe";
@@ -137,9 +137,10 @@
             // 
             // probeView1
             // 
+            this.probeView1.AutoScroll = true;
             this.probeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.probeView1.Location = new System.Drawing.Point(3, 3);
-            this.probeView1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.probeView1.Margin = new System.Windows.Forms.Padding(4);
             this.probeView1.Name = "probeView1";
             this.probeView1.Size = new System.Drawing.Size(160, 387);
             this.probeView1.TabIndex = 0;
@@ -149,7 +150,7 @@
             this.tabPage6.Controls.Add(this.exportView1);
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage6.Size = new System.Drawing.Size(166, 393);
             this.tabPage6.TabIndex = 1;
             this.tabPage6.Text = "Export";
@@ -160,7 +161,7 @@
             this.exportView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.exportView1.Location = new System.Drawing.Point(3, 3);
-            this.exportView1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.exportView1.Margin = new System.Windows.Forms.Padding(4);
             this.exportView1.Name = "exportView1";
             this.exportView1.Size = new System.Drawing.Size(164, 387);
             this.exportView1.TabIndex = 0;
@@ -182,7 +183,7 @@
             this.seriesView.ComForm = null;
             this.seriesView.Location = new System.Drawing.Point(177, 3);
             this.seriesView.MainChart = null;
-            this.seriesView.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.seriesView.Margin = new System.Windows.Forms.Padding(4);
             this.seriesView.Name = "seriesView";
             this.seriesView.Size = new System.Drawing.Size(162, 419);
             this.seriesView.TabIndex = 1;
@@ -205,7 +206,7 @@
             this.tabPage3.Controls.Add(this.mainGraphView);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage3.Size = new System.Drawing.Size(750, 535);
             this.tabPage3.TabIndex = 0;
             this.tabPage3.Text = "Graph";
@@ -216,9 +217,10 @@
             this.mainGraphView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainGraphView.EventsView = null;
             this.mainGraphView.Location = new System.Drawing.Point(3, 3);
-            this.mainGraphView.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.mainGraphView.Margin = new System.Windows.Forms.Padding(4);
             this.mainGraphView.MForm = null;
             this.mainGraphView.Name = "mainGraphView";
+            this.mainGraphView.ProbeView = null;
             this.mainGraphView.Size = new System.Drawing.Size(744, 529);
             this.mainGraphView.TabIndex = 0;
             // 
@@ -227,7 +229,7 @@
             this.tabPage4.Controls.Add(this.eventsView1);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage4.Size = new System.Drawing.Size(750, 535);
             this.tabPage4.TabIndex = 1;
             this.tabPage4.Text = "Events";
@@ -258,7 +260,7 @@
             // 
             this.buttonCompMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCompMode.Location = new System.Drawing.Point(950, -1);
-            this.buttonCompMode.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonCompMode.Margin = new System.Windows.Forms.Padding(2);
             this.buttonCompMode.Name = "buttonCompMode";
             this.buttonCompMode.Size = new System.Drawing.Size(133, 21);
             this.buttonCompMode.TabIndex = 1;
@@ -277,7 +279,7 @@
             this.textBoxSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxSearch.Location = new System.Drawing.Point(742, 0);
-            this.textBoxSearch.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.textBoxSearch.Margin = new System.Windows.Forms.Padding(2);
             this.textBoxSearch.Name = "textBoxSearch";
             this.textBoxSearch.Size = new System.Drawing.Size(208, 20);
             this.textBoxSearch.TabIndex = 1;
@@ -287,7 +289,7 @@
             // 
             this.buttonFindMatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonFindMatch.Location = new System.Drawing.Point(696, -1);
-            this.buttonFindMatch.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonFindMatch.Margin = new System.Windows.Forms.Padding(2);
             this.buttonFindMatch.Name = "buttonFindMatch";
             this.buttonFindMatch.Size = new System.Drawing.Size(23, 21);
             this.buttonFindMatch.TabIndex = 1;
@@ -298,7 +300,7 @@
             // 
             this.buttonResetZoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonResetZoom.Location = new System.Drawing.Point(718, -1);
-            this.buttonResetZoom.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonResetZoom.Margin = new System.Windows.Forms.Padding(2);
             this.buttonResetZoom.Name = "buttonResetZoom";
             this.buttonResetZoom.Size = new System.Drawing.Size(23, 21);
             this.buttonResetZoom.TabIndex = 2;
@@ -309,7 +311,7 @@
             // 
             this.buttonMatchTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonMatchTime.Location = new System.Drawing.Point(674, -1);
-            this.buttonMatchTime.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonMatchTime.Margin = new System.Windows.Forms.Padding(2);
             this.buttonMatchTime.Name = "buttonMatchTime";
             this.buttonMatchTime.Size = new System.Drawing.Size(23, 21);
             this.buttonMatchTime.TabIndex = 1;

@@ -28,9 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.GraphCorsorLine = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
             this.SuspendLayout();
             // 
@@ -104,6 +106,11 @@
             this.chart.AxisViewChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.Chart_AxisViewChanged);
             this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Chart_MouseMove);
             // 
+            // GraphCorsorLine
+            // 
+            this.GraphCorsorLine.Interval = 500;
+            this.GraphCorsorLine.Tick += new System.EventHandler(this.GraphCorsorLine_Tick);
+            // 
             // MainGraphView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -119,5 +126,6 @@
         #endregion
 
         private System.Windows.Forms.DataVisualization.Charting.Chart chart;
+        private System.Windows.Forms.Timer GraphCorsorLine;
     }
 }

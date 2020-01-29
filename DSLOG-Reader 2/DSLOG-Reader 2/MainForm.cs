@@ -31,6 +31,7 @@ namespace DSLOG_Reader_2
             mainGraphView.MForm = this;
             mainGraphView.EventsView = eventsView1;
             compForm.FileView = fileListView;
+            mainGraphView.ProbeView = probeView1;
             seriesView.LoadSeries();
             
         }
