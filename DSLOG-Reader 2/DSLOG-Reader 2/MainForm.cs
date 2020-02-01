@@ -87,5 +87,15 @@ namespace DSLOG_Reader_2
             richTextBoxGraph.Text = text;
             richTextBoxGraph.BackColor = c;
         }
+
+        private void buttonFindMatch_Click(object sender, EventArgs e)
+        {
+            mainGraphView.ZoomIntoMatch();
+        }
+
+        private void buttonResetZoom_Click(object sender, EventArgs e)
+        {
+            mainGraphView.ResetZoom();
+        }
     }
 }

@@ -184,10 +184,11 @@ namespace DSLOG_Reader_2
                 EndTime = reader.Entries.Last().Time;
                 LogEntries = reader.Entries;
                 area.AxisX.Minimum = StartTime.ToOADate();
+                area.AxisX.Maximum = EndTime.ToOADate();
                 area.CursorX.IntervalOffset = reader.StartTime.Millisecond % 20;
                 PlotLog();
                 PointCount = LogEntries.Count;
-                area.AxisX.Maximum = EndTime.ToOADate();
+                
                 ChangeChartLabels();
                 area.AxisX.ScaleView.ZoomReset();
             }
@@ -538,6 +539,27 @@ namespace DSLOG_Reader_2
         public void AddMessage(DataPoint dp)
         {
             chart.Series[DSAttConstants.Messages].Points.Add(dp);
+        }
+
+        public void ZoomIntoMatch()
+        {
+            if (LogEntries != null)
+            {
+                for (int w = 0; w < LogEntries.Count; w++)
+                {
+                    if (LogEntries[w].DSAuto)
+                    {
+                        chart.ChartAreas[0].AxisX.ScaleView.Zoom(LogEntries[w].Time.AddSeconds(-2).ToOADate(), 156000, DateTimeIntervalType.Milliseconds);
+                        ChangeChartLabels();
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void ResetZoom()
+        {
+            chart.ChartAreas[0].AxisX.ScaleView.ZoomReset(100);
         }
 
     }
