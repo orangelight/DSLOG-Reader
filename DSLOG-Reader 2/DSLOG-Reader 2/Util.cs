@@ -85,7 +85,27 @@ namespace DSLOG_Reader_2
         public readonly static Color[] PdpColors = { Color.FromArgb(255, 113, 113), Color.FromArgb(255, 198, 89), Color.FromArgb(152, 255, 136), Color.FromArgb(136, 154, 255), Color.FromArgb(255, 52, 42), Color.FromArgb(255, 176, 42), Color.FromArgb(0, 255, 9), Color.FromArgb(0, 147, 255), Color.FromArgb(238, 12, 0), Color.FromArgb(239, 139, 0), Color.FromArgb(46, 220, 0), Color.FromArgb(57, 42, 255), Color.FromArgb(180, 8, 0), Color.FromArgb(200, 132, 0), Color.FromArgb(42, 159, 0), Color.FromArgb(0, 47, 239) };
     }
 
-    
+    public static class DSAttConstants
+    {
+        public const string TripTime = "triptime";
+        public const string LostPackets = "lostpackets";
+        public const string Voltage = "voltage";
+        public const string RoboRIOCPU = "roboriocpu";
+        public const string CANUtil = "canutil";
+        public const string DSDisabled = "dsdisabled";
+        public const string DSAuto = "dsauto";
+        public const string DSTele = "dstele";
+        public const string RobotDisabled = "robotdisabled";
+        public const string RobotAuto = "robotauto";
+        public const string RobotTele = "robottele";
+        public const string Brownout = "brownout";
+        public const string Watchdog = "watchdog";
+        public const string TotalPDP = "totalpdp";
+        public const string Messages = "messages";
+        public const string PDPPrefix = "pdp";
+        public const string TotalPrefix = "total";
+        public const string DeltaPrefix = "delta";
+    }
 
     public class XmlColor
     {

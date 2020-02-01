@@ -52,7 +52,7 @@ namespace DSLOG_Reader_2.CompView
             {
                 if (group.Name == "robotMode") continue;
                 var tree = group.ToTreeNode();
-                if (group.Name == "other") tree.Nodes.RemoveByKey("messages");
+                if (group.Name == "other") tree.Nodes.RemoveByKey(DSAttConstants.Messages);
                 treeView.Nodes.Add(tree);
 
             }
@@ -229,9 +229,9 @@ namespace DSLOG_Reader_2.CompView
                 {
                     if (!node.Checked) continue;
                     title.Add(node.Text);
-                    if (node.Name.StartsWith("pdp"))
+                    if (node.Name.StartsWith(DSAttConstants.PDPPrefix))
                     {
-                        int id = int.Parse(node.Name.Replace("pdp", ""));
+                        int id = int.Parse(node.Name.Replace(DSAttConstants.PDPPrefix, ""));
                         var d = new DataPoint(xOffset, GenerateBoxPlotData(data.Select(en=>en.GetPDPChannel(id)).ToList()));
                         d.BorderColor = node.BackColor;
                         chart.Series[0].Points.Add(d);
@@ -239,13 +239,13 @@ namespace DSLOG_Reader_2.CompView
                     }
                     else if (group.Name == "basic")
                     {
-                        if (node.Name == "voltage")
+                        if (node.Name == DSAttConstants.Voltage)
                         {
                             var d = new DataPoint(xOffset, GenerateBoxPlotData(data.Select(en => en.Voltage).ToList()));
                             d.BorderColor = node.BackColor;
                             chart.Series[0].Points.Add(d);
                         }
-                        else if (node.Name == "can")
+                        else if (node.Name == DSAttConstants.CANUtil)
                         {
                             var d = new DataPoint(xOffset, GenerateBoxPlotData(data.Select(en => en.CANUtil*100.0).ToList()));
                             d.BorderColor = node.BackColor;
@@ -260,7 +260,7 @@ namespace DSLOG_Reader_2.CompView
                     }
                     else if (group.Name == "comms")
                     {
-                        if (node.Name == "tripTime")
+                        if (node.Name == DSAttConstants.TripTime)
                         {
                             var d = new DataPoint(xOffset, GenerateBoxPlotData(data.Select(en => en.TripTime).ToList()));
                             d.BorderColor = node.BackColor;
@@ -273,7 +273,7 @@ namespace DSLOG_Reader_2.CompView
                             chart.Series[0].Points.Add(d);
                         }
                     }
-                    else if (node.Name == "totalPdp")
+                    else if (node.Name == DSAttConstants.TotalPDP)
                     {
                         var d = new DataPoint(xOffset, GenerateBoxPlotData(data.Select(en => en.GetDPDTotal() / (TotalPDPScale / 10.0)).ToList()));
                         d.BorderColor = node.BackColor;
@@ -285,10 +285,10 @@ namespace DSLOG_Reader_2.CompView
                         List<int> pdpIds = new List<int>();
                         foreach(TreeNode n in group.Nodes)
                         {
-                            if (n.Name.StartsWith("pdp")) pdpIds.Add(int.Parse(n.Name.Replace("pdp", "")));
+                            if (n.Name.StartsWith(DSAttConstants.PDPPrefix)) pdpIds.Add(int.Parse(n.Name.Replace(DSAttConstants.PDPPrefix, "")));
                         }
 
-                        if (node.Name.Contains("total") || node.Name.Contains("delta"))
+                        if (node.Name.Contains(DSAttConstants.TotalPrefix) || node.Name.Contains(DSAttConstants.DeltaPrefix))
                         {
                             
                             var d = new DataPoint(xOffset, GenerateBoxPlotData(data.Select(en => en.GetGroupPDPTotal(pdpIds.ToArray()) / (TotalPDPScale / 10.0)).ToList()));

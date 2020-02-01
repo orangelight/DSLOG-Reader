@@ -60,11 +60,11 @@ namespace DSLOG_Reader_2
                 treeViewPDP.BeginUpdate();
                 treeViewPDP.Nodes.Clear();
                 treeViewPDP.Nodes.AddRange(Profiles[comboBoxProfiles.SelectedIndex].Groups.ToTreeNodes().ToArray());
-                foreach(var node in treeViewPDP.Nodes.Find("total", true))
+                foreach(var node in treeViewPDP.Nodes.Find(DSAttConstants.TotalPrefix, true))
                 {
                     node.NodeFont = TDFont;
                 }
-                foreach (var node in treeViewPDP.Nodes.Find("delta", true))
+                foreach (var node in treeViewPDP.Nodes.Find(DSAttConstants.DeltaPrefix, true))
                 {
                     node.NodeFont = TDFont;
                 }
@@ -136,7 +136,7 @@ namespace DSLOG_Reader_2
 
         private void treeViewPDP_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            if (((TreeNode)e.Item).Parent == null || ((TreeNode)e.Item).Name == "total" || ((TreeNode)e.Item).Name == "delta" || comboBoxProfiles.SelectedIndex == 0)
+            if (((TreeNode)e.Item).Parent == null || ((TreeNode)e.Item).Name == DSAttConstants.TotalPrefix || ((TreeNode)e.Item).Name == DSAttConstants.DeltaPrefix || comboBoxProfiles.SelectedIndex == 0)
             {
                 return;
             }
@@ -194,8 +194,8 @@ namespace DSLOG_Reader_2
                 {
                     if (NumOfPDPNodes(draggedNode.Parent) <=2)
                     {
-                        draggedNode.Parent.Nodes.RemoveByKey("total");
-                        draggedNode.Parent.Nodes.RemoveByKey("delta");
+                        draggedNode.Parent.Nodes.RemoveByKey(DSAttConstants.TotalPrefix);
+                        draggedNode.Parent.Nodes.RemoveByKey(DSAttConstants.DeltaPrefix);
                     }
                     
                     draggedNode.Remove();
@@ -263,7 +263,7 @@ namespace DSLOG_Reader_2
             {
                 foreach(TreeNode node in group.Nodes)
                 {
-                    if (node.Bounds.Contains(e.Location) && node.Name != "total" && node.Name != "delta")
+                    if (node.Bounds.Contains(e.Location) && node.Name != DSAttConstants.TotalPrefix && node.Name != DSAttConstants.DeltaPrefix)
                     {
                         System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.SizeAll;
                         return;
@@ -291,8 +291,8 @@ namespace DSLOG_Reader_2
         {
             if (treeViewPDP.SelectedNode.Nodes.Count > 0)
             {
-                treeViewPDP.SelectedNode.Nodes.RemoveByKey("total");
-                treeViewPDP.SelectedNode.Nodes.RemoveByKey("delta");
+                treeViewPDP.SelectedNode.Nodes.RemoveByKey(DSAttConstants.TotalPrefix);
+                treeViewPDP.SelectedNode.Nodes.RemoveByKey(DSAttConstants.DeltaPrefix);
                 foreach (TreeNode node in treeViewPDP.SelectedNode.Nodes)
                 {
                     if (treeViewPDP.SelectedNode.Index == 0)
@@ -324,10 +324,10 @@ namespace DSLOG_Reader_2
                 checkBoxDelta.Enabled = true;
                 checkBoxTotal.Enabled = true;
 
-                if (treeViewPDP.SelectedNode.Nodes.ContainsKey("total")) checkBoxTotal.Checked = true;
+                if (treeViewPDP.SelectedNode.Nodes.ContainsKey(DSAttConstants.TotalPrefix)) checkBoxTotal.Checked = true;
                 else checkBoxTotal.Checked = false;
 
-                if (treeViewPDP.SelectedNode.Nodes.ContainsKey("delta")) checkBoxDelta.Checked = true;
+                if (treeViewPDP.SelectedNode.Nodes.ContainsKey(DSAttConstants.DeltaPrefix)) checkBoxDelta.Checked = true;
                 else checkBoxDelta.Checked = false;
             }
             else
@@ -340,9 +340,9 @@ namespace DSLOG_Reader_2
         private void treeViewPDP_AfterSelect(object sender, TreeViewEventArgs e)
         {
             CheckGroupTotalAndDelta();
-            if (treeViewPDP.SelectedNode != null && treeViewPDP.SelectedNode.Name.StartsWith("pdp"))
+            if (treeViewPDP.SelectedNode != null && treeViewPDP.SelectedNode.Name.StartsWith(DSAttConstants.PDPPrefix))
             {
-                labelPDPSlot.Text = $"PDP Slot: {treeViewPDP.SelectedNode.Name.Replace("pdp", "")}";
+                labelPDPSlot.Text = $"PDP Slot: {treeViewPDP.SelectedNode.Name.Replace(DSAttConstants.PDPPrefix, "")}";
             }
             else
             {
@@ -352,33 +352,33 @@ namespace DSLOG_Reader_2
 
         private void checkBoxTotal_CheckedChanged(object sender, EventArgs e)
         {
-            if (!treeViewPDP.SelectedNode.Nodes.ContainsKey("total") && checkBoxTotal.Checked)
+            if (!treeViewPDP.SelectedNode.Nodes.ContainsKey(DSAttConstants.TotalPrefix) && checkBoxTotal.Checked)
             {
                 TreeNode node = new TreeNode($"{treeViewPDP.SelectedNode.Text} Total");
                 node.BackColor = Color.LawnGreen;
-                node.Name = "total";
+                node.Name = DSAttConstants.TotalPrefix;
                 node.NodeFont = TDFont;
                 treeViewPDP.SelectedNode.Nodes.Add(node);
             }
-            else if (treeViewPDP.SelectedNode.Nodes.ContainsKey("total") && !checkBoxTotal.Checked)
+            else if (treeViewPDP.SelectedNode.Nodes.ContainsKey(DSAttConstants.TotalPrefix) && !checkBoxTotal.Checked)
             {
-                treeViewPDP.SelectedNode.Nodes.RemoveByKey("total");
+                treeViewPDP.SelectedNode.Nodes.RemoveByKey(DSAttConstants.TotalPrefix);
             }
         }
 
         private void checkBoxDelta_CheckedChanged(object sender, EventArgs e)
         {
-            if (!treeViewPDP.SelectedNode.Nodes.ContainsKey("delta") && checkBoxDelta.Checked)
+            if (!treeViewPDP.SelectedNode.Nodes.ContainsKey(DSAttConstants.DeltaPrefix) && checkBoxDelta.Checked)
             {
                 TreeNode node = new TreeNode($"{treeViewPDP.SelectedNode.Text} Delta");
                 node.BackColor = Color.Magenta;
                 node.NodeFont = TDFont;
-                node.Name = "delta";
+                node.Name = DSAttConstants.DeltaPrefix;
                 treeViewPDP.SelectedNode.Nodes.Add(node);
             }
-            else if (treeViewPDP.SelectedNode.Nodes.ContainsKey("delta") && !checkBoxDelta.Checked)
+            else if (treeViewPDP.SelectedNode.Nodes.ContainsKey(DSAttConstants.DeltaPrefix) && !checkBoxDelta.Checked)
             {
-                treeViewPDP.SelectedNode.Nodes.RemoveByKey("delta");
+                treeViewPDP.SelectedNode.Nodes.RemoveByKey(DSAttConstants.DeltaPrefix);
             }
         }
 
@@ -387,7 +387,7 @@ namespace DSLOG_Reader_2
             int i = 0;
             foreach(TreeNode node in parent.Nodes)
             {
-                if (!node.Name.StartsWith("group") && node.Name != "total" && node.Name != "delta")
+                if (!node.Name.StartsWith("group") && node.Name != DSAttConstants.TotalPrefix && node.Name != DSAttConstants.DeltaPrefix)
                 {
                     i++;
                 }
@@ -415,7 +415,7 @@ namespace DSLOG_Reader_2
                 SeriesGroupNode groupNode = new SeriesGroupNode(treeGroup.Name, treeGroup.Text, treeGroup.BackColor);
                 foreach(TreeNode treeChild in treeGroup.Nodes)
                 {
-                    if (treeChild.Name.Contains("total") || treeChild.Name.Contains("delta"))
+                    if (treeChild.Name.Contains(DSAttConstants.TotalPrefix) || treeChild.Name.Contains(DSAttConstants.DeltaPrefix))
                     {
                         groupNode.Childern.Add(new SeriesChildNode($"{treeChild.Name}{totalDeltaID++}", treeChild.Text, treeChild.BackColor));
                     }
@@ -467,12 +467,12 @@ namespace DSLOG_Reader_2
         {
             if (e.Node != null && e.Node.Nodes.Count > 0)
             {
-                var totals = e.Node.Nodes.Find("total", true);
+                var totals = e.Node.Nodes.Find(DSAttConstants.TotalPrefix, true);
                 foreach(var total in totals)
                 {
                     total.Text = $"{e.Label} Total";
                 }
-                var deltas = e.Node.Nodes.Find("delta", true);
+                var deltas = e.Node.Nodes.Find(DSAttConstants.DeltaPrefix, true);
                 foreach (var delta in deltas)
                 {
                     delta.Text = $"{e.Label} Delta";

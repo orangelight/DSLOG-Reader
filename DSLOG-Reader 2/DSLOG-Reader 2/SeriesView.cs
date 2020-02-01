@@ -36,33 +36,27 @@ namespace DSLOG_Reader_2
         public void LoadSeries()
         {
             SeriesGroupNode robotMode = new SeriesGroupNode("robotMode", "Robot Mode", SystemColors.ControlLightLight);
-            robotMode.Childern.Add(new SeriesChildNode("dsDisabled", "DS Disabled", Color.DarkGray));
-            robotMode.Childern.Add(new SeriesChildNode("dsAuto", "DS Auto", Color.Lime));
-            robotMode.Childern.Add(new SeriesChildNode("dsTele", "DS Tele", Color.Cyan));
-            robotMode.Childern.Add(new SeriesChildNode("robotDisabled", "Robot Disabled", Color.DarkGray));
-            robotMode.Childern.Add(new SeriesChildNode("robotAuto", "Robot Auto", Color.Lime));
-            robotMode.Childern.Add(new SeriesChildNode("robotTele", "Robot Tele", Color.Cyan));
+            robotMode.Childern.Add(new SeriesChildNode(DSAttConstants.DSDisabled, "DS Disabled", Color.DarkGray));
+            robotMode.Childern.Add(new SeriesChildNode(DSAttConstants.DSAuto, "DS Auto", Color.Lime));
+            robotMode.Childern.Add(new SeriesChildNode(DSAttConstants.DSTele, "DS Tele", Color.Cyan));
+            robotMode.Childern.Add(new SeriesChildNode(DSAttConstants.RobotDisabled, "Robot Disabled", Color.DarkGray));
+            robotMode.Childern.Add(new SeriesChildNode(DSAttConstants.RobotAuto, "Robot Auto", Color.Lime));
+            robotMode.Childern.Add(new SeriesChildNode(DSAttConstants.RobotTele, "Robot Tele", Color.Cyan));
 
-            robotMode.Childern.Add(new SeriesChildNode("brownout", "Brownout", Color.OrangeRed));
-            robotMode.Childern.Add(new SeriesChildNode("watchdog", "Watchdog", Color.FromArgb(249, 0, 255)));
+            robotMode.Childern.Add(new SeriesChildNode(DSAttConstants.Brownout, "Brownout", Color.OrangeRed));
+            robotMode.Childern.Add(new SeriesChildNode(DSAttConstants.Watchdog, "Watchdog", Color.FromArgb(249, 0, 255)));
            
             
             SeriesGroupNode basic = new SeriesGroupNode("basic", "Basic", SystemColors.ControlLightLight);
-            basic.Childern.Add(new SeriesChildNode("voltage", "Voltage", Color.Yellow));
-
-
-            basic.Childern.Add(new SeriesChildNode("roboRIOCPU", "roboRIO CPU", Color.Red));
-
-
-            basic.Childern.Add(new SeriesChildNode("can", "CAN", Color.Silver));
+            basic.Childern.Add(new SeriesChildNode(DSAttConstants.Voltage, "Voltage", Color.Yellow));
+            basic.Childern.Add(new SeriesChildNode(DSAttConstants.RoboRIOCPU, "roboRIO CPU", Color.Red));
+            basic.Childern.Add(new SeriesChildNode(DSAttConstants.CANUtil, "CAN", Color.Silver));
            
 
 
             SeriesGroupNode comms = new SeriesGroupNode("comms", "Comms", SystemColors.ControlLightLight);
-            comms.Childern.Add(new SeriesChildNode("tripTime", "Trip Time", Color.Lime));
-
-
-            comms.Childern.Add(new SeriesChildNode("lostPackets", "Lost Packets", Color.Chocolate));
+            comms.Childern.Add(new SeriesChildNode(DSAttConstants.TripTime, "Trip Time", Color.Lime));
+            comms.Childern.Add(new SeriesChildNode(DSAttConstants.LostPackets, "Lost Packets", Color.Chocolate));
 
 
             SeriesGroupNode pdp03 = new SeriesGroupNode("grouppdp03", "PDP (0-3) 40A", SystemColors.ControlLightLight);
@@ -74,19 +68,19 @@ namespace DSLOG_Reader_2
             {
                 if (i < 4)
                 {
-                    pdp03.Childern.Add(new SeriesChildNode($"pdp{i}", $"PDP {i}", Util.PdpColors[i]));
+                    pdp03.Childern.Add(new SeriesChildNode($"{DSAttConstants.PDPPrefix}{i}", $"PDP {i}", Util.PdpColors[i]));
                 }
                 else if(i < 8)
                 {
-                    pdp47.Childern.Add(new SeriesChildNode($"pdp{i}", $"PDP {i}", Util.PdpColors[i]));
+                    pdp47.Childern.Add(new SeriesChildNode($"{DSAttConstants.PDPPrefix}{i}", $"PDP {i}", Util.PdpColors[i]));
                 }
                 else if (i < 12)
                 {
-                    pdp811.Childern.Add(new SeriesChildNode($"pdp{i}", $"PDP {i}", Util.PdpColors[i]));
+                    pdp811.Childern.Add(new SeriesChildNode($"{DSAttConstants.PDPPrefix}{i}", $"PDP {i}", Util.PdpColors[i]));
                 }
                 else
                 {
-                    pdp1215.Childern.Add(new SeriesChildNode($"pdp{i}", $"PDP {i}", Util.PdpColors[i]));
+                    pdp1215.Childern.Add(new SeriesChildNode($"{DSAttConstants.PDPPrefix}{i}", $"PDP {i}", Util.PdpColors[i]));
                 }
             }
 
@@ -98,10 +92,10 @@ namespace DSLOG_Reader_2
             
 
             SeriesGroupNode other = new SeriesGroupNode("other", "Other", SystemColors.ControlLightLight);
-            other.Childern.Add(new SeriesChildNode("messages", "Messages", Color.Gainsboro));
+            other.Childern.Add(new SeriesChildNode(DSAttConstants.Messages, "Messages", Color.Gainsboro));
 
 
-            other.Childern.Add(new SeriesChildNode("totalPdp", "Total PDP", Color.FromArgb(249, 0, 255)));
+            other.Childern.Add(new SeriesChildNode(DSAttConstants.TotalPDP, "Total PDP", Color.FromArgb(249, 0, 255)));
 
 
             NonEditGroups.Add(comms);
