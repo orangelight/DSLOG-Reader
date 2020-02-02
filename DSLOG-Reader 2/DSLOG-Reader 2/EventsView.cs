@@ -57,8 +57,7 @@ namespace DSLOG_Reader_2
             lastIndexSelectedEvents = -1;
             GraphView.ClearMessages();
             listViewEvents.Items.Clear();
-            string lastText = "";
-            DateTime lastTextTime = DateTime.Now.AddYears(-20);
+            var dupDict = new Dictionary<string, DateTime>(StringComparer.OrdinalIgnoreCase);
             foreach (var entry in EventsDict.Where(e=>e.Value.Contains(Filter, StringComparison.OrdinalIgnoreCase)).AsParallel().ToList())
             {
                 DataPoint po = new DataPoint(entry.Key, 15);
@@ -66,19 +65,19 @@ namespace DSLOG_Reader_2
                 
                 DateTime entryTime = DateTime.FromOADate(entry.Key);
 
-                if (FilterRepeated && ((lastTextTime - entryTime).Duration().TotalSeconds < 5.0 && lastText == entry.Value))
+                if (FilterRepeated && (dupDict.ContainsKey(entry.Value) && (dupDict[entry.Value] - entryTime).Duration().TotalSeconds < 5.0))
                 {
                     continue;
                 }
 
-                lastText = entry.Value;
-                lastTextTime = entryTime;
+                dupDict[entry.Value] = entryTime;
                 ListViewItem item = new ListViewItem();
                 item.Text = entryTime.ToString("h:mm:ss.fff tt");
 
                 if (RemoveJoystick)
                 {
                     var NoJoyText = Regex.Replace(entry.Value, @"Info Joystick [0-9]+: \(.*\)[0-9]+ axes, [0-9]+ buttons, [0-9]+ POVs\.", "");
+                    if (!NoJoyText.Contains(Filter, StringComparison.OrdinalIgnoreCase)) continue;
                     if (string.IsNullOrWhiteSpace(NoJoyText)) continue;
                     item.SubItems.Add(NoJoyText);
                 }
