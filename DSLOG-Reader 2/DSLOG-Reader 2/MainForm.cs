@@ -45,7 +45,7 @@ namespace DSLOG_Reader_2
                 {
                     if (buttonCompMode.BackColor == SystemColors.Control)
                     {
-                        buttonCompMode.BackColor = Color.Red;
+                        buttonCompMode.BackColor = Color.LightGreen; 
                     }
                     else
                     {
@@ -77,11 +77,6 @@ namespace DSLOG_Reader_2
             compForm.Focus();
         }
 
-        private void TextBoxSearch_TextChanged(object sender, EventArgs e)
-        {
-            eventsView1.SetFilter(textBoxSearch.Text);
-        }
-
         public void SetGraphRichText(string text, Color c)
         {
             richTextBoxGraph.Text = text;
@@ -97,5 +92,6 @@ namespace DSLOG_Reader_2
         {
             mainGraphView.ResetZoom();
         }
+
     }
 }

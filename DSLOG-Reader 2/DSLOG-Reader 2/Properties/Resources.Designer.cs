@@ -63,6 +63,16 @@ namespace DSLOG_Reader_2.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap controller_1784571_960_720 {
+            get {
+                object obj = ResourceManager.GetObject("controller-1784571_960_720", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap InformationSymbol_16xSM {
             get {
                 object obj = ResourceManager.GetObject("InformationSymbol_16xSM", resourceCulture);
@@ -76,6 +86,16 @@ namespace DSLOG_Reader_2.Properties {
         internal static System.Drawing.Bitmap Refresh_grey_16xMD {
             get {
                 object obj = ResourceManager.GetObject("Refresh_grey_16xMD", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RepeatButton_16red {
+            get {
+                object obj = ResourceManager.GetObject("RepeatButton_16red", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -116,6 +136,16 @@ namespace DSLOG_Reader_2.Properties {
         internal static System.Drawing.Bitmap Time_16x {
             get {
                 object obj = ResourceManager.GetObject("Time_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap x_con {
+            get {
+                object obj = ResourceManager.GetObject("x_con", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -48,11 +48,9 @@
             this.eventsView1 = new DSLOG_Reader_2.EventsView();
             this.buttonCompMode = new System.Windows.Forms.Button();
             this.timerCompMode = new System.Windows.Forms.Timer(this.components);
-            this.textBoxSearch = new System.Windows.Forms.TextBox();
             this.buttonResetZoom = new System.Windows.Forms.Button();
             this.buttonFindMatch = new System.Windows.Forms.Button();
             this.buttonHelp = new System.Windows.Forms.Button();
-            this.buttonMatchTime = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -240,7 +238,7 @@
             this.eventsView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.eventsView1.GraphView = null;
             this.eventsView1.Location = new System.Drawing.Point(3, 3);
-            this.eventsView1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.eventsView1.Margin = new System.Windows.Forms.Padding(2);
             this.eventsView1.Name = "eventsView1";
             this.eventsView1.Size = new System.Drawing.Size(744, 526);
             this.eventsView1.TabIndex = 0;
@@ -260,19 +258,8 @@
             // timerCompMode
             // 
             this.timerCompMode.Enabled = true;
-            this.timerCompMode.Interval = 1500;
+            this.timerCompMode.Interval = 2000;
             this.timerCompMode.Tick += new System.EventHandler(this.TimerCompMode_Tick);
-            // 
-            // textBoxSearch
-            // 
-            this.textBoxSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxSearch.Location = new System.Drawing.Point(742, 0);
-            this.textBoxSearch.Margin = new System.Windows.Forms.Padding(2);
-            this.textBoxSearch.Name = "textBoxSearch";
-            this.textBoxSearch.Size = new System.Drawing.Size(208, 20);
-            this.textBoxSearch.TabIndex = 1;
-            this.textBoxSearch.TextChanged += new System.EventHandler(this.TextBoxSearch_TextChanged);
             // 
             // buttonResetZoom
             // 
@@ -312,18 +299,6 @@
             this.buttonHelp.TabIndex = 0;
             this.buttonHelp.UseVisualStyleBackColor = true;
             // 
-            // buttonMatchTime
-            // 
-            this.buttonMatchTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonMatchTime.BackgroundImage = global::DSLOG_Reader_2.Properties.Resources.Time_16x;
-            this.buttonMatchTime.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.buttonMatchTime.Location = new System.Drawing.Point(669, -1);
-            this.buttonMatchTime.Margin = new System.Windows.Forms.Padding(2);
-            this.buttonMatchTime.Name = "buttonMatchTime";
-            this.buttonMatchTime.Size = new System.Drawing.Size(25, 25);
-            this.buttonMatchTime.TabIndex = 1;
-            this.buttonMatchTime.UseVisualStyleBackColor = true;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -331,10 +306,8 @@
             this.ClientSize = new System.Drawing.Size(1108, 561);
             this.Controls.Add(this.buttonResetZoom);
             this.Controls.Add(this.buttonFindMatch);
-            this.Controls.Add(this.textBoxSearch);
             this.Controls.Add(this.buttonCompMode);
             this.Controls.Add(this.buttonHelp);
-            this.Controls.Add(this.buttonMatchTime);
             this.Controls.Add(this.tabControl2);
             this.Controls.Add(this.tabControl1);
             this.DoubleBuffered = true;
@@ -352,7 +325,6 @@
             this.tabPage3.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -377,9 +349,7 @@
         private System.Windows.Forms.Button buttonCompMode;
         private System.Windows.Forms.Timer timerCompMode;
         private EventsView eventsView1;
-        private System.Windows.Forms.TextBox textBoxSearch;
         private System.Windows.Forms.Button buttonFindMatch;
         private System.Windows.Forms.Button buttonResetZoom;
-        private System.Windows.Forms.Button buttonMatchTime;
     }
 }

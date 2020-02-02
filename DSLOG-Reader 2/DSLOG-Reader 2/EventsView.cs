@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using DSLOG_Reader_Library;
 using System.IO;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Text.RegularExpressions;
 
 namespace DSLOG_Reader_2
 {
@@ -19,6 +20,8 @@ namespace DSLOG_Reader_2
         private Dictionary<Double, String> EventsDict = new Dictionary<double, string>();
         private int lastIndexSelectedEvents = -1;
         private string Filter = "";
+        public bool FilterRepeated = false;
+        public bool RemoveJoystick = false;
         public EventsView()
         {
             InitializeComponent();
@@ -54,16 +57,36 @@ namespace DSLOG_Reader_2
             lastIndexSelectedEvents = -1;
             GraphView.ClearMessages();
             listViewEvents.Items.Clear();
-            var test = EventsDict.Where(e => e.Value.Contains(Filter));
-            foreach (var entry in EventsDict.Where(e=>e.Value.Contains(Filter)).AsParallel().ToList())
+            string lastText = "";
+            DateTime lastTextTime = DateTime.Now.AddYears(-20);
+            foreach (var entry in EventsDict.Where(e=>e.Value.Contains(Filter, StringComparison.OrdinalIgnoreCase)).AsParallel().ToList())
             {
                 DataPoint po = new DataPoint(entry.Key, 15);
                 po.MarkerSize = 6;
-                ListViewItem item = new ListViewItem();
+                
                 DateTime entryTime = DateTime.FromOADate(entry.Key);
-                item.Text = entryTime.ToString("h:mm:ss.fff tt");
-                item.SubItems.Add(entry.Value);
 
+                if (FilterRepeated && ((lastTextTime - entryTime).Duration().TotalSeconds < 5.0 && lastText == entry.Value))
+                {
+                    continue;
+                }
+
+                lastText = entry.Value;
+                lastTextTime = entryTime;
+                ListViewItem item = new ListViewItem();
+                item.Text = entryTime.ToString("h:mm:ss.fff tt");
+
+                if (RemoveJoystick)
+                {
+                    var NoJoyText = Regex.Replace(entry.Value, @"Info Joystick [0-9]+: \(.*\)[0-9]+ axes, [0-9]+ buttons, [0-9]+ POVs\.", "");
+                    if (string.IsNullOrWhiteSpace(NoJoyText)) continue;
+                    item.SubItems.Add(NoJoyText);
+                }
+                else
+                {
+                    item.SubItems.Add(entry.Value);
+                }
+                
                 if (entry.Value.Contains("ERROR") || entry.Value.Contains("<flags> 1"))
                 {
                     item.BackColor = Color.Red;
@@ -173,6 +196,39 @@ namespace DSLOG_Reader_2
         public bool TryGetEvent(double key, out string data)
         {
             return EventsDict.TryGetValue(key, out data);
+        }
+
+        private void buttonJoystick_Click(object sender, EventArgs e)
+        {
+            RemoveJoystick =  !RemoveJoystick;
+            if (RemoveJoystick)
+            {
+                buttonJoystick.BackColor = Color.Lime;
+            }
+            else
+            {
+                buttonJoystick.BackColor = Color.Red;
+            }
+            AddEvents();
+        }
+
+        private void buttonDup_Click(object sender, EventArgs e)
+        {
+            FilterRepeated = !FilterRepeated;
+            if (FilterRepeated)
+            {
+                buttonDup.BackColor = Color.Lime;
+            }
+            else
+            {
+                buttonDup.BackColor = Color.Red;
+            }
+            AddEvents();
+        }
+
+        private void textBoxSearch_TextChanged(object sender, EventArgs e)
+        {
+            SetFilter(textBoxSearch.Text);
         }
     }
 }

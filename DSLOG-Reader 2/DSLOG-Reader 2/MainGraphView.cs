@@ -28,6 +28,7 @@ namespace DSLOG_Reader_2
         public ProbeView ProbeView { get; set; }
         private int PointCount = 1;
         private List<DSLOGEntry> LogEntries;
+
         public MainGraphView()
         {
             InitializeComponent();
@@ -545,14 +546,11 @@ namespace DSLOG_Reader_2
         {
             if (LogEntries != null)
             {
-                for (int w = 0; w < LogEntries.Count; w++)
+                var index = GetAutoIndex();
+                if (index != -1)
                 {
-                    if (LogEntries[w].DSAuto)
-                    {
-                        chart.ChartAreas[0].AxisX.ScaleView.Zoom(LogEntries[w].Time.AddSeconds(-2).ToOADate(), 156000, DateTimeIntervalType.Milliseconds);
-                        ChangeChartLabels();
-                        break;
-                    }
+                    chart.ChartAreas[0].AxisX.ScaleView.Zoom(LogEntries[index].Time.AddSeconds(-2).ToOADate(), 156000, DateTimeIntervalType.Milliseconds);
+                    ChangeChartLabels();
                 }
             }
         }
@@ -562,6 +560,23 @@ namespace DSLOG_Reader_2
             chart.ChartAreas[0].AxisX.ScaleView.ZoomReset(100);
         }
 
+
+        private int GetAutoIndex()
+        {
+            if (LogEntries != null)
+            {
+                for (int w = 0; w < LogEntries.Count; w++)
+                {
+                    if (LogEntries[w].DSAuto)
+                    {
+                        return w;
+                    }
+                }
+            }
+            return -1;
+        }
+
+    
     }
 
     

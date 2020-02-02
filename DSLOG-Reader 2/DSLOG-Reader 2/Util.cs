@@ -39,7 +39,7 @@ namespace DSLOG_Reader_2
 
             int s_start = myRtb.SelectionStart, startIndex = 0, index;
             var Bold = new Font(myRtb.Font.FontFamily, myRtb.Font.Size+2,FontStyle.Bold);
-            while ((index = myRtb.Text.IndexOf(word, startIndex)) != -1)
+            while ((index = myRtb.Text.IndexOf(word, startIndex, StringComparison.OrdinalIgnoreCase)) != -1)
             {
                 myRtb.Select(index, word.Length);
                 myRtb.SelectionFont = Bold;
@@ -53,7 +53,10 @@ namespace DSLOG_Reader_2
             myRtb.SelectionLength = 0;
             myRtb.SelectionColor = Color.Black;
         }
-
+        public static bool Contains(this string source, string toCheck, StringComparison comp)
+        {
+            return source?.IndexOf(toCheck, comp) >= 0;
+        }
         public static Color MessageColor(String s)
         {
             if (s.Contains("ERROR") || s.Contains("<flags> 1"))
