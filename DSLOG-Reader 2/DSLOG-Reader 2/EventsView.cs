@@ -65,27 +65,28 @@ namespace DSLOG_Reader_2
                 
                 DateTime entryTime = DateTime.FromOADate(entry.Key);
 
-                if (FilterRepeated && (dupDict.ContainsKey(entry.Value) && (dupDict[entry.Value] - entryTime).Duration().TotalSeconds < 5.0))
-                {
-                    continue;
-                }
+               
 
-                dupDict[entry.Value] = entryTime;
+               
                 ListViewItem item = new ListViewItem();
                 item.Text = entryTime.ToString("h:mm:ss.fff tt");
+                string entryText = entry.Value;
 
                 if (RemoveJoystick)
                 {
-                    var NoJoyText = Regex.Replace(entry.Value, @"Info Joystick [0-9]+: \(.*\)[0-9]+ axes, [0-9]+ buttons, [0-9]+ POVs\.", "");
+                    var NoJoyText = RemoveJoyStickMessages(entryText);
                     if (!NoJoyText.Contains(Filter, StringComparison.OrdinalIgnoreCase)) continue;
                     if (string.IsNullOrWhiteSpace(NoJoyText)) continue;
-                    item.SubItems.Add(NoJoyText);
+                    entryText = NoJoyText;
                 }
-                else
+
+                if (FilterRepeated && (dupDict.ContainsKey(entryText) && (dupDict[entryText] - entryTime).Duration().TotalSeconds < 4.0))
                 {
-                    item.SubItems.Add(entry.Value);
+                    continue;
                 }
-                
+                dupDict[entryText] = entryTime;
+                item.SubItems.Add(entryText);
+
                 if (entry.Value.Contains("ERROR") || entry.Value.Contains("<flags> 1"))
                 {
                     item.BackColor = Color.Red;
@@ -164,6 +165,11 @@ namespace DSLOG_Reader_2
             AddEvents();
             richTextBox1.HighlightText(Filter, Color.Red);
 
+        }
+
+        private string RemoveJoyStickMessages(string message)
+        {
+            return Regex.Replace(message, @"(Info Joystick [0-9]+: \(.*?\)[0-9]+ axes, [0-9]+ buttons, [0-9]+ POVs\.)|(<TagVersion>1 <time> (\d+:)?-?\d+\.\d+ <count> 1 <flags> 0 <Code> 1 <details> Joystick (Button|axis|POV)? \d+ on port \d+ not available, check if controller is plugged in <location> edu\.wpi\.first\.wpilibj\.DriverStation\.reportJoystickUnpluggedWarning\(DriverStation\.java:1110\) <stack>)|(<TagVersion>1 <time> (\d+:)?-?\d+\.\d+ <message> Warning at edu\.wpi\.first\.wpilibj\.DriverStation\.reportJoystickUnpluggedWarning\(DriverStation\.java:1110\): Joystick (Button|axis|POV)? \d on port \d not available, check if controller is plugged in)", "").Trim();
         }
 
         private void ListViewEvents_SelectedIndexChanged(object sender, EventArgs e)
