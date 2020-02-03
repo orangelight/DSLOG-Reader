@@ -44,6 +44,7 @@
             this.buttonRefreash = new System.Windows.Forms.Button();
             this.buttonSettings = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.timerFileUpdate = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // listView
@@ -165,6 +166,11 @@
             this.buttonSettings.TabIndex = 2;
             this.buttonSettings.UseVisualStyleBackColor = true;
             // 
+            // timerFileUpdate
+            // 
+            this.timerFileUpdate.Interval = 500;
+            this.timerFileUpdate.Tick += new System.EventHandler(this.timerFileUpdate_Tick);
+            // 
             // FileListView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -198,5 +204,6 @@
         private System.Windows.Forms.Button buttonRefreash;
         private System.Windows.Forms.Button buttonFilter;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Timer timerFileUpdate;
     }
 }

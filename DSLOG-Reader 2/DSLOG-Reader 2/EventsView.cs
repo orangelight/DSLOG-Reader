@@ -32,6 +32,7 @@ namespace DSLOG_Reader_2
         {
             var fileName = $"{dir}\\{file}.dsevents";
             EventsDict.Clear();
+            listViewEvents.Items.Clear();
             if (!File.Exists(fileName))
             {
                 return;

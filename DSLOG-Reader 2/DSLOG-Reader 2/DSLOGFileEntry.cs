@@ -33,26 +33,43 @@ namespace DSLOG_Reader_2
         public string EventName {  get; set; }
         public bool FMSFilledIn { get; set; }
         public bool Useless { get; set; }
+        public bool Live { get; set; }
         public DSLOGFileEntry(string fileName, string dir)
         {
             Name = fileName;
             MatchType = FMSMatchType.NA;
             IsFMSMatch = false;
             EventName = "";
-            SetSeconds(dir);
-            if (!SetTime(dir) || !SetFMS(dir) || !SetUseless(dir))
-            {
-                Valid = false;
-                return;
-            }
-           
-
             
 
-            Valid = true;
+            Valid = PopulateInfo(dir);
             FMSFilledIn = false;
         }
 
+        public bool PopulateInfo(string dir)
+        {
+            SetSeconds(dir);
+            if (!SetTime(dir) || !SetFMS(dir) || !SetUseless(dir))
+            {
+                return false;
+            }
+
+            Live = CheckLive(dir);
+            return true;
+        }
+        private bool CheckLive(string dir)
+        {
+            if (StartTime == null || (StartTime - DateTime.Now).Duration().TotalHours > 6) return false;
+            try
+            {
+                File.OpenRead(dir + "\\" + Name + ".dslog").Close();
+            }
+            catch (IOException ex)
+            {
+                return true;
+            }
+            return false;
+        }
         private bool SetTime(string dir)
         {
             DateTime sTime;
@@ -211,6 +228,8 @@ namespace DSLOG_Reader_2
                
                 TimeSpan sub = DateTime.Now.Subtract(StartTime);
                 subItems[4] = sub.Days + "d " + sub.Hours + "h " + sub.Minutes + "m";
+
+                if (Live) backColor = Color.Lime;
             }
             var item = new ListViewItem(subItems);
             item.BackColor = backColor;
@@ -322,7 +341,7 @@ namespace DSLOG_Reader_2
             StringBuilder sb = new StringBuilder();
             foreach(var entry in NewEntries)
             {
-                if (((entry.FMSFilledIn && entry.EventName == "???") || (entry.FMSFilledIn && Math.Abs((entry.StartTime-DateTime.Now).TotalDays) < 2)) || !entry.Valid) continue;
+                if (((entry.FMSFilledIn && entry.EventName == "???") || (entry.FMSFilledIn && Math.Abs((entry.StartTime-DateTime.Now).TotalDays) < 2)) || !entry.Valid || entry.Live) continue;
                 sb.Append(entry.ToCacheEntry());
                 sb.Append("\n");
             }

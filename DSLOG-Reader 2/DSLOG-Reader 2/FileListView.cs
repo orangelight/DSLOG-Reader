@@ -12,6 +12,8 @@ using System.Globalization;
 using DSLOG_Reader_Library;
 using DSLOG_Reader_2.Properties;
 using DSLOG_Reader_2.CompView;
+using System.Threading;
+using System.Collections.Concurrent;
 
 namespace DSLOG_Reader_2
 {
@@ -26,11 +28,13 @@ namespace DSLOG_Reader_2
         private int lastIndexSelectedFiles = 0;
         private bool filterUseless = false;
         private bool firstColumnResize = true;
+        private ConcurrentQueue<string> LogUpdateQueue;
         public CompForm ComForm { get; set; }
         public FileListView()
         {
             InitializeComponent();
             DSLOGFiles = new List<DSLOGFileEntry>();
+            LogUpdateQueue = new ConcurrentQueue<string>();
             toolTip1.SetToolTip(buttonFilter, "Filter Useless Logs");
         }
 
@@ -67,6 +71,7 @@ namespace DSLOG_Reader_2
             }
 
             InitFilterCombo();
+            timerFileUpdate.Start();
         }
 
         private void FillInMissingFMSEventInfo()
@@ -107,19 +112,9 @@ namespace DSLOG_Reader_2
 
         private void OnFileChanged(object sender, FileSystemEventArgs e)
         {
-            var entry = new DSLOGFileEntry(e.Name.Replace(".dslog", ""), Path);
-            
-            listView.Invoke(new MethodInvoker(delegate 
-            {
-                DSLOGFiles.Add(entry);
-                string selectedEvent = filterSelectorCombo.Items[filterSelectorCombo.SelectedIndex].ToString();
+            if (e.ChangeType != WatcherChangeTypes.Created) return;
 
-                if (selectedEvent == "" || entry.EventName == selectedEvent.Substring(0, selectedEvent.Length - 5) && entry.StartTime.ToString("yyyy") == selectedEvent.GetLast(4))
-                {
-                    listView.Items.Add(entry.ToListViewItem());
-                }
-                
-            }));
+            LogUpdateQueue.Enqueue(e.Name.Replace(".dslog", ""));
         }
 
         private void timerScrollToBottom_Tick(object sender, EventArgs e)
@@ -212,7 +207,7 @@ namespace DSLOG_Reader_2
             }
             else
             {
-                foreach (var entry in DSLOGFiles.Where(e => !(e.Useless && filterUseless)).Where(en => en.EventName == selectedEvent.Substring(0, selectedEvent.Length-5) && en.StartTime.ToString("yyyy") == selectedEvent.GetLast(4)))
+                foreach (var entry in DSLOGFiles.Where(e => !(e.Useless && filterUseless) || e.Live).Where(en => en.EventName == selectedEvent.Substring(0, selectedEvent.Length-5) && en.StartTime.ToString("yyyy") == selectedEvent.GetLast(4)))
                 {
                     listView.Items.Add(entry.ToListViewItem());
                 }
@@ -271,6 +266,60 @@ namespace DSLOG_Reader_2
         public string GetPath()
         {
             return Path;
+        }
+
+        private void timerFileUpdate_Tick(object sender, EventArgs e)
+        {
+            var AddBack = new List<string>();
+            var AddToFiles = new List<DSLOGFileEntry>();
+            bool listChanged = false;
+            while (LogUpdateQueue.Count != 0)
+            {
+                string file = "";
+                if (LogUpdateQueue.TryDequeue(out file))
+                {
+                    FileInfo fileInfo = new FileInfo($"{Path}\\{file}.dslog");
+                    if (fileInfo.Length < 100)
+                    {
+                        AddBack.Add(file);
+                    }
+                    else
+                    {
+                        var entry = new DSLOGFileEntry(file, Path);
+                        if (entry.Valid)
+                        {
+                            DSLOGFiles.Add(entry);
+                            listChanged = true;
+                        } 
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            foreach(string file in AddBack)
+            {
+                LogUpdateQueue.Enqueue(file);
+            }
+
+            foreach (var entry in DSLOGFiles.Where(en => en.Live))
+            {
+
+                try
+                {
+                    File.OpenRead($"{Path}\\{entry.Name}.dslog").Close();
+                    entry.PopulateInfo(Path);
+                    listChanged = true;
+                }
+                catch (IOException ex)
+                {
+
+                }
+            }
+
+            if (listChanged) FilterLogs(true);
         }
     }        
 }
