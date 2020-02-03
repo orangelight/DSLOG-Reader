@@ -41,7 +41,6 @@ namespace DSLOG_Reader_2
             IsFMSMatch = false;
             EventName = "";
             
-
             Valid = PopulateInfo(dir);
             FMSFilledIn = false;
         }

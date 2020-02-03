@@ -28,9 +28,9 @@ namespace DSLOG_Reader_2
         }
 
 
-        public void LoadLog(string file, string dir)
+        public void LoadLog(DSLOGFileEntry file, string dir)
         {
-            var fileName = $"{dir}\\{file}.dsevents";
+            var fileName = $"{dir}\\{file.Name}.dsevents";
             EventsDict.Clear();
             listViewEvents.Items.Clear();
             if (!File.Exists(fileName))

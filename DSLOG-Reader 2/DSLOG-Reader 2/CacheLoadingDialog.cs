@@ -15,13 +15,13 @@ namespace DSLOG_Reader_2
     public partial class CacheLoadingDialog : Form
     {
         private DSLOGFileEntryCache Cache;
-        private List<DSLOGFileEntry> DSLOGFiles;
+        private Dictionary<string, DSLOGFileEntry> DSLOGFiles;
         private string Path;
         private FileInfo[] Files;
         private int UselessFiles = 0;
         private Stopwatch stopWatch = new Stopwatch();
         List<double> lastEst = new List<double>();
-        public CacheLoadingDialog(DSLOGFileEntryCache cache, List<DSLOGFileEntry> fileList, string path)
+        public CacheLoadingDialog(DSLOGFileEntryCache cache, Dictionary<string, DSLOGFileEntry> fileList, string path)
         {
             InitializeComponent();
             Cache = cache;
@@ -52,14 +52,14 @@ namespace DSLOG_Reader_2
                 string name = Files[y].Name.Replace(".dslog", "");
                 if (Cache.TryGetEntry(name, out entry))
                 {
-                    DSLOGFiles.Add(entry);
+                    DSLOGFiles.Add(entry.Name, entry);
                     
                 }
                 else
                 {
                     entry = Cache.AddEntry(name, Path);
                     
-                    DSLOGFiles.Add(entry);
+                    DSLOGFiles.Add(entry.Name, entry);
                     if (entry.Useless) UselessFiles++;
                 }
                

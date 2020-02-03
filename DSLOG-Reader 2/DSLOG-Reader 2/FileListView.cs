@@ -22,7 +22,7 @@ namespace DSLOG_Reader_2
         private MainForm MForm;
         public EventsView EventView { get; set; }
         private string Path;
-        private List<DSLOGFileEntry> DSLOGFiles;
+        private Dictionary<string, DSLOGFileEntry> DSLOGFiles;
         private string lastFilter = "";
         public MainGraphView MainChart { get; set; }
         private int lastIndexSelectedFiles = 0;
@@ -33,7 +33,7 @@ namespace DSLOG_Reader_2
         public FileListView()
         {
             InitializeComponent();
-            DSLOGFiles = new List<DSLOGFileEntry>();
+            DSLOGFiles = new Dictionary<string, DSLOGFileEntry>();
             LogUpdateQueue = new ConcurrentQueue<string>();
             toolTip1.SetToolTip(buttonFilter, "Filter Useless Logs");
         }
@@ -60,7 +60,7 @@ namespace DSLOG_Reader_2
                 FillInMissingFMSEventInfo();
                 cache.SaveCache();
                 listView.BeginUpdate();
-                foreach (var entry in DSLOGFiles)
+                foreach (var entry in DSLOGFiles.Values)
                 {
                     listView.Items.Add(entry.ToListViewItem());
                 }
@@ -76,7 +76,7 @@ namespace DSLOG_Reader_2
 
         private void FillInMissingFMSEventInfo()
         {
-            var fmsMatches = DSLOGFiles.Where(e => e.IsFMSMatch);
+            var fmsMatches = DSLOGFiles.Values.Where(e => e.IsFMSMatch);
             foreach (var match in fmsMatches)
             {
                 if (string.IsNullOrWhiteSpace(match.EventName))
@@ -139,7 +139,7 @@ namespace DSLOG_Reader_2
         {
             filterSelectorCombo.Items.Clear();
             filterSelectorCombo.Items.Add("All Logs");
-            var eventNames = DSLOGFiles.Where(e => e.IsFMSMatch).Select(e => e.EventName + " "+e.StartTime.ToString("yyyy")).Distinct();
+            var eventNames = DSLOGFiles.Values.Where(e => e.IsFMSMatch).Select(e => e.EventName + " "+e.StartTime.ToString("yyyy")).Distinct();
             foreach(var name in eventNames)
             {
                 filterSelectorCombo.Items.Add(name);
@@ -160,12 +160,16 @@ namespace DSLOG_Reader_2
                 if (listView.SelectedItems[0].Index != lastIndexSelectedFiles)
                 {
                     lastIndexSelectedFiles = listView.SelectedItems[0].Index;
-                    GraphLog(listView.SelectedItems[0].Text);
+                    DSLOGFileEntry entry;
+                    if (DSLOGFiles.TryGetValue(listView.SelectedItems[0].Text, out entry))
+                    {
+                        GraphLog(entry);
+                    }
                 }
             }
         }
 
-        private void GraphLog(string file)
+        private void GraphLog(DSLOGFileEntry file)
         {
             if (MainChart !=null)
             {
@@ -200,14 +204,14 @@ namespace DSLOG_Reader_2
             
             if (selectedEvent == "All Logs")
             {
-                foreach (var entry in DSLOGFiles.Where(e=>!(e.Useless && filterUseless)))
+                foreach (var entry in DSLOGFiles.Values.Where(e=>!(e.Useless && filterUseless)))
                 {
                     listView.Items.Add(entry.ToListViewItem());
                 }
             }
             else
             {
-                foreach (var entry in DSLOGFiles.Where(e => !(e.Useless && filterUseless) || e.Live).Where(en => en.EventName == selectedEvent.Substring(0, selectedEvent.Length-5) && en.StartTime.ToString("yyyy") == selectedEvent.GetLast(4)))
+                foreach (var entry in DSLOGFiles.Values.Where(e => !(e.Useless && filterUseless) || e.Live).Where(en => en.EventName == selectedEvent.Substring(0, selectedEvent.Length-5) && en.StartTime.ToString("yyyy") == selectedEvent.GetLast(4)))
                 {
                     listView.Items.Add(entry.ToListViewItem());
                 }
@@ -228,7 +232,7 @@ namespace DSLOG_Reader_2
         {
             if (DSLOGFiles != null && DSLOGFiles.Count > 0)
             {
-                return DSLOGFiles.Any(e => e.IsFMSMatch);
+                return DSLOGFiles.Values.Any(e => e.IsFMSMatch);
             }
             return false;
         }
@@ -260,7 +264,7 @@ namespace DSLOG_Reader_2
 
         public List<DSLOGFileEntry> GetMatches(string eventName)
         {
-            return DSLOGFiles.Where(en => en.EventName == eventName.Substring(0, eventName.Length - 5) && en.StartTime.ToString("yyyy") == eventName.GetLast(4) && !en.Useless).ToList();
+            return DSLOGFiles.Values.Where(en => en.EventName == eventName.Substring(0, eventName.Length - 5) && en.StartTime.ToString("yyyy") == eventName.GetLast(4) && !en.Useless).ToList();
         }
 
         public string GetPath()
@@ -288,7 +292,7 @@ namespace DSLOG_Reader_2
                         var entry = new DSLOGFileEntry(file, Path);
                         if (entry.Valid)
                         {
-                            DSLOGFiles.Add(entry);
+                            DSLOGFiles.Add(entry.Name, entry);
                             listChanged = true;
                         } 
                     }
@@ -304,7 +308,7 @@ namespace DSLOG_Reader_2
                 LogUpdateQueue.Enqueue(file);
             }
 
-            foreach (var entry in DSLOGFiles.Where(en => en.Live))
+            foreach (var entry in DSLOGFiles.Values.Where(en => en.Live))
             {
 
                 try

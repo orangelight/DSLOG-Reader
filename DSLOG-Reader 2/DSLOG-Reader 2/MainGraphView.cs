@@ -28,6 +28,7 @@ namespace DSLOG_Reader_2
         public ProbeView ProbeView { get; set; }
         private int PointCount = 1;
         private List<DSLOGEntry> LogEntries;
+        private DSLOGFileEntry LogInfo;
 
         public MainGraphView()
         {
@@ -147,7 +148,7 @@ namespace DSLOG_Reader_2
                 }
             }
 
-            if (LastFile != null) LoadLog(LastFile, LastPath);
+            if (LogInfo != null) LoadLog(LogInfo, LastPath);
         }
 
         private Series MakeSeriesFromSettings(Series setting, SeriesChildNode node)
@@ -163,14 +164,16 @@ namespace DSLOG_Reader_2
             return newMode;
         }
 
-        public void LoadLog(string name, string dir)
+        public void LoadLog(DSLOGFileEntry logInfo, string dir)
         {
 
             LastPath = dir;
-            LastFile = name;
-            string dslogFile = $"{dir}\\{name}.dslog";
+            LastFile = logInfo.Name;
+            LogInfo = logInfo;
+            string dslogFile = $"{dir}\\{logInfo.Name}.dslog";
             InitChart();
             LogEntries = null;
+            ClearInfoLabel();
             if (File.Exists(dslogFile))
             {
                 DSLOGReader reader = new DSLOGReader(dslogFile);
@@ -192,7 +195,21 @@ namespace DSLOG_Reader_2
                 
                 ChangeChartLabels();
                 area.AxisX.ScaleView.ZoomReset();
+                labelFileInfo.Text = $"{logInfo.Name}.dslog";
+
+                if (logInfo.IsFMSMatch)
+                {
+                    labelFileInfo.Text = labelFileInfo.Text + $" ({logInfo.EventName} {logInfo.MatchType.ToString()} {logInfo.FMSMatchNum})";
+                    labelFileInfo.BackColor = logInfo.GetMatchTypeColor();
+                }
+                if (logInfo.Live) labelFileInfo.BackColor = Color.Lime;
             }
+        }
+
+        private void ClearInfoLabel()
+        {
+            labelFileInfo.Text = "";
+            labelFileInfo.BackColor = SystemColors.Control;
         }
         private void InitChart()
         {
