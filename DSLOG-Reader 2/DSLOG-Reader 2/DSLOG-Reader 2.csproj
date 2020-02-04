@@ -200,6 +200,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="logo2.ico" />
+    <None Include="Resources\FindNext_16x.png" />
     <None Include="Resources\RepeatButton_16red.png" />
     <None Include="Resources\x_con.png" />
     <None Include="Resources\controller-1784571_960_720.png" />

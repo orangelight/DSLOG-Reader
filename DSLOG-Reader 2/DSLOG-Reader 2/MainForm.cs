@@ -93,5 +93,9 @@ namespace DSLOG_Reader_2
             mainGraphView.ResetZoom();
         }
 
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            mainGraphView.StopStreaming();
+        }
     }
 }

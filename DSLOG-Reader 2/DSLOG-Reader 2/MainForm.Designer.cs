@@ -315,6 +315,7 @@
             this.MinimumSize = new System.Drawing.Size(904, 257);
             this.Name = "MainForm";
             this.Text = "DSLOG Reader 2";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);

@@ -29,7 +29,9 @@ namespace DSLOG_Reader_2
         private int PointCount = 1;
         private List<DSLOGEntry> LogEntries;
         private DSLOGFileEntry LogInfo;
-
+        private DSLOGStreamer LogStreamer;
+        private int LastEntry = 0;
+        private bool AutoScrollLive = false;
         public MainGraphView()
         {
             InitializeComponent();
@@ -166,7 +168,8 @@ namespace DSLOG_Reader_2
 
         public void LoadLog(DSLOGFileEntry logInfo, string dir)
         {
-
+            StopStreaming();
+            LogStreamer = null;
             LastPath = dir;
             LastFile = logInfo.Name;
             LogInfo = logInfo;
@@ -176,12 +179,27 @@ namespace DSLOG_Reader_2
             ClearInfoLabel();
             if (File.Exists(dslogFile))
             {
-                DSLOGReader reader = new DSLOGReader(dslogFile);
-                reader.Read();
+                DSLOGReader reader = null;
+                LastEntry = 0;
+                if (logInfo.Live)
+                {
+                    LogStreamer = new DSLOGStreamer(dslogFile);
+                    reader = LogStreamer;
+                    LogStreamer.Stream();
+                }
+                else
+                {
+                    reader = new DSLOGReader(dslogFile);
+                    reader.Read();
+                }
+                
+                
                 if (reader.Version != 3)
                 {
                     return;
                 }
+
+                if (logInfo.Live) LogStreamer.Stream();
                 
                 ChartArea area = chart.ChartAreas[0];
                 StartTime = reader.StartTime;
@@ -193,7 +211,7 @@ namespace DSLOG_Reader_2
                 PlotLog();
                 PointCount = LogEntries.Count;
                 
-                ChangeChartLabels();
+                
                 area.AxisX.ScaleView.ZoomReset();
                 labelFileInfo.Text = $"{logInfo.Name}.dslog";
 
@@ -202,7 +220,11 @@ namespace DSLOG_Reader_2
                     labelFileInfo.Text = labelFileInfo.Text + $" ({logInfo.EventName} {logInfo.MatchType.ToString()} {logInfo.FMSMatchNum})";
                     labelFileInfo.BackColor = logInfo.GetMatchTypeColor();
                 }
-                if (logInfo.Live) labelFileInfo.BackColor = Color.Lime;
+                if (logInfo.Live)
+                {
+                    labelFileInfo.BackColor = Color.Lime;
+                    timerStream.Start();
+                }
             }
         }
 
@@ -272,14 +294,17 @@ namespace DSLOG_Reader_2
                 var totalPDPSeries = chart.Series[DSAttConstants.TotalPDP];
 
                 int packetnum = 0;
-                for (int w = 0; w < LogEntries.Count; w++)
+                for (; LastEntry < LogEntries.Count; LastEntry++)
                 {
-                    DSLOGEntry en = LogEntries.ElementAt(w);
-
-
+                    DSLOGEntry en = LogEntries.ElementAt(LastEntry);
                     //Adds points to first and last x values
-                    if (w == 0 || w == LogEntries.Count - 1)
+                    if (LastEntry == 0 || LastEntry == LogEntries.Count - 1)
                     {
+                        if (LastEntry == LogEntries.Count - 1)
+                        {
+                            chart.ChartAreas[0].AxisX.Maximum = en.Time.ToOADate();
+                            if (AutoScrollLive) chart.ChartAreas[0].AxisX.ScaleView.Scroll(en.Time.ToOADate());
+                        }
                         tripTimeSeries.Points.AddXY(en.Time.ToOADate(), en.TripTime);
                         voltageSeries.Points.AddXY(en.Time.ToOADate(), en.Voltage);
                         lostPacketsSeries.Points.AddXY(en.Time.ToOADate(), en.LostPackets * 100);
@@ -317,11 +342,11 @@ namespace DSLOG_Reader_2
                     else
                     {
                         //Checks if value is differnt around it so we don't plot everypoint
-                        if (LogEntries.ElementAt(w - 1).TripTime != en.TripTime || LogEntries.ElementAt(w + 1).TripTime != en.TripTime)
+                        if (LogEntries.ElementAt(LastEntry - 1).TripTime != en.TripTime || LogEntries.ElementAt(LastEntry + 1).TripTime != en.TripTime)
                         {
                             tripTimeSeries.Points.AddXY(en.Time.ToOADate(), en.TripTime);
                         }
-                        if ((LogEntries.ElementAt(w - 1).LostPackets != en.LostPackets || LogEntries.ElementAt(w + 1).LostPackets != en.LostPackets) || LogEntries.ElementAt(w - 1).LostPackets != 0)
+                        if ((LogEntries.ElementAt(LastEntry - 1).LostPackets != en.LostPackets || LogEntries.ElementAt(LastEntry + 1).LostPackets != en.LostPackets) || LogEntries.ElementAt(LastEntry - 1).LostPackets != 0)
                         {
                             //the bar graphs are too much so we have to do this
                             if (packetnum % 4 == 0)
@@ -337,7 +362,7 @@ namespace DSLOG_Reader_2
                         }
 
                         
-                        if (LogEntries.ElementAt(w - 1).Voltage != en.Voltage || LogEntries.ElementAt(w + 1).Voltage != en.Voltage && en.Voltage < 17)
+                        if (LogEntries.ElementAt(LastEntry - 1).Voltage != en.Voltage || LogEntries.ElementAt(LastEntry + 1).Voltage != en.Voltage && en.Voltage < 17)
                         {
                             voltageSeries.Points.AddXY(en.Time.ToOADate(), en.Voltage);
                         }
@@ -346,23 +371,23 @@ namespace DSLOG_Reader_2
                         
 
 
-                        if (LogEntries.ElementAt(w - 1).RoboRioCPU != en.RoboRioCPU || LogEntries.ElementAt(w + 1).RoboRioCPU != en.RoboRioCPU)
+                        if (LogEntries.ElementAt(LastEntry - 1).RoboRioCPU != en.RoboRioCPU || LogEntries.ElementAt(LastEntry + 1).RoboRioCPU != en.RoboRioCPU)
                         {
                             roborioCPUSeries.Points.AddXY(en.Time.ToOADate(), en.RoboRioCPU * 100);
                         }
-                        if (LogEntries.ElementAt(w - 1).CANUtil != en.CANUtil || LogEntries.ElementAt(w + 1).CANUtil != en.CANUtil)
+                        if (LogEntries.ElementAt(LastEntry - 1).CANUtil != en.CANUtil || LogEntries.ElementAt(LastEntry + 1).CANUtil != en.CANUtil)
                         {
                             canUtilSeries.Points.AddXY(en.Time.ToOADate(), en.CANUtil * 100);
                         }
                         for (int i = 0; i < 16; i++)
                         {
-                            if (LogEntries.ElementAt(w - 1).GetPDPChannel(i) != en.GetPDPChannel(i) || LogEntries.ElementAt(w + 1).GetPDPChannel(i) != en.GetPDPChannel(i))
+                            if (LogEntries.ElementAt(LastEntry - 1).GetPDPChannel(i) != en.GetPDPChannel(i) || LogEntries.ElementAt(LastEntry + 1).GetPDPChannel(i) != en.GetPDPChannel(i))
                             {
                                 chart.Series[DSAttConstants.PDPPrefix + i].Points.AddXY(en.Time.ToOADate(), en.GetPDPChannel(i));
                             }
                         }
 
-                        if (LogEntries.ElementAt(w - 1).GetDPDTotal() != en.GetDPDTotal() || LogEntries.ElementAt(w + 1).GetDPDTotal() != en.GetDPDTotal())
+                        if (LogEntries.ElementAt(LastEntry - 1).GetDPDTotal() != en.GetDPDTotal() || LogEntries.ElementAt(LastEntry + 1).GetDPDTotal() != en.GetDPDTotal())
                         {
                             totalPDPSeries.Points.AddXY(en.Time.ToOADate(), en.GetDPDTotal()/ (TotalPDPScale / 10.0));
                         }
@@ -371,7 +396,7 @@ namespace DSLOG_Reader_2
                         {
                             if (kv.Key.StartsWith(DSAttConstants.TotalPrefix))
                             {
-                                if (LogEntries.ElementAt(w - 1).GetGroupPDPTotal(kv.Value) != en.GetGroupPDPTotal(kv.Value) || LogEntries.ElementAt(w + 1).GetGroupPDPTotal(kv.Value) != en.GetGroupPDPTotal(kv.Value))
+                                if (LogEntries.ElementAt(LastEntry - 1).GetGroupPDPTotal(kv.Value) != en.GetGroupPDPTotal(kv.Value) || LogEntries.ElementAt(LastEntry + 1).GetGroupPDPTotal(kv.Value) != en.GetGroupPDPTotal(kv.Value))
                                 {
                                     chart.Series[kv.Key].Points.AddXY(en.Time.ToOADate(), en.GetGroupPDPTotal(kv.Value) / (TotalPDPScale / 10.0));
                                 }
@@ -379,7 +404,7 @@ namespace DSLOG_Reader_2
                             }
                             else
                             {
-                                if (LogEntries.ElementAt(w - 1).GetGroupPDPSd(kv.Value) != en.GetGroupPDPSd(kv.Value) || LogEntries.ElementAt(w + 1).GetGroupPDPSd(kv.Value) != en.GetGroupPDPSd(kv.Value))
+                                if (LogEntries.ElementAt(LastEntry - 1).GetGroupPDPSd(kv.Value) != en.GetGroupPDPSd(kv.Value) || LogEntries.ElementAt(LastEntry + 1).GetGroupPDPSd(kv.Value) != en.GetGroupPDPSd(kv.Value))
                                 {
                                     chart.Series[kv.Key].Points.AddXY(en.Time.ToOADate(), en.GetGroupPDPSd(kv.Value) / (TotalPDPScale / 10.0));
                                 }
@@ -388,60 +413,62 @@ namespace DSLOG_Reader_2
                         }
 
 
-                        if (LogEntries.ElementAt(w - 1).DSDisabled != en.DSDisabled || LogEntries.ElementAt(w + 1).DSDisabled != en.DSDisabled)
+                        if (LogEntries.ElementAt(LastEntry - 1).DSDisabled != en.DSDisabled || LogEntries.ElementAt(LastEntry + 1).DSDisabled != en.DSDisabled)
                             {
                                 DataPoint po = new DataPoint(en.Time.ToOADate(), 15.9);
-                                if (!en.DSDisabled || !LogEntries.ElementAt(w - 1).DSDisabled) po.Color = Color.Transparent;
+                                if (!en.DSDisabled || !LogEntries.ElementAt(LastEntry - 1).DSDisabled) po.Color = Color.Transparent;
                                 dsDisabledSeries.Points.Add(po);
                             }
-                            if (LogEntries.ElementAt(w - 1).DSAuto != en.DSAuto || LogEntries.ElementAt(w + 1).DSAuto != en.DSAuto)
+                            if (LogEntries.ElementAt(LastEntry - 1).DSAuto != en.DSAuto || LogEntries.ElementAt(LastEntry + 1).DSAuto != en.DSAuto)
                             {
                                 DataPoint po = new DataPoint(en.Time.ToOADate(), 15.9);
-                                if (!en.DSAuto || LogEntries.ElementAt(w - 1).DSAuto == false) po.Color = Color.Transparent;
+                                if (!en.DSAuto || LogEntries.ElementAt(LastEntry - 1).DSAuto == false) po.Color = Color.Transparent;
                                 dsAutoSeries.Points.Add(po);
                             }
-                            if (LogEntries.ElementAt(w - 1).DSTele != en.DSTele || LogEntries.ElementAt(w + 1).DSTele != en.DSTele)
+                            if (LogEntries.ElementAt(LastEntry - 1).DSTele != en.DSTele || LogEntries.ElementAt(LastEntry + 1).DSTele != en.DSTele)
                             {
                                 DataPoint po = new DataPoint(en.Time.ToOADate(), 15.9);
-                                if (!en.DSTele || LogEntries.ElementAt(w - 1).DSTele == false) po.Color = Color.Transparent;
+                                if (!en.DSTele || LogEntries.ElementAt(LastEntry - 1).DSTele == false) po.Color = Color.Transparent;
                                 dsTeleSeries.Points.Add(po);
                             }
 
-                            if (LogEntries.ElementAt(w - 1).RobotDisabled != en.RobotDisabled || LogEntries.ElementAt(w + 1).RobotDisabled != en.RobotDisabled)
+                            if (LogEntries.ElementAt(LastEntry - 1).RobotDisabled != en.RobotDisabled || LogEntries.ElementAt(LastEntry + 1).RobotDisabled != en.RobotDisabled)
                             {
                                 DataPoint po = new DataPoint(en.Time.ToOADate(), 16.8);
-                                if (!en.RobotDisabled || !LogEntries.ElementAt(w - 1).RobotDisabled) po.Color = Color.Transparent;
+                                if (!en.RobotDisabled || !LogEntries.ElementAt(LastEntry - 1).RobotDisabled) po.Color = Color.Transparent;
                                 robotDisabledSeries.Points.Add(po);
                             }
-                            if (LogEntries.ElementAt(w - 1).RobotAuto != en.RobotAuto || LogEntries.ElementAt(w + 1).RobotAuto != en.RobotAuto)
+                            if (LogEntries.ElementAt(LastEntry - 1).RobotAuto != en.RobotAuto || LogEntries.ElementAt(LastEntry + 1).RobotAuto != en.RobotAuto)
                             {
                                 DataPoint po = new DataPoint(en.Time.ToOADate(), 16.5);
-                                if (!en.RobotAuto || LogEntries.ElementAt(w - 1).RobotAuto == false) po.Color = Color.Transparent;
+                                if (!en.RobotAuto || LogEntries.ElementAt(LastEntry - 1).RobotAuto == false) po.Color = Color.Transparent;
                                 robotAutoSeries.Points.Add(po);
                             }
-                            if (LogEntries.ElementAt(w - 1).RobotTele != en.RobotTele || LogEntries.ElementAt(w + 1).RobotTele != en.RobotTele)
+                            if (LogEntries.ElementAt(LastEntry - 1).RobotTele != en.RobotTele || LogEntries.ElementAt(LastEntry + 1).RobotTele != en.RobotTele)
                             {
                                 DataPoint po = new DataPoint(en.Time.ToOADate(), 16.2);
-                                if (!en.RobotTele || LogEntries.ElementAt(w - 1).RobotTele == false) po.Color = Color.Transparent;
+                                if (!en.RobotTele || LogEntries.ElementAt(LastEntry - 1).RobotTele == false) po.Color = Color.Transparent;
                                 robotTeleSeries.Points.Add(po);
                             }
 
-                            if (LogEntries.ElementAt(w - 1).Brownout != en.Brownout || LogEntries.ElementAt(w + 1).Brownout != en.Brownout)
+                            if (LogEntries.ElementAt(LastEntry - 1).Brownout != en.Brownout || LogEntries.ElementAt(LastEntry + 1).Brownout != en.Brownout)
                             {
                                 DataPoint po = new DataPoint(en.Time.ToOADate(), 15.6);
-                                if (!en.Brownout || LogEntries.ElementAt(w - 1).Brownout == false) po.Color = Color.Transparent;
+                                if (!en.Brownout || LogEntries.ElementAt(LastEntry - 1).Brownout == false) po.Color = Color.Transparent;
                                 brownoutSeries.Points.Add(po);
                             }
-                            if (LogEntries.ElementAt(w - 1).Watchdog != en.Watchdog || LogEntries.ElementAt(w + 1).Watchdog != en.Watchdog)
+                            if (LogEntries.ElementAt(LastEntry - 1).Watchdog != en.Watchdog || LogEntries.ElementAt(LastEntry + 1).Watchdog != en.Watchdog)
                             {
                                 DataPoint po = new DataPoint(en.Time.ToOADate(), 15.3);
-                                if (!en.Watchdog || LogEntries.ElementAt(w - 1).Watchdog == false) po.Color = Color.Transparent;
+                                if (!en.Watchdog || LogEntries.ElementAt(LastEntry - 1).Watchdog == false) po.Color = Color.Transparent;
                                 watchdogSeries.Points.Add(po);
                             }
                         
 
                     }
                 }
+                ChangeChartLabels();
+                
             }
         }
 
@@ -577,6 +604,45 @@ namespace DSLOG_Reader_2
             chart.ChartAreas[0].AxisX.ScaleView.ZoomReset(100);
         }
 
+        private void timerStream_Tick(object sender, EventArgs e)
+        {
+            if (LogStreamer == null || (LogInfo != null && !LogInfo.Live))
+            {
+                StopStreaming();
+                return;
+            }
+
+            if (LogStreamer.QueueCount() >= 3)
+            {
+                while (LogStreamer.QueueCount() != 0)
+                {
+                    DSLOGEntry entry = LogStreamer.PopEntry();
+                    if (entry != null) LogEntries.Add(entry);
+                }
+                PlotLog();
+            }
+        }
+
+        public void StopStreaming()
+        {
+            labelFileInfo.BackColor = SystemColors.Control;
+            timerStream.Stop();
+            if (LogStreamer != null) LogStreamer.StopStreaming();
+            LogStreamer = null;
+        }
+
+        private void buttonAutoScroll_Click(object sender, EventArgs e)
+        {
+            AutoScrollLive = !AutoScrollLive;
+            if (AutoScrollLive) 
+            {
+                buttonAutoScroll.BackColor = Color.Lime;
+            }
+            else
+            {
+                buttonAutoScroll.BackColor = Color.Red;
+            }
+        }
 
         private int GetAutoIndex()
         {

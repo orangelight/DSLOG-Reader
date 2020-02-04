@@ -12,7 +12,6 @@ namespace DSLOG_Reader_Library
         private Thread StreamingThread;
         private volatile bool StopSignal = false;
         public DSLOGStreamer(string path) : base(path) { }
-        
 
         public void Stream()
         {
@@ -33,7 +32,8 @@ namespace DSLOG_Reader_Library
                     while (reader.BaseStream.Position != reader.BaseStream.Length)
                     {
                         Queue.Enqueue(ReadEntry());
-                    }      
+                    }
+                    Thread.Sleep(21);
                 }
             }
             reader.Close();

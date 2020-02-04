@@ -29,11 +29,13 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.GraphCorsorLine = new System.Windows.Forms.Timer(this.components);
             this.labelFileInfo = new System.Windows.Forms.Label();
+            this.timerStream = new System.Windows.Forms.Timer(this.components);
+            this.buttonAutoScroll = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
             this.SuspendLayout();
             // 
@@ -43,67 +45,67 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chart.BackColor = System.Drawing.SystemColors.Control;
-            chartArea2.AxisX.IntervalAutoMode = System.Windows.Forms.DataVisualization.Charting.IntervalAutoMode.VariableCount;
-            chartArea2.AxisX.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
-            chartArea2.AxisX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
-            chartArea2.AxisX.LabelStyle.Format = "HH:mm:ss";
-            chartArea2.AxisX.LabelStyle.TruncatedLabels = true;
-            chartArea2.AxisX.LineColor = System.Drawing.Color.WhiteSmoke;
-            chartArea2.AxisX.MajorGrid.Interval = 0D;
-            chartArea2.AxisX.MajorGrid.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Seconds;
-            chartArea2.AxisX.MajorGrid.LineColor = System.Drawing.Color.LightGray;
-            chartArea2.AxisX.MaximumAutoSize = 100F;
-            chartArea2.AxisX.ScaleView.MinSizeType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
-            chartArea2.AxisX.ScaleView.SizeType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
-            chartArea2.AxisX.ScaleView.SmallScrollMinSizeType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
-            chartArea2.AxisX.ScaleView.SmallScrollSizeType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
-            chartArea2.AxisX.ScrollBar.BackColor = System.Drawing.Color.DimGray;
-            chartArea2.AxisX.ScrollBar.ButtonColor = System.Drawing.Color.Gray;
-            chartArea2.AxisX.ScrollBar.LineColor = System.Drawing.Color.DarkGray;
-            chartArea2.AxisY.Interval = 1D;
-            chartArea2.AxisY.IntervalAutoMode = System.Windows.Forms.DataVisualization.Charting.IntervalAutoMode.VariableCount;
-            chartArea2.AxisY.LabelStyle.ForeColor = System.Drawing.Color.DarkGoldenrod;
-            chartArea2.AxisY.LabelStyle.Interval = 1D;
-            chartArea2.AxisY.LabelStyle.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea2.AxisY.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(255)))), ((int)(((byte)(66)))));
-            chartArea2.AxisY.MajorGrid.Interval = 1D;
-            chartArea2.AxisY.MajorGrid.LineColor = System.Drawing.Color.DarkGoldenrod;
-            chartArea2.AxisY.MajorTickMark.Interval = 1D;
-            chartArea2.AxisY.MajorTickMark.LineColor = System.Drawing.Color.DarkGoldenrod;
-            chartArea2.AxisY.Maximum = 17D;
-            chartArea2.AxisY.MaximumAutoSize = 100F;
-            chartArea2.AxisY.Minimum = 0D;
-            chartArea2.AxisY.Title = "Battery Voltage V";
-            chartArea2.AxisY.TitleFont = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
-            chartArea2.AxisY.TitleForeColor = System.Drawing.Color.DarkGoldenrod;
-            chartArea2.AxisY2.Interval = 10D;
-            chartArea2.AxisY2.IsLabelAutoFit = false;
-            chartArea2.AxisY2.MajorGrid.Enabled = false;
-            chartArea2.AxisY2.MajorTickMark.Interval = 10D;
-            chartArea2.AxisY2.Maximum = 120D;
-            chartArea2.AxisY2.Minimum = 0D;
-            chartArea2.AxisY2.Title = "Latency ms, Packet Loss %, roboRIO CPU %, CAN %, PDP Currents A";
-            chartArea2.AxisY2.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            chartArea2.BackColor = System.Drawing.Color.Black;
-            chartArea2.CursorX.Interval = 20D;
-            chartArea2.CursorX.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
-            chartArea2.CursorX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
-            chartArea2.CursorX.IsUserEnabled = true;
-            chartArea2.CursorX.IsUserSelectionEnabled = true;
-            chartArea2.CursorX.LineWidth = 2;
-            chartArea2.Name = "ChartArea";
-            chartArea2.Position.Auto = false;
-            chartArea2.Position.Height = 100F;
-            chartArea2.Position.Width = 100F;
-            this.chart.ChartAreas.Add(chartArea2);
+            chartArea1.AxisX.IntervalAutoMode = System.Windows.Forms.DataVisualization.Charting.IntervalAutoMode.VariableCount;
+            chartArea1.AxisX.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
+            chartArea1.AxisX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
+            chartArea1.AxisX.LabelStyle.Format = "HH:mm:ss";
+            chartArea1.AxisX.LabelStyle.TruncatedLabels = true;
+            chartArea1.AxisX.LineColor = System.Drawing.Color.WhiteSmoke;
+            chartArea1.AxisX.MajorGrid.Interval = 0D;
+            chartArea1.AxisX.MajorGrid.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Seconds;
+            chartArea1.AxisX.MajorGrid.LineColor = System.Drawing.Color.LightGray;
+            chartArea1.AxisX.MaximumAutoSize = 100F;
+            chartArea1.AxisX.ScaleView.MinSizeType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
+            chartArea1.AxisX.ScaleView.SizeType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
+            chartArea1.AxisX.ScaleView.SmallScrollMinSizeType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
+            chartArea1.AxisX.ScaleView.SmallScrollSizeType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
+            chartArea1.AxisX.ScrollBar.BackColor = System.Drawing.Color.DimGray;
+            chartArea1.AxisX.ScrollBar.ButtonColor = System.Drawing.Color.Gray;
+            chartArea1.AxisX.ScrollBar.LineColor = System.Drawing.Color.DarkGray;
+            chartArea1.AxisY.Interval = 1D;
+            chartArea1.AxisY.IntervalAutoMode = System.Windows.Forms.DataVisualization.Charting.IntervalAutoMode.VariableCount;
+            chartArea1.AxisY.LabelStyle.ForeColor = System.Drawing.Color.DarkGoldenrod;
+            chartArea1.AxisY.LabelStyle.Interval = 1D;
+            chartArea1.AxisY.LabelStyle.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea1.AxisY.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(255)))), ((int)(((byte)(66)))));
+            chartArea1.AxisY.MajorGrid.Interval = 1D;
+            chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.Color.DarkGoldenrod;
+            chartArea1.AxisY.MajorTickMark.Interval = 1D;
+            chartArea1.AxisY.MajorTickMark.LineColor = System.Drawing.Color.DarkGoldenrod;
+            chartArea1.AxisY.Maximum = 17D;
+            chartArea1.AxisY.MaximumAutoSize = 100F;
+            chartArea1.AxisY.Minimum = 0D;
+            chartArea1.AxisY.Title = "Battery Voltage V";
+            chartArea1.AxisY.TitleFont = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
+            chartArea1.AxisY.TitleForeColor = System.Drawing.Color.DarkGoldenrod;
+            chartArea1.AxisY2.Interval = 10D;
+            chartArea1.AxisY2.IsLabelAutoFit = false;
+            chartArea1.AxisY2.MajorGrid.Enabled = false;
+            chartArea1.AxisY2.MajorTickMark.Interval = 10D;
+            chartArea1.AxisY2.Maximum = 120D;
+            chartArea1.AxisY2.Minimum = 0D;
+            chartArea1.AxisY2.Title = "Latency ms, Packet Loss %, roboRIO CPU %, CAN %, PDP Currents A";
+            chartArea1.AxisY2.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            chartArea1.BackColor = System.Drawing.Color.Black;
+            chartArea1.CursorX.Interval = 20D;
+            chartArea1.CursorX.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
+            chartArea1.CursorX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
+            chartArea1.CursorX.IsUserEnabled = true;
+            chartArea1.CursorX.IsUserSelectionEnabled = true;
+            chartArea1.CursorX.LineWidth = 2;
+            chartArea1.Name = "ChartArea";
+            chartArea1.Position.Auto = false;
+            chartArea1.Position.Height = 100F;
+            chartArea1.Position.Width = 100F;
+            this.chart.ChartAreas.Add(chartArea1);
             this.chart.Location = new System.Drawing.Point(0, 22);
             this.chart.Name = "chart";
-            series2.ChartArea = "ChartArea";
-            series2.Name = "Series1";
-            this.chart.Series.Add(series2);
+            series1.ChartArea = "ChartArea";
+            series1.Name = "Series1";
+            this.chart.Series.Add(series1);
             this.chart.Size = new System.Drawing.Size(1104, 553);
             this.chart.TabIndex = 0;
-            this.chart.Text = "chart1";
+            this.chart.Text = "chart";
             this.chart.CursorPositionChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.Chart_CursorPositionChanged);
             this.chart.AxisViewChanging += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.Chart_AxisViewChanging);
             this.chart.AxisViewChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.Chart_AxisViewChanged);
@@ -123,10 +125,31 @@
             this.labelFileInfo.Size = new System.Drawing.Size(0, 13);
             this.labelFileInfo.TabIndex = 1;
             // 
+            // timerStream
+            // 
+            this.timerStream.Interval = 200;
+            this.timerStream.Tick += new System.EventHandler(this.timerStream_Tick);
+            // 
+            // buttonAutoScroll
+            // 
+            this.buttonAutoScroll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonAutoScroll.BackColor = System.Drawing.Color.Red;
+            this.buttonAutoScroll.BackgroundImage = global::DSLOG_Reader_2.Properties.Resources.FindNext_16x1;
+            this.buttonAutoScroll.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.buttonAutoScroll.FlatAppearance.BorderSize = 0;
+            this.buttonAutoScroll.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonAutoScroll.Location = new System.Drawing.Point(1078, -1);
+            this.buttonAutoScroll.Name = "buttonAutoScroll";
+            this.buttonAutoScroll.Size = new System.Drawing.Size(23, 23);
+            this.buttonAutoScroll.TabIndex = 2;
+            this.buttonAutoScroll.UseVisualStyleBackColor = false;
+            this.buttonAutoScroll.Click += new System.EventHandler(this.buttonAutoScroll_Click);
+            // 
             // MainGraphView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.buttonAutoScroll);
             this.Controls.Add(this.labelFileInfo);
             this.Controls.Add(this.chart);
             this.Name = "MainGraphView";
@@ -142,5 +165,7 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart chart;
         private System.Windows.Forms.Timer GraphCorsorLine;
         private System.Windows.Forms.Label labelFileInfo;
+        private System.Windows.Forms.Timer timerStream;
+        private System.Windows.Forms.Button buttonAutoScroll;
     }
 }
