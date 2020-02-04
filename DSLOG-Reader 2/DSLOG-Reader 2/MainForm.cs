@@ -25,7 +25,9 @@ namespace DSLOG_Reader_2
             fileListView.EventView = eventsView1;
             fileListView.SetPath(@"C:\Users\Public\Documents\FRC\Log Files");
             fileListView.LoadFiles();
-            seriesView.MainChart = mainGraphView;
+            seriesView.AddObserver(mainGraphView);
+            seriesView.AddObserver(exportView1);
+            seriesView.AddObserver(competitionView1);
             seriesView.ComForm = compForm;
             eventsView1.GraphView = mainGraphView;
             mainGraphView.MForm = this;
@@ -33,48 +35,21 @@ namespace DSLOG_Reader_2
             compForm.FileView = fileListView;
             mainGraphView.ProbeView = probeView1;
             seriesView.LoadSeries();
-            
+            exportView1.DSGraph = mainGraphView;
+            exportView1.DSEvents = eventsView1;
+            SetExportMode();
         }
 
         private void TimerCompMode_Tick(object sender, EventArgs e)
         {
             if (fileListView.HasFMSMatch())
             {
-                buttonCompMode.Enabled = true;
-                if (!CompMode)
-                {
-                    if (buttonCompMode.BackColor == SystemColors.Control)
-                    {
-                        buttonCompMode.BackColor = Color.LightGreen; 
-                    }
-                    else
-                    {
-                        buttonCompMode.BackColor = SystemColors.Control;
-                    }
-                }
-                else
-                {
-                    if (buttonCompMode.BackColor == SystemColors.Control)
-                    {
-                        buttonCompMode.BackColor = Color.Lime;
-                    }
-                    else
-                    {
-                        buttonCompMode.BackColor = SystemColors.Control;
-                    }
-                }
-                
+                if (!tabControl2.TabPages.Contains(tabPage7)) tabControl2.TabPages.Add(tabPage7);
             }
             else
             {
-                buttonCompMode.Enabled = false;
+                if (tabControl2.TabPages.Contains(tabPage7)) tabControl2.TabPages.Remove(tabPage7);
             }
-        }
-
-        private void ButtonCompMode_Click(object sender, EventArgs e)
-        {
-            compForm.Show();
-            compForm.Focus();
         }
 
         public void SetGraphRichText(string text, Color c)
@@ -83,19 +58,30 @@ namespace DSLOG_Reader_2
             richTextBoxGraph.BackColor = c;
         }
 
-        private void buttonFindMatch_Click(object sender, EventArgs e)
-        {
-            mainGraphView.ZoomIntoMatch();
-        }
-
-        private void buttonResetZoom_Click(object sender, EventArgs e)
-        {
-            mainGraphView.ResetZoom();
-        }
-
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             mainGraphView.StopStreaming();
+        }
+
+        private void tabControl2_Selected(object sender, TabControlEventArgs e)
+        { 
+            SetExportMode();
+        }
+
+        private void SetExportMode()
+        {
+            if (tabControl2.SelectedIndex == 0)
+            {
+                exportView1.SetMode(ExportView.ExportMode.Chart);
+            }
+            if (tabControl2.SelectedIndex == 1)
+            {
+                exportView1.SetMode(ExportView.ExportMode.Events);
+            }
+            if (tabControl2.SelectedIndex == 2)
+            {
+                exportView1.SetMode(ExportView.ExportMode.Compititon);
+            }
         }
     }
 }

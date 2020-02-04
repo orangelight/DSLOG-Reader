@@ -32,25 +32,24 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.fileListView = new DSLOG_Reader_2.FileListView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabControl3 = new System.Windows.Forms.TabControl();
             this.tabPage5 = new System.Windows.Forms.TabPage();
-            this.probeView1 = new DSLOG_Reader_2.ProbeView();
             this.tabPage6 = new System.Windows.Forms.TabPage();
-            this.exportView1 = new DSLOG_Reader_2.ExportView();
             this.richTextBoxGraph = new System.Windows.Forms.RichTextBox();
-            this.seriesView = new DSLOG_Reader_2.SeriesView();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.mainGraphView = new DSLOG_Reader_2.MainGraphView();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.eventsView1 = new DSLOG_Reader_2.EventsView();
-            this.buttonCompMode = new System.Windows.Forms.Button();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
             this.timerCompMode = new System.Windows.Forms.Timer(this.components);
-            this.buttonResetZoom = new System.Windows.Forms.Button();
-            this.buttonFindMatch = new System.Windows.Forms.Button();
             this.buttonHelp = new System.Windows.Forms.Button();
+            this.mainGraphView = new DSLOG_Reader_2.MainGraphView();
+            this.eventsView1 = new DSLOG_Reader_2.EventsView();
+            this.competitionView1 = new DSLOG_Reader_2.CompetitionView();
+            this.fileListView = new DSLOG_Reader_2.FileListView();
+            this.probeView1 = new DSLOG_Reader_2.ProbeView();
+            this.exportView1 = new DSLOG_Reader_2.ExportView();
+            this.seriesView = new DSLOG_Reader_2.SeriesView();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -60,6 +59,7 @@
             this.tabControl2.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage4.SuspendLayout();
+            this.tabPage7.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -84,18 +84,6 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Log Files";
             this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // fileListView
-            // 
-            this.fileListView.ComForm = null;
-            this.fileListView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.fileListView.EventView = null;
-            this.fileListView.Location = new System.Drawing.Point(3, 3);
-            this.fileListView.MainChart = null;
-            this.fileListView.Margin = new System.Windows.Forms.Padding(4);
-            this.fileListView.Name = "fileListView";
-            this.fileListView.Size = new System.Drawing.Size(340, 529);
-            this.fileListView.TabIndex = 0;
             // 
             // tabPage2
             // 
@@ -133,16 +121,6 @@
             this.tabPage5.Text = "Probe";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
-            // probeView1
-            // 
-            this.probeView1.AutoScroll = true;
-            this.probeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.probeView1.Location = new System.Drawing.Point(3, 3);
-            this.probeView1.Margin = new System.Windows.Forms.Padding(4);
-            this.probeView1.Name = "probeView1";
-            this.probeView1.Size = new System.Drawing.Size(160, 387);
-            this.probeView1.TabIndex = 0;
-            // 
             // tabPage6
             // 
             this.tabPage6.Controls.Add(this.exportView1);
@@ -154,16 +132,6 @@
             this.tabPage6.Text = "Export";
             this.tabPage6.UseVisualStyleBackColor = true;
             // 
-            // exportView1
-            // 
-            this.exportView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.exportView1.Location = new System.Drawing.Point(3, 3);
-            this.exportView1.Margin = new System.Windows.Forms.Padding(4);
-            this.exportView1.Name = "exportView1";
-            this.exportView1.Size = new System.Drawing.Size(164, 387);
-            this.exportView1.TabIndex = 0;
-            // 
             // richTextBoxGraph
             // 
             this.richTextBoxGraph.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -173,19 +141,6 @@
             this.richTextBoxGraph.TabIndex = 2;
             this.richTextBoxGraph.Text = "";
             // 
-            // seriesView
-            // 
-            this.seriesView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.seriesView.ComForm = null;
-            this.seriesView.Location = new System.Drawing.Point(177, 3);
-            this.seriesView.MainChart = null;
-            this.seriesView.Margin = new System.Windows.Forms.Padding(4);
-            this.seriesView.Name = "seriesView";
-            this.seriesView.Size = new System.Drawing.Size(162, 419);
-            this.seriesView.TabIndex = 1;
-            // 
             // tabControl2
             // 
             this.tabControl2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -193,11 +148,13 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl2.Controls.Add(this.tabPage3);
             this.tabControl2.Controls.Add(this.tabPage4);
-            this.tabControl2.Location = new System.Drawing.Point(350, 3);
+            this.tabControl2.Controls.Add(this.tabPage7);
+            this.tabControl2.Location = new System.Drawing.Point(350, 0);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
             this.tabControl2.Size = new System.Drawing.Size(758, 558);
             this.tabControl2.TabIndex = 3;
+            this.tabControl2.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabControl2_Selected);
             // 
             // tabPage3
             // 
@@ -209,6 +166,45 @@
             this.tabPage3.TabIndex = 0;
             this.tabPage3.Text = "Graph";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.eventsView1);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(750, 532);
+            this.tabPage4.TabIndex = 1;
+            this.tabPage4.Text = "Events";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // tabPage7
+            // 
+            this.tabPage7.Controls.Add(this.competitionView1);
+            this.tabPage7.Location = new System.Drawing.Point(4, 22);
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage7.Size = new System.Drawing.Size(750, 532);
+            this.tabPage7.TabIndex = 2;
+            this.tabPage7.Text = "Competition";
+            this.tabPage7.UseVisualStyleBackColor = true;
+            // 
+            // timerCompMode
+            // 
+            this.timerCompMode.Enabled = true;
+            this.timerCompMode.Interval = 1000;
+            this.timerCompMode.Tick += new System.EventHandler(this.TimerCompMode_Tick);
+            // 
+            // buttonHelp
+            // 
+            this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonHelp.BackgroundImage = global::DSLOG_Reader_2.Properties.Resources.StatusHelp_16xMD;
+            this.buttonHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.buttonHelp.Location = new System.Drawing.Point(1084, -1);
+            this.buttonHelp.Name = "buttonHelp";
+            this.buttonHelp.Size = new System.Drawing.Size(22, 22);
+            this.buttonHelp.TabIndex = 0;
+            this.buttonHelp.UseVisualStyleBackColor = true;
             // 
             // mainGraphView
             // 
@@ -222,17 +218,6 @@
             this.mainGraphView.Size = new System.Drawing.Size(744, 526);
             this.mainGraphView.TabIndex = 0;
             // 
-            // tabPage4
-            // 
-            this.tabPage4.Controls.Add(this.eventsView1);
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(750, 532);
-            this.tabPage4.TabIndex = 1;
-            this.tabPage4.Text = "Events";
-            this.tabPage4.UseVisualStyleBackColor = true;
-            // 
             // eventsView1
             // 
             this.eventsView1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -243,70 +228,64 @@
             this.eventsView1.Size = new System.Drawing.Size(744, 526);
             this.eventsView1.TabIndex = 0;
             // 
-            // buttonCompMode
+            // competitionView1
             // 
-            this.buttonCompMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCompMode.Location = new System.Drawing.Point(950, -1);
-            this.buttonCompMode.Margin = new System.Windows.Forms.Padding(2);
-            this.buttonCompMode.Name = "buttonCompMode";
-            this.buttonCompMode.Size = new System.Drawing.Size(135, 25);
-            this.buttonCompMode.TabIndex = 1;
-            this.buttonCompMode.Text = "Open Competition View";
-            this.buttonCompMode.UseVisualStyleBackColor = true;
-            this.buttonCompMode.Click += new System.EventHandler(this.ButtonCompMode_Click);
+            this.competitionView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.competitionView1.Location = new System.Drawing.Point(3, 3);
+            this.competitionView1.Name = "competitionView1";
+            this.competitionView1.Size = new System.Drawing.Size(744, 526);
+            this.competitionView1.TabIndex = 0;
             // 
-            // timerCompMode
+            // fileListView
             // 
-            this.timerCompMode.Enabled = true;
-            this.timerCompMode.Interval = 2000;
-            this.timerCompMode.Tick += new System.EventHandler(this.TimerCompMode_Tick);
+            this.fileListView.ComForm = null;
+            this.fileListView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.fileListView.EventView = null;
+            this.fileListView.Location = new System.Drawing.Point(3, 3);
+            this.fileListView.MainChart = null;
+            this.fileListView.Margin = new System.Windows.Forms.Padding(4);
+            this.fileListView.Name = "fileListView";
+            this.fileListView.Size = new System.Drawing.Size(340, 529);
+            this.fileListView.TabIndex = 0;
             // 
-            // buttonResetZoom
+            // probeView1
             // 
-            this.buttonResetZoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonResetZoom.BackgroundImage = global::DSLOG_Reader_2.Properties.Resources.Zoom_16x;
-            this.buttonResetZoom.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.buttonResetZoom.Location = new System.Drawing.Point(717, -1);
-            this.buttonResetZoom.Margin = new System.Windows.Forms.Padding(2);
-            this.buttonResetZoom.Name = "buttonResetZoom";
-            this.buttonResetZoom.Size = new System.Drawing.Size(25, 25);
-            this.buttonResetZoom.TabIndex = 2;
-            this.buttonResetZoom.UseVisualStyleBackColor = true;
-            this.buttonResetZoom.Click += new System.EventHandler(this.buttonResetZoom_Click);
+            this.probeView1.AutoScroll = true;
+            this.probeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.probeView1.Location = new System.Drawing.Point(3, 3);
+            this.probeView1.Margin = new System.Windows.Forms.Padding(4);
+            this.probeView1.Name = "probeView1";
+            this.probeView1.Size = new System.Drawing.Size(160, 387);
+            this.probeView1.TabIndex = 0;
             // 
-            // buttonFindMatch
+            // exportView1
             // 
-            this.buttonFindMatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonFindMatch.BackgroundImage = global::DSLOG_Reader_2.Properties.Resources.ZoomToWidth_16x;
-            this.buttonFindMatch.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.buttonFindMatch.FlatAppearance.BorderSize = 0;
-            this.buttonFindMatch.Location = new System.Drawing.Point(693, -1);
-            this.buttonFindMatch.Margin = new System.Windows.Forms.Padding(2);
-            this.buttonFindMatch.Name = "buttonFindMatch";
-            this.buttonFindMatch.Size = new System.Drawing.Size(25, 25);
-            this.buttonFindMatch.TabIndex = 1;
-            this.buttonFindMatch.UseVisualStyleBackColor = true;
-            this.buttonFindMatch.Click += new System.EventHandler(this.buttonFindMatch_Click);
+            this.exportView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.exportView1.DSEvents = null;
+            this.exportView1.DSGraph = null;
+            this.exportView1.Location = new System.Drawing.Point(3, 3);
+            this.exportView1.Margin = new System.Windows.Forms.Padding(4);
+            this.exportView1.Name = "exportView1";
+            this.exportView1.Size = new System.Drawing.Size(160, 387);
+            this.exportView1.TabIndex = 0;
             // 
-            // buttonHelp
+            // seriesView
             // 
-            this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonHelp.BackgroundImage = global::DSLOG_Reader_2.Properties.Resources.StatusHelp_16xMD;
-            this.buttonHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.buttonHelp.Location = new System.Drawing.Point(1084, -1);
-            this.buttonHelp.Name = "buttonHelp";
-            this.buttonHelp.Size = new System.Drawing.Size(25, 25);
-            this.buttonHelp.TabIndex = 0;
-            this.buttonHelp.UseVisualStyleBackColor = true;
+            this.seriesView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.seriesView.ComForm = null;
+            this.seriesView.Location = new System.Drawing.Point(177, 3);
+            this.seriesView.Margin = new System.Windows.Forms.Padding(4);
+            this.seriesView.Name = "seriesView";
+            this.seriesView.Size = new System.Drawing.Size(162, 419);
+            this.seriesView.TabIndex = 1;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1108, 561);
-            this.Controls.Add(this.buttonResetZoom);
-            this.Controls.Add(this.buttonFindMatch);
-            this.Controls.Add(this.buttonCompMode);
             this.Controls.Add(this.buttonHelp);
             this.Controls.Add(this.tabControl2);
             this.Controls.Add(this.tabControl1);
@@ -325,6 +304,7 @@
             this.tabControl2.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
+            this.tabPage7.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -347,10 +327,9 @@
         private MainGraphView mainGraphView;
         private ProbeView probeView1;
         private ExportView exportView1;
-        private System.Windows.Forms.Button buttonCompMode;
         private System.Windows.Forms.Timer timerCompMode;
         private EventsView eventsView1;
-        private System.Windows.Forms.Button buttonFindMatch;
-        private System.Windows.Forms.Button buttonResetZoom;
+        private System.Windows.Forms.TabPage tabPage7;
+        private CompetitionView competitionView1;
     }
 }

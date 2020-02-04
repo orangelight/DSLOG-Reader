@@ -14,6 +14,11 @@ using DSLOG_Reader_2.CompView;
 
 namespace DSLOG_Reader_2
 {
+    public interface SeriesViewObserver
+    {
+        void SetSeries(SeriesGroupNodes basic, SeriesGroupNodes pdp);
+        void SetEnabledSeries(TreeNodeCollection groups);
+    }
     
     public partial class SeriesView : UserControl
     {
@@ -22,12 +27,13 @@ namespace DSLOG_Reader_2
         private bool checkMode = false;
         private GroupProfiles Profiles;
         private SeriesGroupNodes NonEditGroups;
-        public MainGraphView MainChart { get; set; }
         public CompForm ComForm { get; set; }
+        private List<SeriesViewObserver> Observers;
 
         public SeriesView()
         {
             InitializeComponent();
+            Observers = new List<SeriesViewObserver>();
             Profiles = new GroupProfiles();
             NonEditGroups = new SeriesGroupNodes();
 
@@ -259,15 +265,23 @@ namespace DSLOG_Reader_2
 
         private void SetChartSeries()
         {
-            if (MainChart != null)
+            foreach(var observer in Observers)
             {
-                MainChart.SetSeries(NonEditGroups, Profiles[comboBoxProfiles.SelectedIndex].Groups);
+                observer.SetSeries(NonEditGroups, Profiles[comboBoxProfiles.SelectedIndex].Groups);
             }
         }
 
         public void SetChartSeriesEnabled()
         {
-            if (MainChart != null) MainChart.SetSeriesEnabled(treeView.Nodes);
+            foreach (var observer in Observers)
+            {
+                observer.SetEnabledSeries(treeView.Nodes);
+            }
+        }
+
+        public void AddObserver(SeriesViewObserver ob)
+        {
+            Observers.Add(ob);
         }
     }
 }

@@ -13,7 +13,7 @@ using DSLOG_Reader_Library;
 
 namespace DSLOG_Reader_2
 {
-    public partial class MainGraphView : UserControl
+    public partial class MainGraphView : UserControl, SeriesViewObserver
     {
 
         private Dictionary<string, Series> SeriesSettings;
@@ -472,7 +472,7 @@ namespace DSLOG_Reader_2
             }
         }
 
-        public void SetSeriesEnabled(TreeNodeCollection groups)
+        public void SetEnabledSeries(TreeNodeCollection groups)
         {
             foreach(TreeNode group in groups)
             {
@@ -586,7 +586,7 @@ namespace DSLOG_Reader_2
             chart.Series[DSAttConstants.Messages].Points.Add(dp);
         }
 
-        public void ZoomIntoMatch()
+        private void ZoomIntoMatch()
         {
             if (LogEntries != null)
             {
@@ -599,7 +599,7 @@ namespace DSLOG_Reader_2
             }
         }
 
-        public void ResetZoom()
+        private void ResetZoom()
         {
             chart.ChartAreas[0].AxisX.ScaleView.ZoomReset(100);
         }
@@ -657,6 +657,22 @@ namespace DSLOG_Reader_2
                 }
             }
             return -1;
+        }
+
+        private void buttonFindMatch_Click(object sender, EventArgs e)
+        {
+            ZoomIntoMatch();
+        }
+
+        private void buttonResetZoom_Click(object sender, EventArgs e)
+        {
+            ResetZoom();
+        }
+
+        public List<DSLOGEntry> GetInViewEntries()
+        {
+            if (LogEntries == null) return null;
+            return LogEntries.Where(en => en.Time >= DateTime.FromOADate(chart.ChartAreas[0].AxisX.ScaleView.ViewMinimum) && en.Time <= DateTime.FromOADate(chart.ChartAreas[0].AxisX.ScaleView.ViewMaximum)).ToList();
         }
 
     

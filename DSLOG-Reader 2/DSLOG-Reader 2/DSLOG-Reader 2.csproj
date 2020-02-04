@@ -77,6 +77,12 @@
     <Compile Include="CacheLoadingDialog.Designer.cs">
       <DependentUpon>CacheLoadingDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="CompetitionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CompetitionView.Designer.cs">
+      <DependentUpon>CompetitionView.cs</DependentUpon>
+    </Compile>
     <Compile Include="CompView\CompForm.cs">
       <SubType>Form</SubType>
     </Compile>
