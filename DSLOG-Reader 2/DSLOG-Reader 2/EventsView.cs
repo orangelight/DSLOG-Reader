@@ -236,5 +236,15 @@ namespace DSLOG_Reader_2
         {
             SetFilter(textBoxSearch.Text);
         }
+
+        public List<Tuple<string, string>> GetEntries()
+        {
+            List<Tuple<string, string>> events = new List<Tuple<string, string>>();
+            foreach(ListViewItem item in listViewEvents.Items)
+            {
+                events.Add(new Tuple<string, string>(item.SubItems[0].Text, item.SubItems[1].Text));
+            }
+            return events;
+        }
     }
 }

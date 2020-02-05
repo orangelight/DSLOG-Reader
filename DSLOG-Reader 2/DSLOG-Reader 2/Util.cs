@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DSLOG_Reader_Library;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -83,6 +84,80 @@ namespace DSLOG_Reader_2
             {
                 return SystemColors.Window;
             }
+        }
+
+        public static string EntryAttToUnit(this DSLOGEntry en, string name, Dictionary<string, int[]> idTOpdp, bool units = true)
+        {
+            if (name == DSAttConstants.TripTime)
+            {
+                return en.TripTime + ((units) ? "ms":"");
+            }
+            else if (name == DSAttConstants.LostPackets)
+            {
+                return en.LostPackets * 100 + ((units) ? "%" : "");
+            }
+            else if (name == DSAttConstants.Voltage)
+            {
+                return en.Voltage + ((units) ? "V" : "");
+            }
+            else if (name == DSAttConstants.RoboRIOCPU)
+            {
+                return en.RoboRioCPU * 100 + ((units) ? "%" : "");
+            }
+            else if (name == DSAttConstants.CANUtil)
+            {
+                return en.CANUtil * 100 + ((units) ? "%" : "");
+            }
+            else if (name.StartsWith(DSAttConstants.PDPPrefix))
+            {
+                return en.GetPDPChannel(int.Parse(name.Substring(3))) + ((units) ? "A" : "");
+            }
+            else if (name == DSAttConstants.DSDisabled)
+            {
+                return en.DSDisabled.ToString();
+            }
+            else if (name == DSAttConstants.DSAuto)
+            {
+                return en.DSAuto.ToString();
+            }
+            else if (name == DSAttConstants.DSTele)
+            {
+                return en.DSTele.ToString();
+            }
+            else if (name == DSAttConstants.RobotDisabled)
+            {
+                return en.RobotDisabled.ToString();
+            }
+            else if (name == DSAttConstants.RobotAuto)
+            {
+                return en.RobotAuto.ToString();
+            }
+            else if (name == DSAttConstants.RobotTele)
+            {
+                return en.RobotTele.ToString();
+            }
+
+            else if (name == DSAttConstants.Brownout)
+            {
+                return en.Brownout.ToString();
+            }
+            else if (name == DSAttConstants.Watchdog)
+            {
+                return en.Watchdog.ToString();
+            }
+            else if (name == DSAttConstants.TotalPDP)
+            {
+                return en.GetDPDTotal() + ((units) ? "A" : "");
+            }
+            else if (name.StartsWith(DSAttConstants.TotalPrefix))
+            {
+                return en.GetGroupPDPTotal(idTOpdp[name]) + ((units) ? "A" : "");
+            }
+            else if (name.StartsWith(DSAttConstants.DeltaPrefix))
+            {
+                return en.GetGroupPDPSd(idTOpdp[name]) + ((units) ? "A" : "");
+            }
+            return "";
         }
 
         public readonly static Color[] PdpColors = { Color.FromArgb(255, 113, 113), Color.FromArgb(255, 198, 89), Color.FromArgb(152, 255, 136), Color.FromArgb(136, 154, 255), Color.FromArgb(255, 52, 42), Color.FromArgb(255, 176, 42), Color.FromArgb(0, 255, 9), Color.FromArgb(0, 147, 255), Color.FromArgb(238, 12, 0), Color.FromArgb(239, 139, 0), Color.FromArgb(46, 220, 0), Color.FromArgb(57, 42, 255), Color.FromArgb(180, 8, 0), Color.FromArgb(200, 132, 0), Color.FromArgb(42, 159, 0), Color.FromArgb(0, 47, 239) };

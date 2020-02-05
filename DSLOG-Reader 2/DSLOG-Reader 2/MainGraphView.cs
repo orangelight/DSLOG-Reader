@@ -675,6 +675,12 @@ namespace DSLOG_Reader_2
             return LogEntries.Where(en => en.Time >= DateTime.FromOADate(chart.ChartAreas[0].AxisX.ScaleView.ViewMinimum) && en.Time <= DateTime.FromOADate(chart.ChartAreas[0].AxisX.ScaleView.ViewMaximum)).ToList();
         }
 
+        public void SaveChartImage(string file)
+        {
+            chart.ChartAreas[0].AxisX.ScrollBar.Enabled = false;
+            chart.SaveImage(file, ChartImageFormat.Png);
+            chart.ChartAreas[0].AxisX.ScrollBar.Enabled = true;
+        }
     
     }
 
