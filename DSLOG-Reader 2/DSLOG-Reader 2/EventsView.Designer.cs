@@ -71,6 +71,7 @@
             this.listViewEvents.UseCompatibleStateImageBehavior = false;
             this.listViewEvents.View = System.Windows.Forms.View.Details;
             this.listViewEvents.SelectedIndexChanged += new System.EventHandler(this.ListViewEvents_SelectedIndexChanged);
+            this.listViewEvents.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listViewEvents_MouseDoubleClick);
             this.listViewEvents.Resize += new System.EventHandler(this.ListViewEvents_Resize);
             // 
             // columnHeader1

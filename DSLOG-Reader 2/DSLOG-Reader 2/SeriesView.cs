@@ -10,7 +10,6 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Xml.Serialization;
 using System.IO;
-using DSLOG_Reader_2.CompView;
 
 namespace DSLOG_Reader_2
 {
@@ -27,7 +26,6 @@ namespace DSLOG_Reader_2
         private bool checkMode = false;
         private GroupProfiles Profiles;
         private SeriesGroupNodes NonEditGroups;
-        public CompForm ComForm { get; set; }
         private List<SeriesViewObserver> Observers;
 
         public SeriesView()
@@ -151,8 +149,8 @@ namespace DSLOG_Reader_2
             comboBoxProfiles.Items.AddRange(Profiles.Select(e=> e.Name).ToArray());
             comboBoxProfiles.SelectedIndex = 0;
 
-            ComForm.SetNonEditGroups(NonEditGroups);
-            ComForm.SetProfiles(Profiles);
+            SetChartSeriesEnabled();
+            SetChartSeries();
         }
 
         private void treeView_BeforeSelect(object sender, TreeViewCancelEventArgs e)
@@ -231,7 +229,7 @@ namespace DSLOG_Reader_2
                 comboBoxProfiles.Items.Clear();
                 comboBoxProfiles.Items.AddRange(Profiles.Select(p => p.Name).ToArray());
                 comboBoxProfiles.SelectedIndex = 0;
-                ComForm.SetProfiles(Profiles);
+                SetChartSeries();
             }
             
             

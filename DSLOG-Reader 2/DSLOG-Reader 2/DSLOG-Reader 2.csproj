@@ -83,12 +83,6 @@
     <Compile Include="CompetitionView.Designer.cs">
       <DependentUpon>CompetitionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="CompView\CompForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CompView\CompForm.Designer.cs">
-      <DependentUpon>CompForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="DSLOGFileEntry.cs" />
     <Compile Include="EventsView.cs">
       <SubType>UserControl</SubType>
@@ -150,8 +144,8 @@
     <EmbeddedResource Include="CacheLoadingDialog.resx">
       <DependentUpon>CacheLoadingDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CompView\CompForm.resx">
-      <DependentUpon>CompForm.cs</DependentUpon>
+    <EmbeddedResource Include="CompetitionView.resx">
+      <DependentUpon>CompetitionView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EventsView.resx">
       <DependentUpon>EventsView.cs</DependentUpon>
@@ -206,6 +200,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="logo2.ico" />
+    <None Include="Resources\Analysis_16x.png" />
     <None Include="Resources\FindNext_16x.png" />
     <None Include="Resources\RepeatButton_16red.png" />
     <None Include="Resources\x_con.png" />

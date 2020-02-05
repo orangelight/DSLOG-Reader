@@ -201,7 +201,12 @@ namespace DSLOG_Reader_2
 
         public bool TryGetEvent(double key, out string data)
         {
-            return EventsDict.TryGetValue(key, out data);
+            
+            bool found = EventsDict.TryGetValue(key, out data);
+            if (!found) return false;
+
+            if (RemoveJoystick) data = RemoveJoyStickMessages(data);
+            return true;
         }
 
         private void buttonJoystick_Click(object sender, EventArgs e)
@@ -245,6 +250,11 @@ namespace DSLOG_Reader_2
                 events.Add(new Tuple<string, string>(item.SubItems[0].Text, item.SubItems[1].Text));
             }
             return events;
+        }
+
+        private void listViewEvents_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            GraphView.SetCursorPosition(Double.Parse(listViewEvents.SelectedItems[0].SubItems[2].Text));
         }
     }
 }

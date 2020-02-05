@@ -11,7 +11,6 @@ using System.IO;
 using System.Globalization;
 using DSLOG_Reader_Library;
 using DSLOG_Reader_2.Properties;
-using DSLOG_Reader_2.CompView;
 using System.Threading;
 using System.Collections.Concurrent;
 
@@ -29,7 +28,7 @@ namespace DSLOG_Reader_2
         private bool filterUseless = false;
         private bool firstColumnResize = true;
         private ConcurrentQueue<string> LogUpdateQueue;
-        public CompForm ComForm { get; set; }
+        public CompetitionView CompView { get; set; }
         public FileListView()
         {
             InitializeComponent();
@@ -144,7 +143,6 @@ namespace DSLOG_Reader_2
             {
                 filterSelectorCombo.Items.Add(name);
             }
-            ComForm.SetEvents(eventNames.ToList());
             filterSelectorCombo.SelectedIndex = 0;
         }
 
@@ -208,6 +206,7 @@ namespace DSLOG_Reader_2
                 {
                     listView.Items.Add(entry.ToListViewItem());
                 }
+                if(lastFilter != selectedEvent) CompView.SetEventMatches(new List<DSLOGFileEntry>());
             }
             else
             {
@@ -215,6 +214,7 @@ namespace DSLOG_Reader_2
                 {
                     listView.Items.Add(entry.ToListViewItem());
                 }
+                if (lastFilter != selectedEvent) CompView.SetEventMatches(DSLOGFiles.Values.Where(e => !(e.Useless) && !e.Live).Where(en => en.EventName == selectedEvent.Substring(0, selectedEvent.Length - 5) && en.StartTime.ToString("yyyy") == selectedEvent.GetLast(4)).ToList());
             }
             listView.EndUpdate();
             //sroll down to bottom (need to use timer cuz it's weird)

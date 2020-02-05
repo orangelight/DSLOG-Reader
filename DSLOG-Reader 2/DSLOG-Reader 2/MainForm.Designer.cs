@@ -238,7 +238,6 @@
             // 
             // fileListView
             // 
-            this.fileListView.ComForm = null;
             this.fileListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.fileListView.EventView = null;
             this.fileListView.Location = new System.Drawing.Point(3, 3);
@@ -274,7 +273,6 @@
             this.seriesView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.seriesView.ComForm = null;
             this.seriesView.Location = new System.Drawing.Point(177, 3);
             this.seriesView.Margin = new System.Windows.Forms.Padding(4);
             this.seriesView.Name = "seriesView";

@@ -7,20 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DSLOG_Reader_2.CompView;
 
 namespace DSLOG_Reader_2
 {
     public partial class MainForm : Form
     {
-        private bool CompMode = false;
-        private CompForm compForm;
         public MainForm()
         {
             InitializeComponent();
-            compForm = new CompForm();
-            compForm.MForm = this;
-            fileListView.ComForm = compForm;
+            fileListView.CompView = competitionView1;
             fileListView.MainChart = mainGraphView;
             fileListView.EventView = eventsView1;
             fileListView.SetPath(@"C:\Users\Public\Documents\FRC\Log Files");
@@ -28,11 +23,10 @@ namespace DSLOG_Reader_2
             seriesView.AddObserver(mainGraphView);
             seriesView.AddObserver(exportView1);
             seriesView.AddObserver(competitionView1);
-            seriesView.ComForm = compForm;
             eventsView1.GraphView = mainGraphView;
             mainGraphView.MForm = this;
             mainGraphView.EventsView = eventsView1;
-            compForm.FileView = fileListView;
+            competitionView1.FileView = fileListView;
             mainGraphView.ProbeView = probeView1;
             seriesView.LoadSeries();
             exportView1.DSGraph = mainGraphView;

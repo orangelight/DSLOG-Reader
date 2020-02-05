@@ -170,6 +170,7 @@ namespace DSLOG_Reader_2
         {
             StopStreaming();
             LogStreamer = null;
+            buttonAnalysis.Enabled = false;
             LastPath = dir;
             LastFile = logInfo.Name;
             LogInfo = logInfo;
@@ -219,6 +220,7 @@ namespace DSLOG_Reader_2
                 {
                     labelFileInfo.Text = labelFileInfo.Text + $" ({logInfo.EventName} {logInfo.MatchType.ToString()} {logInfo.FMSMatchNum})";
                     labelFileInfo.BackColor = logInfo.GetMatchTypeColor();
+                    buttonAnalysis.Enabled = true;
                 }
                 if (logInfo.Live)
                 {
@@ -550,12 +552,7 @@ namespace DSLOG_Reader_2
         {
             if (LogEntries != null)
             {
-                if (!Double.IsNaN(e.NewPosition))
-                {
-                    SetCursorLineRed();
-                    DateTime xValue = DateTime.FromOADate(e.NewPosition);
-                    ProbeView.SetProbe(LogEntries.ElementAt((int)(xValue.Subtract(StartTime).TotalMilliseconds / 20)), chart.Series, IdToPDPGroup);
-                }
+                SetCursorPosition(e.NewPosition);
             }
         }
 
@@ -680,6 +677,18 @@ namespace DSLOG_Reader_2
             chart.ChartAreas[0].AxisX.ScrollBar.Enabled = false;
             chart.SaveImage(file, ChartImageFormat.Png);
             chart.ChartAreas[0].AxisX.ScrollBar.Enabled = true;
+        }
+
+        public void SetCursorPosition(double d)
+        {
+            if (!Double.IsNaN(d))
+            {
+                chart.ChartAreas[0].CursorX.SetCursorPosition(d);
+                SetCursorLineRed();
+                DateTime xValue = DateTime.FromOADate(d);
+                ProbeView.SetProbe(LogEntries.ElementAt((int)(xValue.Subtract(StartTime).TotalMilliseconds / 20)), chart.Series, IdToPDPGroup);
+
+            }
         }
     
     }
