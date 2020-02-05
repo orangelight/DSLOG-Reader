@@ -134,9 +134,9 @@ namespace DSLOG_Reader_2
                     continue;
                 }
                 int oldOffset = xLabelOffset - 1;
-                if (CurrentMode == GraphMode.Both) PlotMatch(reader.Entries.Where(en => en.RobotAuto || en.RobotTele || en.Brownout));
-                else if (CurrentMode == GraphMode.Tele) PlotMatch(reader.Entries.Where(en => en.RobotTele || (en.Brownout && en.DSTele)));
-                else if (CurrentMode == GraphMode.Auto) PlotMatch(reader.Entries.Where(en => en.RobotAuto || (en.Brownout && en.DSAuto)));
+                if (CurrentMode == GraphMode.Both) PlotMatch(reader.Entries.Where(en => en.RobotAuto || en.RobotTele || en.Brownout || en.DSTele || en.DSAuto));
+                else if (CurrentMode == GraphMode.Tele) PlotMatch(reader.Entries.Where(en => en.RobotTele || en.DSTele || (en.Brownout && en.DSTele)));
+                else if (CurrentMode == GraphMode.Auto) PlotMatch(reader.Entries.Where(en => en.RobotAuto || en.DSAuto || (en.Brownout && en.DSAuto)));
 
                 var custom = new CustomLabel(oldOffset, xLabelOffset, $"{match.MatchType} {match.FMSMatchNum}", 0, LabelMarkStyle.None);
                 custom.ForeColor = match.GetMatchTypeColor();

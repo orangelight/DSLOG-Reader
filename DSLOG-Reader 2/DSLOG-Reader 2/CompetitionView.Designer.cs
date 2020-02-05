@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.comboBoxMode = new System.Windows.Forms.ComboBox();
             this.backgroundWorkerReadMatches = new System.ComponentModel.BackgroundWorker();
@@ -43,46 +43,46 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chart.BackColor = System.Drawing.Color.Black;
-            chartArea5.AxisX.MajorGrid.Enabled = false;
-            chartArea5.AxisY.Interval = 1D;
-            chartArea5.AxisY.IntervalAutoMode = System.Windows.Forms.DataVisualization.Charting.IntervalAutoMode.VariableCount;
-            chartArea5.AxisY.LabelStyle.ForeColor = System.Drawing.Color.DarkGoldenrod;
-            chartArea5.AxisY.LabelStyle.Interval = 1D;
-            chartArea5.AxisY.LabelStyle.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea5.AxisY.LineColor = System.Drawing.Color.Transparent;
-            chartArea5.AxisY.MajorGrid.Enabled = false;
-            chartArea5.AxisY.MajorGrid.Interval = 1D;
-            chartArea5.AxisY.MajorGrid.LineColor = System.Drawing.Color.DarkGoldenrod;
-            chartArea5.AxisY.MajorTickMark.Interval = 1D;
-            chartArea5.AxisY.MajorTickMark.LineColor = System.Drawing.Color.DarkGoldenrod;
-            chartArea5.AxisY.Maximum = 17D;
-            chartArea5.AxisY.MaximumAutoSize = 100F;
-            chartArea5.AxisY.Minimum = 0D;
-            chartArea5.AxisY.Title = "Battery Voltage V";
-            chartArea5.AxisY.TitleFont = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
-            chartArea5.AxisY.TitleForeColor = System.Drawing.Color.DarkGoldenrod;
-            chartArea5.AxisY2.Interval = 10D;
-            chartArea5.AxisY2.IsLabelAutoFit = false;
-            chartArea5.AxisY2.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea5.AxisY2.MajorGrid.Enabled = false;
-            chartArea5.AxisY2.MajorTickMark.Interval = 10D;
-            chartArea5.AxisY2.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea5.AxisY2.Maximum = 120D;
-            chartArea5.AxisY2.Minimum = -0.1D;
-            chartArea5.AxisY2.Title = "Latency ms, Packet Loss %, roboRIO CPU %, CAN %, PDP Currents A";
-            chartArea5.AxisY2.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            chartArea5.AxisY2.TitleForeColor = System.Drawing.Color.White;
-            chartArea5.BackColor = System.Drawing.Color.Black;
-            chartArea5.Name = "ChartArea1";
-            chartArea5.Position.Auto = false;
-            chartArea5.Position.Height = 100F;
-            chartArea5.Position.Width = 100F;
-            this.chart.ChartAreas.Add(chartArea5);
+            chartArea2.AxisX.MajorGrid.Enabled = false;
+            chartArea2.AxisY.Interval = 1D;
+            chartArea2.AxisY.IntervalAutoMode = System.Windows.Forms.DataVisualization.Charting.IntervalAutoMode.VariableCount;
+            chartArea2.AxisY.LabelStyle.ForeColor = System.Drawing.Color.DarkGoldenrod;
+            chartArea2.AxisY.LabelStyle.Interval = 1D;
+            chartArea2.AxisY.LabelStyle.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea2.AxisY.LineColor = System.Drawing.Color.Transparent;
+            chartArea2.AxisY.MajorGrid.Enabled = false;
+            chartArea2.AxisY.MajorGrid.Interval = 1D;
+            chartArea2.AxisY.MajorGrid.LineColor = System.Drawing.Color.DarkGoldenrod;
+            chartArea2.AxisY.MajorTickMark.Interval = 1D;
+            chartArea2.AxisY.MajorTickMark.LineColor = System.Drawing.Color.DarkGoldenrod;
+            chartArea2.AxisY.Maximum = 17D;
+            chartArea2.AxisY.MaximumAutoSize = 100F;
+            chartArea2.AxisY.Minimum = 0D;
+            chartArea2.AxisY.Title = "Battery Voltage V";
+            chartArea2.AxisY.TitleFont = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
+            chartArea2.AxisY.TitleForeColor = System.Drawing.Color.DarkGoldenrod;
+            chartArea2.AxisY2.Interval = 10D;
+            chartArea2.AxisY2.IsLabelAutoFit = false;
+            chartArea2.AxisY2.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea2.AxisY2.MajorGrid.Enabled = false;
+            chartArea2.AxisY2.MajorTickMark.Interval = 10D;
+            chartArea2.AxisY2.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea2.AxisY2.Maximum = 120D;
+            chartArea2.AxisY2.Minimum = -0.1D;
+            chartArea2.AxisY2.Title = "Latency ms, Packet Loss %, roboRIO CPU %, CAN %, PDP Currents A";
+            chartArea2.AxisY2.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            chartArea2.AxisY2.TitleForeColor = System.Drawing.Color.White;
+            chartArea2.BackColor = System.Drawing.Color.Black;
+            chartArea2.Name = "ChartArea1";
+            chartArea2.Position.Auto = false;
+            chartArea2.Position.Height = 100F;
+            chartArea2.Position.Width = 100F;
+            this.chart.ChartAreas.Add(chartArea2);
             this.chart.Location = new System.Drawing.Point(0, 22);
             this.chart.Name = "chart";
-            series5.ChartArea = "ChartArea1";
-            series5.Name = "Series1";
-            this.chart.Series.Add(series5);
+            series2.ChartArea = "ChartArea1";
+            series2.Name = "Series1";
+            this.chart.Series.Add(series2);
             this.chart.Size = new System.Drawing.Size(707, 460);
             this.chart.TabIndex = 0;
             this.chart.Text = "chart1";
@@ -112,9 +112,10 @@
             // progressBarEvents
             // 
             this.progressBarEvents.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBarEvents.Location = new System.Drawing.Point(607, 0);
+            this.progressBarEvents.Location = new System.Drawing.Point(526, 0);
             this.progressBarEvents.Name = "progressBarEvents";
-            this.progressBarEvents.Size = new System.Drawing.Size(100, 22);
+            this.progressBarEvents.Size = new System.Drawing.Size(181, 22);
+            this.progressBarEvents.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progressBarEvents.TabIndex = 3;
             // 
             // CompetitionView

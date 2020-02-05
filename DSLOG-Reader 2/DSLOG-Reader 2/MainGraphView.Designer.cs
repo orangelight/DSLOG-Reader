@@ -47,16 +47,18 @@
             this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.chart.BackColor = System.Drawing.SystemColors.Control;
+            this.chart.BackColor = System.Drawing.Color.Black;
             chartArea1.AxisX.IntervalAutoMode = System.Windows.Forms.DataVisualization.Charting.IntervalAutoMode.VariableCount;
             chartArea1.AxisX.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
             chartArea1.AxisX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
+            chartArea1.AxisX.LabelStyle.ForeColor = System.Drawing.Color.WhiteSmoke;
             chartArea1.AxisX.LabelStyle.Format = "HH:mm:ss";
             chartArea1.AxisX.LabelStyle.TruncatedLabels = true;
             chartArea1.AxisX.LineColor = System.Drawing.Color.WhiteSmoke;
             chartArea1.AxisX.MajorGrid.Interval = 0D;
             chartArea1.AxisX.MajorGrid.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Seconds;
             chartArea1.AxisX.MajorGrid.LineColor = System.Drawing.Color.LightGray;
+            chartArea1.AxisX.MajorTickMark.LineColor = System.Drawing.Color.WhiteSmoke;
             chartArea1.AxisX.MaximumAutoSize = 100F;
             chartArea1.AxisX.ScaleView.MinSizeType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
             chartArea1.AxisX.ScaleView.SizeType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
@@ -70,7 +72,7 @@
             chartArea1.AxisY.LabelStyle.ForeColor = System.Drawing.Color.DarkGoldenrod;
             chartArea1.AxisY.LabelStyle.Interval = 1D;
             chartArea1.AxisY.LabelStyle.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea1.AxisY.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(255)))), ((int)(((byte)(66)))));
+            chartArea1.AxisY.LineColor = System.Drawing.Color.DarkGoldenrod;
             chartArea1.AxisY.MajorGrid.Interval = 1D;
             chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.Color.DarkGoldenrod;
             chartArea1.AxisY.MajorTickMark.Interval = 1D;
@@ -83,12 +85,16 @@
             chartArea1.AxisY.TitleForeColor = System.Drawing.Color.DarkGoldenrod;
             chartArea1.AxisY2.Interval = 10D;
             chartArea1.AxisY2.IsLabelAutoFit = false;
+            chartArea1.AxisY2.LabelStyle.ForeColor = System.Drawing.Color.WhiteSmoke;
+            chartArea1.AxisY2.LineColor = System.Drawing.Color.WhiteSmoke;
             chartArea1.AxisY2.MajorGrid.Enabled = false;
             chartArea1.AxisY2.MajorTickMark.Interval = 10D;
+            chartArea1.AxisY2.MajorTickMark.LineColor = System.Drawing.Color.WhiteSmoke;
             chartArea1.AxisY2.Maximum = 120D;
             chartArea1.AxisY2.Minimum = 0D;
             chartArea1.AxisY2.Title = "Latency ms, Packet Loss %, roboRIO CPU %, CAN %, PDP Currents A";
             chartArea1.AxisY2.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            chartArea1.AxisY2.TitleForeColor = System.Drawing.Color.WhiteSmoke;
             chartArea1.BackColor = System.Drawing.Color.Black;
             chartArea1.CursorX.Interval = 20D;
             chartArea1.CursorX.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
