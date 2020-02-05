@@ -35,6 +35,7 @@ namespace DSLOG_Reader_2
             DSLOGFiles = new Dictionary<string, DSLOGFileEntry>();
             LogUpdateQueue = new ConcurrentQueue<string>();
             toolTip1.SetToolTip(buttonFilter, "Filter Useless Logs");
+            listView.DoubleBuffered(true);
         }
 
         public void SetMainForm(MainForm form) { MForm = form; }

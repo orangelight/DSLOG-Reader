@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSLOG-Reader 2", "DSLOG-Reader 2\DSLOG-Reader 2.csproj", "{DA4B05A5-14FB-47D0-97C6-EE6E778BB812}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSLOG-Reader-Library", "DSLOG-Reader-Library\DSLOG-Reader-Library.csproj", "{67C94DF8-122E-41E5-96C3-9DCE4FBE0F95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSLOG-Reader-Library", "DSLOG-Reader-Library\DSLOG-Reader-Library.csproj", "{67C94DF8-122E-41E5-96C3-9DCE4FBE0F95}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSLOGMatchCollector", "DSLOGMatchCollector\DSLOGMatchCollector.csproj", "{E24BF8DA-6DF2-476F-9D3E-CB34D55506C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{67C94DF8-122E-41E5-96C3-9DCE4FBE0F95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67C94DF8-122E-41E5-96C3-9DCE4FBE0F95}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67C94DF8-122E-41E5-96C3-9DCE4FBE0F95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E24BF8DA-6DF2-476F-9D3E-CB34D55506C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E24BF8DA-6DF2-476F-9D3E-CB34D55506C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E24BF8DA-6DF2-476F-9D3E-CB34D55506C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E24BF8DA-6DF2-476F-9D3E-CB34D55506C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
