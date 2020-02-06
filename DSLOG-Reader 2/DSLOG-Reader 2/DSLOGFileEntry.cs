@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DSLOG_Reader_Library;
@@ -109,7 +111,7 @@ namespace DSLOG_Reader_2
                         sb.Append(en.Data);
                     }
                     String txtF = sb.ToString();
-                    if (txtF.Contains("FMS Connected:"))
+                    if (txtF.Contains("FMS Connected:"))//TODO Needs more things to detect (e.g. ping status)
                     {
                         IsFMSMatch = true;
                     }
@@ -135,17 +137,12 @@ namespace DSLOG_Reader_2
                         MatchType = FMSMatchType.None;
                         FMSMatchNum = int.Parse(txtF.Substring(txtF.IndexOf("FMS Connected:   None - ") + 24, 5).Split(':')[0]);
                     }
-                    
-                    if (txtF.Contains("FMS Event Name: "))
+                    Match eventMatch = Regex.Match(txtF, "Info FMS Event Name: [a-zA-Z0-9]+");
+                    if (eventMatch.Success)
                     {
-                        string[] sArray = txtF.Split(new string[] { "Info" }, StringSplitOptions.None);
-                        foreach (String ss in sArray)
+                        if (!string.IsNullOrWhiteSpace(eventMatch.Value))
                         {
-                            if (ss.Contains("FMS Event Name: "))
-                            {
-                                EventName = ss.Replace("FMS Event Name: ", "").Trim();
-                                break;
-                            }
+                            EventName = eventMatch.Value.Replace("FMS Event Name: ", "").Replace("Info", "").Trim();
                         }
                     }
                 }
