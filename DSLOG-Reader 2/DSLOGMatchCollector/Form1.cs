@@ -9,6 +9,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -127,10 +128,11 @@ namespace DSLOGMatchCollector
                     StringBuilder sb = new StringBuilder();
                     foreach (DSEVENTSEntry en in reader.Entries)
                     {
-                        sb.Append(en.Data);
+                        sb.Append(en.Data+" ");
                     }
                     String txtF = sb.ToString();
-                    if (txtF.Contains("FMS Connected:"))
+                    
+                    if (!string.IsNullOrWhiteSpace(txtF))
                     {
                         match.IsFMS = true;
                     }

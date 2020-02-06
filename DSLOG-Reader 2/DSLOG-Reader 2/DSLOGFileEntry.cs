@@ -108,12 +108,17 @@ namespace DSLOG_Reader_2
                     StringBuilder sb = new StringBuilder();
                     foreach (DSEVENTSEntry en in reader.Entries)
                     {
-                        sb.Append(en.Data);
+                        sb.Append(en.Data+" ");
                     }
                     String txtF = sb.ToString();
-                    if (txtF.Contains("FMS Connected:"))//TODO Needs more things to detect (e.g. ping status)
+                    if (!string.IsNullOrWhiteSpace(txtF))
                     {
                         IsFMSMatch = true;
+                    }
+                    else
+                    {
+                        IsFMSMatch = false;
+                        return true;
                     }
 
 

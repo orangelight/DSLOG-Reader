@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace DSLOG_Reader_Library
 {
@@ -35,6 +36,8 @@ namespace DSLOG_Reader_Library
         protected override void ReadEntries(bool fms = false)
         {
             bool isFMSMatch = false;
+            bool haveName = false;
+            bool haveNum = false;
             while (reader.BaseStream.Position != reader.BaseStream.Length)
             {
                 if (!fms)
@@ -45,22 +48,26 @@ namespace DSLOG_Reader_Library
                 {
                     
                     var entry = ReadEntry();
-                    if (entry.Data.Contains("FMS Connected:   "))
+                    if (!isFMSMatch)
                     {
-                        isFMSMatch = true;
-                        Entries.Add(entry);
-                        continue;
-                    }
-
-                    if (isFMSMatch)
-                    {
-                        if (entry.Data.Contains("FMS Event Name: "))
+                        if (Regex.Match(entry.Data, "(FMS Connected:)|(FMS Event Name:)|(FMS Disconnect)|(FMS-GOOD FRC)").Success)
                         {
+                            isFMSMatch = true;
+                            if (entry.Data.Contains("FMS Connected:")) haveNum = true;
+                            if (entry.Data.Contains("FMS Event Name:")) haveName= true;
                             Entries.Add(entry);
-                            break;
                         }
                     }
-                    else break;
+                    else
+                    {
+                        if (Regex.Match(entry.Data, "(FMS Connected:)|(FMS Event Name:)").Success)
+                        {
+                            if (entry.Data.Contains("FMS Connected:")) haveNum = true;
+                            if (entry.Data.Contains("FMS Event Name:")) haveName = true;
+                            Entries.Add(entry);
+                            if (haveName && haveNum) break;
+                        }
+                    }
                 }
                 
             }
