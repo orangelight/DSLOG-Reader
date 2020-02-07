@@ -35,6 +35,8 @@ namespace DSLOG_Reader_2
         private int LastEntry = 0;
         private bool AutoScrollLive = false;
         private DateTime MatchTime;
+        private bool UseMatchTime = false;
+        private bool CanUseMatchTime = false;
         public MainGraphView()
         {
             InitializeComponent();
@@ -214,13 +216,37 @@ namespace DSLOG_Reader_2
                 area.AxisX.Minimum = StartTime.ToOADate();
                 area.AxisX.Maximum = EndTime.ToOADate();
                 area.CursorX.IntervalOffset = reader.StartTime.Millisecond % 20;
-                foreach (var en in LogEntries)
+               
+                if (logInfo.IsFMSMatch)
                 {
-                    if (en.RobotAuto)
+                    labelFileInfo.Text = labelFileInfo.Text + $" ({logInfo.EventName} {logInfo.MatchType.ToString()} {logInfo.FMSMatchNum})";
+                    labelFileInfo.BackColor = logInfo.GetMatchTypeColor();
+                    buttonAnalysis.Enabled = true;
+                    bool foundMatchTime = false;
+                    foreach (var en in LogEntries)
                     {
-                        MatchTime = en.Time;
-                        break;
+                        if (en.RobotAuto)
+                        {
+                            MatchTime = en.Time;
+                            foundMatchTime = true;
+                            break;
+                        }
                     }
+                    if (!foundMatchTime)
+                    {
+                        CanUseMatchTime = false;
+                        ChangeUseMatchTime(false);
+                    }
+                    else
+                    {
+                        CanUseMatchTime = true;
+                        ChangeUseMatchTime(UseMatchTime);
+                    }
+                }
+                else
+                {
+                    CanUseMatchTime = false;
+                    ChangeUseMatchTime(false);
                 }
                 PlotLog();
                 PointCount = LogEntries.Count;
@@ -229,13 +255,7 @@ namespace DSLOG_Reader_2
                 area.AxisX.ScaleView.ZoomReset();
                 labelFileInfo.Text = $"{logInfo.Name}.dslog";
 
-                if (logInfo.IsFMSMatch)
-                {
-                    labelFileInfo.Text = labelFileInfo.Text + $" ({logInfo.EventName} {logInfo.MatchType.ToString()} {logInfo.FMSMatchNum})";
-                    labelFileInfo.BackColor = logInfo.GetMatchTypeColor();
-                    buttonAnalysis.Enabled = true;
-                   
-                }
+               
                 if (logInfo.Live)
                 {
                     labelFileInfo.BackColor = Color.Lime;
@@ -261,19 +281,44 @@ namespace DSLOG_Reader_2
                 Util.ClearPointsQuick(ser);
             }
         }
-
-        private void ChangeChartLabels()
+        double lastInview = -1;
+        private void ChangeChartLabels(bool force = false)
         {
-            if (GetTotalSecoundsInView() < 5)
+            if (UseMatchTime && CanUseMatchTime)
             {
-                chart.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss.fff";
+                if (Math.Abs(lastInview - GetTotalSecoundsInView()) > .1 || force)
+                {
+                    chart.ChartAreas[0].AxisX.CustomLabels.Clear();
+                    lastInview = GetTotalSecoundsInView();
+                    double secInv = lastInview / 5.0;
+                    DateTime startTime = StartTime.AddSeconds(secInv / 2.0);
+                    while (startTime < EndTime)
+                    {
+                        CustomLabel l = new CustomLabel(startTime.AddSeconds(secInv / 2.0).ToOADate(), startTime.AddSeconds(-secInv / 2.0).ToOADate(), $"{((startTime - MatchTime).TotalMilliseconds / 1000.0).ToString("0.###")}", 0, LabelMarkStyle.None);
+                        l.ForeColor = Color.WhiteSmoke;
+                        l.GridTicks = GridTickTypes.All;
+                        chart.ChartAreas[0].AxisX.CustomLabels.Add(l);
+                        startTime = startTime.AddSeconds(secInv);
+                    }
+                }
             }
             else
             {
-                chart.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss";
+                lastInview = -1;
+                if (GetTotalSecoundsInView() < 5)
+                {
+                    chart.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss.fff";
+                }
+                else
+                {
+                    chart.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss";
 
+                }
             }
+           
+           
             
+
         }
 
         private double GetTotalSecoundsInView()
@@ -360,16 +405,6 @@ namespace DSLOG_Reader_2
                     }
                     else
                     {
-                        if (LastEntry%50 == 0)
-                        {
-
-                            //chart.ChartAreas[0].AxisX.IsLabelAutoFit = false;
-                            CustomLabel l = new CustomLabel(LogEntries.ElementAt(LastEntry - 50).Time.ToOADate(), en.Time.ToOADate(), $"{en.Time.ToString("HH:mm:ss")} ({((en.Time-MatchTime).TotalMilliseconds/1000.0).ToString("0.###")})", 0, LabelMarkStyle.None);
-                            l.ForeColor = Color.White;
-                            l.GridTicks = GridTickTypes.All;
-                            chart.ChartAreas[0].AxisX.CustomLabels.Add(l);
-                        }
-                        
                         //Checks if value is differnt around it so we don't plot everypoint
                         if (LogEntries.ElementAt(LastEntry - 1).TripTime != en.TripTime || LogEntries.ElementAt(LastEntry + 1).TripTime != en.TripTime)
                         {
@@ -704,6 +739,40 @@ namespace DSLOG_Reader_2
             chart.ChartAreas[0].AxisX.ScrollBar.Enabled = false;
             chart.SaveImage(file, ChartImageFormat.Png);
             chart.ChartAreas[0].AxisX.ScrollBar.Enabled = true;
+        }
+
+        private void buttonMatchTime_Click(object sender, EventArgs e)
+        {
+            ChangeUseMatchTime(!UseMatchTime,true);
+        }
+
+        private void ChangeUseMatchTime(bool use, bool force = false)
+        {
+            UseMatchTime = use;
+            if (!CanUseMatchTime)
+            {
+                UseMatchTime = false;
+                buttonMatchTime.BackColor = SystemColors.ControlDark;
+                chart.ChartAreas[0].AxisX.CustomLabels.Clear();
+            }
+            else if (UseMatchTime)
+            {
+                buttonMatchTime.BackColor = Color.Lime;
+                ChangeChartLabels(force);
+            }
+            else
+            {
+                buttonMatchTime.BackColor = Color.Red;
+                chart.ChartAreas[0].AxisX.CustomLabels.Clear();
+            }
+        }
+
+        private void chart_AxisScrollBarClicked(object sender, ScrollBarEventArgs e)
+        {
+            if (LogEntries != null)
+            {
+                ChangeChartLabels();
+            }
         }
 
         public void SetCursorPosition(double d)

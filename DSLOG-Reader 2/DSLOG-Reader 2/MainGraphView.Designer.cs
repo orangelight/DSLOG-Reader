@@ -39,6 +39,7 @@
             this.buttonResetZoom = new System.Windows.Forms.Button();
             this.buttonFindMatch = new System.Windows.Forms.Button();
             this.buttonAutoScroll = new System.Windows.Forms.Button();
+            this.buttonMatchTime = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
             this.SuspendLayout();
             // 
@@ -118,6 +119,7 @@
             this.chart.CursorPositionChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.Chart_CursorPositionChanged);
             this.chart.AxisViewChanging += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.Chart_AxisViewChanging);
             this.chart.AxisViewChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.Chart_AxisViewChanged);
+            this.chart.AxisScrollBarClicked += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ScrollBarEventArgs>(this.chart_AxisScrollBarClicked);
             this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Chart_MouseMove);
             // 
             // GraphCorsorLine
@@ -193,10 +195,26 @@
             this.buttonAutoScroll.UseVisualStyleBackColor = false;
             this.buttonAutoScroll.Click += new System.EventHandler(this.buttonAutoScroll_Click);
             // 
+            // buttonMatchTime
+            // 
+            this.buttonMatchTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonMatchTime.BackColor = System.Drawing.Color.Red;
+            this.buttonMatchTime.BackgroundImage = global::DSLOG_Reader_2.Properties.Resources.Time_16x;
+            this.buttonMatchTime.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.buttonMatchTime.FlatAppearance.BorderSize = 0;
+            this.buttonMatchTime.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonMatchTime.Location = new System.Drawing.Point(992, -1);
+            this.buttonMatchTime.Name = "buttonMatchTime";
+            this.buttonMatchTime.Size = new System.Drawing.Size(23, 23);
+            this.buttonMatchTime.TabIndex = 6;
+            this.buttonMatchTime.UseVisualStyleBackColor = false;
+            this.buttonMatchTime.Click += new System.EventHandler(this.buttonMatchTime_Click);
+            // 
             // MainGraphView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.buttonMatchTime);
             this.Controls.Add(this.buttonAnalysis);
             this.Controls.Add(this.buttonResetZoom);
             this.Controls.Add(this.buttonFindMatch);
@@ -221,5 +239,6 @@
         private System.Windows.Forms.Button buttonFindMatch;
         private System.Windows.Forms.Button buttonResetZoom;
         private System.Windows.Forms.Button buttonAnalysis;
+        private System.Windows.Forms.Button buttonMatchTime;
     }
 }
