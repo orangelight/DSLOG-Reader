@@ -21,6 +21,8 @@ namespace DSLOG_Reader_2
             Tele
         }
         public FileListView FileView { get; set; }
+        public SeriesView SeriesViewObserving { get; set; }
+
         private const double TotalPDPScale = 50;
         private Dictionary<string, Tuple<string, Color>> EnabledSeries = new Dictionary<string, Tuple<string, Color>>();
         private Dictionary<string, int[]> IdToPDPGroup;

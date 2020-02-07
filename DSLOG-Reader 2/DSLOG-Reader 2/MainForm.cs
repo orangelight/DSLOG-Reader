@@ -24,6 +24,7 @@ namespace DSLOG_Reader_2
             seriesView.AddObserver(exportView1);
             seriesView.AddObserver(competitionView1);
             eventsView1.GraphView = mainGraphView;
+            eventsView1.MForm = this;
             mainGraphView.MForm = this;
             mainGraphView.EventsView = eventsView1;
             competitionView1.FileView = fileListView;
@@ -38,11 +39,11 @@ namespace DSLOG_Reader_2
         {
             if (fileListView.HasFMSMatch())
             {
-                if (!tabControl2.TabPages.Contains(tabPage7)) tabControl2.TabPages.Add(tabPage7);
+                if (!tabControlRight.TabPages.Contains(tabPage7)) tabControlRight.TabPages.Add(tabPage7);
             }
             else
             {
-                if (tabControl2.TabPages.Contains(tabPage7)) tabControl2.TabPages.Remove(tabPage7);
+                if (tabControlRight.TabPages.Contains(tabPage7)) tabControlRight.TabPages.Remove(tabPage7);
             }
         }
 
@@ -64,18 +65,23 @@ namespace DSLOG_Reader_2
 
         private void SetExportMode()
         {
-            if (tabControl2.SelectedIndex == 0)
+            if (tabControlRight.SelectedIndex == 0)
             {
                 exportView1.SetMode(ExportView.ExportMode.Chart);
             }
-            if (tabControl2.SelectedIndex == 1)
+            if (tabControlRight.SelectedIndex == 1)
             {
                 exportView1.SetMode(ExportView.ExportMode.Events);
             }
-            if (tabControl2.SelectedIndex == 2)
+            if (tabControlRight.SelectedIndex == 2)
             {
                 exportView1.SetMode(ExportView.ExportMode.Compititon);
             }
+        }
+
+        public void SetRightTabIndex(int index)
+        {
+            tabControlRight.SelectedIndex = index;
         }
     }
 }

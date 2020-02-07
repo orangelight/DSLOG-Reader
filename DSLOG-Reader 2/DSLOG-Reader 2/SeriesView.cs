@@ -15,6 +15,7 @@ namespace DSLOG_Reader_2
 {
     public interface SeriesViewObserver
     {
+        SeriesView SeriesViewObserving { get; set; }
         void SetSeries(SeriesGroupNodes basic, SeriesGroupNodes pdp);
         void SetEnabledSeries(TreeNodeCollection groups);
     }
@@ -277,9 +278,15 @@ namespace DSLOG_Reader_2
             }
         }
 
+        public TreeNodeCollection GetSeries()
+        {
+            return treeView.Nodes;
+        }
+
         public void AddObserver(SeriesViewObserver ob)
         {
             Observers.Add(ob);
+            ob.SeriesViewObserving = this;
         }
     }
 }

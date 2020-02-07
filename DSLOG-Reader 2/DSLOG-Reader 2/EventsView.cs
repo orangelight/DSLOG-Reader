@@ -17,6 +17,7 @@ namespace DSLOG_Reader_2
     public partial class EventsView : UserControl
     {
         public MainGraphView GraphView { get; set; }
+        public MainForm MForm { get; set; }
         private Dictionary<Double, String> EventsDict = new Dictionary<double, string>();
         private int lastIndexSelectedEvents = -1;
         private string Filter = "";
@@ -255,6 +256,7 @@ namespace DSLOG_Reader_2
         private void listViewEvents_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             GraphView.SetCursorPosition(Double.Parse(listViewEvents.SelectedItems[0].SubItems[2].Text));
+            MForm.SetRightTabIndex(0);
         }
     }
 }

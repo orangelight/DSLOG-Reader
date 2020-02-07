@@ -26,6 +26,8 @@ namespace DSLOG_Reader_2
         public MainForm MForm {get;set; }
         public EventsView EventsView { get; set; }
         public ProbeView ProbeView { get; set; }
+        public SeriesView SeriesViewObserving { get; set; }
+
         private int PointCount = 1;
         private List<DSLOGEntry> LogEntries;
         private DSLOGFileEntry LogInfo;
@@ -81,9 +83,11 @@ namespace DSLOG_Reader_2
 
         public void SetSeries(SeriesGroupNodes basic, SeriesGroupNodes pdp)
         {
+
             IdToPDPGroup = new Dictionary<string, int[]>();
             ClearGraph();
             chart.Series.Clear();
+           
             foreach (var group in basic)
             {
                 foreach (var node in group.Childern)
@@ -294,7 +298,7 @@ namespace DSLOG_Reader_2
                 var brownoutSeries = chart.Series[DSAttConstants.Brownout];
                 var watchdogSeries = chart.Series[DSAttConstants.Watchdog];
                 var totalPDPSeries = chart.Series[DSAttConstants.TotalPDP];
-
+                SetEnabledSeries(SeriesViewObserving.GetSeries());
                 int packetnum = 0;
                 for (; LastEntry < LogEntries.Count; LastEntry++)
                 {

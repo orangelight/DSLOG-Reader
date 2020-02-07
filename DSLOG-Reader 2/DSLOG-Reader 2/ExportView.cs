@@ -23,6 +23,8 @@ namespace DSLOG_Reader_2
         public ExportMode CurrentMode { get; private set; }
         public MainGraphView DSGraph { get; set; }
         public EventsView DSEvents { get; set; }
+        public SeriesView SeriesViewObserving { get; set; }
+
         private Dictionary<string, string> EnabledSeries = new Dictionary<string, string>();
         private Dictionary<string, int[]> IdToPDPGroup;
 
