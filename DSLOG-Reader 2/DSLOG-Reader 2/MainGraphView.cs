@@ -34,6 +34,7 @@ namespace DSLOG_Reader_2
         private DSLOGStreamer LogStreamer;
         private int LastEntry = 0;
         private bool AutoScrollLive = false;
+        private DateTime MatchTime;
         public MainGraphView()
         {
             InitializeComponent();
@@ -213,6 +214,14 @@ namespace DSLOG_Reader_2
                 area.AxisX.Minimum = StartTime.ToOADate();
                 area.AxisX.Maximum = EndTime.ToOADate();
                 area.CursorX.IntervalOffset = reader.StartTime.Millisecond % 20;
+                foreach (var en in LogEntries)
+                {
+                    if (en.RobotAuto)
+                    {
+                        MatchTime = en.Time;
+                        break;
+                    }
+                }
                 PlotLog();
                 PointCount = LogEntries.Count;
                 
@@ -225,6 +234,7 @@ namespace DSLOG_Reader_2
                     labelFileInfo.Text = labelFileInfo.Text + $" ({logInfo.EventName} {logInfo.MatchType.ToString()} {logInfo.FMSMatchNum})";
                     labelFileInfo.BackColor = logInfo.GetMatchTypeColor();
                     buttonAnalysis.Enabled = true;
+                   
                 }
                 if (logInfo.Live)
                 {
@@ -263,6 +273,7 @@ namespace DSLOG_Reader_2
                 chart.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss";
 
             }
+            
         }
 
         private double GetTotalSecoundsInView()
@@ -304,6 +315,8 @@ namespace DSLOG_Reader_2
                 {
                     DSLOGEntry en = LogEntries.ElementAt(LastEntry);
                     //Adds points to first and last x values
+                    
+                   
                     if (LastEntry == 0 || LastEntry == LogEntries.Count - 1)
                     {
                         if (LastEntry == LogEntries.Count - 1)
@@ -347,6 +360,16 @@ namespace DSLOG_Reader_2
                     }
                     else
                     {
+                        if (LastEntry%50 == 0)
+                        {
+
+                            //chart.ChartAreas[0].AxisX.IsLabelAutoFit = false;
+                            CustomLabel l = new CustomLabel(LogEntries.ElementAt(LastEntry - 50).Time.ToOADate(), en.Time.ToOADate(), $"{en.Time.ToString("HH:mm:ss")} ({((en.Time-MatchTime).TotalMilliseconds/1000.0).ToString("0.###")})", 0, LabelMarkStyle.None);
+                            l.ForeColor = Color.White;
+                            l.GridTicks = GridTickTypes.All;
+                            chart.ChartAreas[0].AxisX.CustomLabels.Add(l);
+                        }
+                        
                         //Checks if value is differnt around it so we don't plot everypoint
                         if (LogEntries.ElementAt(LastEntry - 1).TripTime != en.TripTime || LogEntries.ElementAt(LastEntry + 1).TripTime != en.TripTime)
                         {
