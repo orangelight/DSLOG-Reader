@@ -560,58 +560,6 @@ namespace DSLOG_Reader_2
                             watchdogSeries.Points.Add(po);
                         }
 
-                        //if (LogEntries.ElementAt(LastEntry - 1).DSDisabled != en.DSDisabled || LogEntries.ElementAt(LastEntry + 1).DSDisabled != en.DSDisabled)
-                        //    {
-                        //        DataPoint po = new DataPoint(en.Time.ToOADate(), 15.9);
-                        //        if (!en.DSDisabled || !LogEntries.ElementAt(LastEntry - 1).DSDisabled) po.Color = Color.Transparent;
-                        //        dsDisabledSeries.Points.Add(po);
-                        //    }
-                        //    if (LogEntries.ElementAt(LastEntry - 1).DSAuto != en.DSAuto || LogEntries.ElementAt(LastEntry + 1).DSAuto != en.DSAuto)
-                        //    {
-                        //        DataPoint po = new DataPoint(en.Time.ToOADate(), 15.9);
-                        //        if (!en.DSAuto || LogEntries.ElementAt(LastEntry - 1).DSAuto == false) po.Color = Color.Transparent;
-                        //        dsAutoSeries.Points.Add(po);
-                        //    }
-                        //    if (LogEntries.ElementAt(LastEntry - 1).DSTele != en.DSTele || LogEntries.ElementAt(LastEntry + 1).DSTele != en.DSTele)
-                        //    {
-                        //        DataPoint po = new DataPoint(en.Time.ToOADate(), 15.9);
-                        //        if (!en.DSTele || LogEntries.ElementAt(LastEntry - 1).DSTele == false) po.Color = Color.Transparent;
-                        //        dsTeleSeries.Points.Add(po);
-                        //    }
-
-                        //    if (LogEntries.ElementAt(LastEntry - 1).RobotDisabled != en.RobotDisabled || LogEntries.ElementAt(LastEntry + 1).RobotDisabled != en.RobotDisabled)
-                        //    {
-                        //        DataPoint po = new DataPoint(en.Time.ToOADate(), 16.8);
-                        //        if (!en.RobotDisabled || !LogEntries.ElementAt(LastEntry - 1).RobotDisabled) po.Color = Color.Transparent;
-                        //        robotDisabledSeries.Points.Add(po);
-                        //    }
-                        //    if (LogEntries.ElementAt(LastEntry - 1).RobotAuto != en.RobotAuto || LogEntries.ElementAt(LastEntry + 1).RobotAuto != en.RobotAuto)
-                        //    {
-                        //        DataPoint po = new DataPoint(en.Time.ToOADate(), 16.5);
-                        //        if (!en.RobotAuto || LogEntries.ElementAt(LastEntry - 1).RobotAuto == false) po.Color = Color.Transparent;
-                        //        robotAutoSeries.Points.Add(po);
-                        //    }
-                        //    if (LogEntries.ElementAt(LastEntry - 1).RobotTele != en.RobotTele || LogEntries.ElementAt(LastEntry + 1).RobotTele != en.RobotTele)
-                        //    {
-                        //        DataPoint po = new DataPoint(en.Time.ToOADate(), 16.2);
-                        //        if (!en.RobotTele || LogEntries.ElementAt(LastEntry - 1).RobotTele == false) po.Color = Color.Transparent;
-                        //        robotTeleSeries.Points.Add(po);
-                        //    }
-
-                        //    if (LogEntries.ElementAt(LastEntry - 1).Brownout != en.Brownout || LogEntries.ElementAt(LastEntry + 1).Brownout != en.Brownout)
-                        //    {
-                        //        DataPoint po = new DataPoint(en.Time.ToOADate(), 15.6);
-                        //        if (!en.Brownout || LogEntries.ElementAt(LastEntry - 1).Brownout == false) po.Color = Color.Transparent;
-                        //        brownoutSeries.Points.Add(po);
-                        //    }
-                        //    if (LogEntries.ElementAt(LastEntry - 1).Watchdog != en.Watchdog || LogEntries.ElementAt(LastEntry + 1).Watchdog != en.Watchdog)
-                        //    {
-                        //        DataPoint po = new DataPoint(en.Time.ToOADate(), 15.3);
-                        //        if (!en.Watchdog || LogEntries.ElementAt(LastEntry - 1).Watchdog == false) po.Color = Color.Transparent;
-                        //        watchdogSeries.Points.Add(po);
-                        //    }
-                        
-
                     }
                 }
                 ChangeChartLabels();
