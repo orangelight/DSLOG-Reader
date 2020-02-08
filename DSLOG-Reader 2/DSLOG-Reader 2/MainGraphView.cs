@@ -34,6 +34,10 @@ namespace DSLOG_Reader_2
         private DSLOGStreamer LogStreamer;
         private int LastEntry = 0;
         private bool AutoScrollLive = false;
+        private DateTime MatchTime;
+        private bool UseMatchTime = false;
+        private bool CanUseMatchTime = false;
+        private double lastInviewSecs = -1;
         public MainGraphView()
         {
             InitializeComponent();
@@ -51,8 +55,9 @@ namespace DSLOG_Reader_2
             Series modes = new Series();
             modes.XValueType = ChartValueType.DateTime;
             modes.YAxisType = AxisType.Primary;
-            modes.ChartType = SeriesChartType.Line;
-            modes.BorderWidth = 5;
+            modes.ChartType = SeriesChartType.FastPoint;
+            //modes.BorderWidth = 5;
+            modes.MarkerStyle = MarkerStyle.Circle;
             SeriesSettings["modes"] = modes;
 
             Series lines = new Series();
@@ -213,6 +218,19 @@ namespace DSLOG_Reader_2
                 area.AxisX.Minimum = StartTime.ToOADate();
                 area.AxisX.Maximum = EndTime.ToOADate();
                 area.CursorX.IntervalOffset = reader.StartTime.Millisecond % 20;
+               
+                if (logInfo.IsFMSMatch)
+                {
+                    labelFileInfo.Text = labelFileInfo.Text + $" ({logInfo.EventName} {logInfo.MatchType.ToString()} {logInfo.FMSMatchNum})";
+                    labelFileInfo.BackColor = logInfo.GetMatchTypeColor();
+                    buttonAnalysis.Enabled = true;
+                    SetUpMatchTime();
+                }
+                else
+                {
+                    CanUseMatchTime = false;
+                    ChangeUseMatchTime(false);
+                }
                 PlotLog();
                 PointCount = LogEntries.Count;
                 
@@ -220,17 +238,36 @@ namespace DSLOG_Reader_2
                 area.AxisX.ScaleView.ZoomReset();
                 labelFileInfo.Text = $"{logInfo.Name}.dslog";
 
-                if (logInfo.IsFMSMatch)
-                {
-                    labelFileInfo.Text = labelFileInfo.Text + $" ({logInfo.EventName} {logInfo.MatchType.ToString()} {logInfo.FMSMatchNum})";
-                    labelFileInfo.BackColor = logInfo.GetMatchTypeColor();
-                    buttonAnalysis.Enabled = true;
-                }
+               
                 if (logInfo.Live)
                 {
                     labelFileInfo.BackColor = Color.Lime;
                     timerStream.Start();
                 }
+            }
+        }
+
+        private void SetUpMatchTime()
+        {
+            bool foundMatchTime = false;
+            foreach (var en in LogEntries)
+            {
+                if (en.RobotAuto)
+                {
+                    MatchTime = en.Time;
+                    foundMatchTime = true;
+                    break;
+                }
+            }
+            if (!foundMatchTime)
+            {
+                CanUseMatchTime = false;
+                ChangeUseMatchTime(false);
+            }
+            else
+            {
+                CanUseMatchTime = true;
+                ChangeUseMatchTime(UseMatchTime);
             }
         }
 
@@ -251,18 +288,70 @@ namespace DSLOG_Reader_2
                 Util.ClearPointsQuick(ser);
             }
         }
-
-        private void ChangeChartLabels()
+        
+        private void ChangeChartLabels(bool force = false)
         {
-            if (GetTotalSecoundsInView() < 5)
+            if (UseMatchTime && CanUseMatchTime)
             {
-                chart.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss.fff";
+                if (Math.Abs(lastInviewSecs - GetTotalSecoundsInView()) > .1 || force)
+                {
+                    chart.ChartAreas[0].AxisX.CustomLabels.Clear();
+                    lastInviewSecs = GetTotalSecoundsInView();
+                    double secInv = GetNiceIntervalNumber( lastInviewSecs / 10.0);// Try to keep at leat 5 lines in view
+
+                    double offSet = ((StartTime.AddMilliseconds(-StartTime.Millisecond).AddMilliseconds(MatchTime.Millisecond) - MatchTime).TotalSeconds)%(secInv);
+                    
+
+                    DateTime startTime = StartTime.AddMilliseconds(-StartTime.Millisecond).AddSeconds(secInv).AddMilliseconds(MatchTime.Millisecond).AddSeconds(-offSet).AddSeconds(-secInv);
+                    while (startTime < EndTime)
+                    {
+                        CustomLabel l = new CustomLabel(startTime.AddSeconds(secInv).ToOADate(), startTime.AddSeconds(-secInv).ToOADate(), $"{((startTime - MatchTime).TotalMilliseconds / 1000.0).ToString("0.###")}", 0, LabelMarkStyle.None);
+                        l.ForeColor = Color.WhiteSmoke;
+                        l.GridTicks = GridTickTypes.All;
+                        chart.ChartAreas[0].AxisX.CustomLabels.Add(l);
+                        startTime = startTime.AddSeconds(secInv);
+                    }
+                }
             }
             else
             {
-                chart.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss";
+                lastInviewSecs = -1;
+                if (GetTotalSecoundsInView() < 5)
+                {
+                    chart.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss.fff";
+                }
+                else
+                {
+                    chart.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss";
 
+                }
             }
+           
+           
+            
+
+        }
+
+        private double GetNiceIntervalNumber(double num)
+        {
+            double niceInv = 0.025, lastNiceInv = 0.025;
+            int i = 1;
+            while (num > niceInv)
+            {
+                lastNiceInv = niceInv;
+                if (i % 3 == 0)
+                {
+                    niceInv *= 2.5;
+                    i = 0;
+                }
+                else
+                {
+                    niceInv *= 2.0;
+                }
+                i++;
+            }
+            return niceInv;
+
         }
 
         private double GetTotalSecoundsInView()
@@ -304,6 +393,8 @@ namespace DSLOG_Reader_2
                 {
                     DSLOGEntry en = LogEntries.ElementAt(LastEntry);
                     //Adds points to first and last x values
+                    
+                   
                     if (LastEntry == 0 || LastEntry == LogEntries.Count - 1)
                     {
                         if (LastEntry == LogEntries.Count - 1)
@@ -419,57 +510,55 @@ namespace DSLOG_Reader_2
                         }
 
 
-                        if (LogEntries.ElementAt(LastEntry - 1).DSDisabled != en.DSDisabled || LogEntries.ElementAt(LastEntry + 1).DSDisabled != en.DSDisabled)
-                            {
-                                DataPoint po = new DataPoint(en.Time.ToOADate(), 15.9);
-                                if (!en.DSDisabled || !LogEntries.ElementAt(LastEntry - 1).DSDisabled) po.Color = Color.Transparent;
-                                dsDisabledSeries.Points.Add(po);
-                            }
-                            if (LogEntries.ElementAt(LastEntry - 1).DSAuto != en.DSAuto || LogEntries.ElementAt(LastEntry + 1).DSAuto != en.DSAuto)
-                            {
-                                DataPoint po = new DataPoint(en.Time.ToOADate(), 15.9);
-                                if (!en.DSAuto || LogEntries.ElementAt(LastEntry - 1).DSAuto == false) po.Color = Color.Transparent;
-                                dsAutoSeries.Points.Add(po);
-                            }
-                            if (LogEntries.ElementAt(LastEntry - 1).DSTele != en.DSTele || LogEntries.ElementAt(LastEntry + 1).DSTele != en.DSTele)
-                            {
-                                DataPoint po = new DataPoint(en.Time.ToOADate(), 15.9);
-                                if (!en.DSTele || LogEntries.ElementAt(LastEntry - 1).DSTele == false) po.Color = Color.Transparent;
-                                dsTeleSeries.Points.Add(po);
-                            }
+                        if (en.DSDisabled)
+                        {
+                            DataPoint po = new DataPoint(en.Time.ToOADate(), 15.9);
+                            dsDisabledSeries.Points.Add(po);
+                        }
+                        if (en.DSAuto)
+                        {
+                            DataPoint po = new DataPoint(en.Time.ToOADate(), 15.9);
+                            
+                            dsAutoSeries.Points.Add(po);
+                        }
+                        if (en.DSTele)
+                        {
+                            DataPoint po = new DataPoint(en.Time.ToOADate(), 15.9);
+                            
+                            dsTeleSeries.Points.Add(po);
+                        }
 
-                            if (LogEntries.ElementAt(LastEntry - 1).RobotDisabled != en.RobotDisabled || LogEntries.ElementAt(LastEntry + 1).RobotDisabled != en.RobotDisabled)
-                            {
-                                DataPoint po = new DataPoint(en.Time.ToOADate(), 16.8);
-                                if (!en.RobotDisabled || !LogEntries.ElementAt(LastEntry - 1).RobotDisabled) po.Color = Color.Transparent;
-                                robotDisabledSeries.Points.Add(po);
-                            }
-                            if (LogEntries.ElementAt(LastEntry - 1).RobotAuto != en.RobotAuto || LogEntries.ElementAt(LastEntry + 1).RobotAuto != en.RobotAuto)
-                            {
-                                DataPoint po = new DataPoint(en.Time.ToOADate(), 16.5);
-                                if (!en.RobotAuto || LogEntries.ElementAt(LastEntry - 1).RobotAuto == false) po.Color = Color.Transparent;
-                                robotAutoSeries.Points.Add(po);
-                            }
-                            if (LogEntries.ElementAt(LastEntry - 1).RobotTele != en.RobotTele || LogEntries.ElementAt(LastEntry + 1).RobotTele != en.RobotTele)
-                            {
-                                DataPoint po = new DataPoint(en.Time.ToOADate(), 16.2);
-                                if (!en.RobotTele || LogEntries.ElementAt(LastEntry - 1).RobotTele == false) po.Color = Color.Transparent;
-                                robotTeleSeries.Points.Add(po);
-                            }
+                        if (en.RobotDisabled)
+                        {
+                            DataPoint po = new DataPoint(en.Time.ToOADate(), 16.8);
+                            
+                            robotDisabledSeries.Points.Add(po);
+                        }
+                        if (en.RobotAuto)
+                        {
+                            DataPoint po = new DataPoint(en.Time.ToOADate(), 16.5);
+                           
+                            robotAutoSeries.Points.Add(po);
+                        }
+                        if (en.RobotTele)
+                        {
+                            DataPoint po = new DataPoint(en.Time.ToOADate(), 16.2);
+                            
+                            robotTeleSeries.Points.Add(po);
+                        }
 
-                            if (LogEntries.ElementAt(LastEntry - 1).Brownout != en.Brownout || LogEntries.ElementAt(LastEntry + 1).Brownout != en.Brownout)
-                            {
-                                DataPoint po = new DataPoint(en.Time.ToOADate(), 15.6);
-                                if (!en.Brownout || LogEntries.ElementAt(LastEntry - 1).Brownout == false) po.Color = Color.Transparent;
-                                brownoutSeries.Points.Add(po);
-                            }
-                            if (LogEntries.ElementAt(LastEntry - 1).Watchdog != en.Watchdog || LogEntries.ElementAt(LastEntry + 1).Watchdog != en.Watchdog)
-                            {
-                                DataPoint po = new DataPoint(en.Time.ToOADate(), 15.3);
-                                if (!en.Watchdog || LogEntries.ElementAt(LastEntry - 1).Watchdog == false) po.Color = Color.Transparent;
-                                watchdogSeries.Points.Add(po);
-                            }
-                        
+                        if (en.Brownout)
+                        {
+                            DataPoint po = new DataPoint(en.Time.ToOADate(), 15.6);
+                            
+                            brownoutSeries.Points.Add(po);
+                        }
+                        if (en.Watchdog)
+                        {
+                            DataPoint po = new DataPoint(en.Time.ToOADate(), 15.3);
+                            
+                            watchdogSeries.Points.Add(po);
+                        }
 
                     }
                 }
@@ -681,6 +770,40 @@ namespace DSLOG_Reader_2
             chart.ChartAreas[0].AxisX.ScrollBar.Enabled = false;
             chart.SaveImage(file, ChartImageFormat.Png);
             chart.ChartAreas[0].AxisX.ScrollBar.Enabled = true;
+        }
+
+        private void buttonMatchTime_Click(object sender, EventArgs e)
+        {
+            ChangeUseMatchTime(!UseMatchTime,true);
+        }
+
+        private void ChangeUseMatchTime(bool use, bool force = false)
+        {
+            UseMatchTime = use;
+            if (!CanUseMatchTime)
+            {
+                UseMatchTime = false;
+                buttonMatchTime.BackColor = SystemColors.ControlDark;
+                chart.ChartAreas[0].AxisX.CustomLabels.Clear();
+            }
+            else if (UseMatchTime)
+            {
+                buttonMatchTime.BackColor = Color.Lime;
+                ChangeChartLabels(force);
+            }
+            else
+            {
+                buttonMatchTime.BackColor = Color.Red;
+                chart.ChartAreas[0].AxisX.CustomLabels.Clear();
+            }
+        }
+
+        private void chart_AxisScrollBarClicked(object sender, ScrollBarEventArgs e)
+        {
+            if (LogEntries != null)
+            {
+                ChangeChartLabels();
+            }
         }
 
         public void SetCursorPosition(double d)
