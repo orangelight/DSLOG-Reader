@@ -258,5 +258,10 @@ namespace DSLOG_Reader_2
             GraphView.SetCursorPosition(Double.Parse(listViewEvents.SelectedItems[0].SubItems[2].Text));
             MForm.SetRightTabIndex(0);
         }
+
+        private void backgroundWorkerLoadEvents_DoWork(object sender, DoWorkEventArgs e)
+        {
+
+        }
     }
 }

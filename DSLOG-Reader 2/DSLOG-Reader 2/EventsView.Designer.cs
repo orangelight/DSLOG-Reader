@@ -36,6 +36,7 @@
             this.buttonDup = new System.Windows.Forms.Button();
             this.buttonJoystick = new System.Windows.Forms.Button();
             this.textBoxSearch = new System.Windows.Forms.TextBox();
+            this.backgroundWorkerLoadEvents = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // richTextBox1
@@ -131,6 +132,11 @@
             this.textBoxSearch.TabIndex = 4;
             this.textBoxSearch.TextChanged += new System.EventHandler(this.textBoxSearch_TextChanged);
             // 
+            // backgroundWorkerLoadEvents
+            // 
+            this.backgroundWorkerLoadEvents.WorkerSupportsCancellation = true;
+            this.backgroundWorkerLoadEvents.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerLoadEvents_DoWork);
+            // 
             // EventsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -158,5 +164,6 @@
         private System.Windows.Forms.Button buttonJoystick;
         private System.Windows.Forms.Button buttonDup;
         private System.Windows.Forms.TextBox textBoxSearch;
+        private System.ComponentModel.BackgroundWorker backgroundWorkerLoadEvents;
     }
 }

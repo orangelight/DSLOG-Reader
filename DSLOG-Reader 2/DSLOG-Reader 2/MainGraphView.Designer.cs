@@ -40,6 +40,7 @@
             this.buttonFindMatch = new System.Windows.Forms.Button();
             this.buttonAutoScroll = new System.Windows.Forms.Button();
             this.buttonMatchTime = new System.Windows.Forms.Button();
+            this.labelTimeInView = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
             this.SuspendLayout();
             // 
@@ -210,10 +211,21 @@
             this.buttonMatchTime.UseVisualStyleBackColor = false;
             this.buttonMatchTime.Click += new System.EventHandler(this.buttonMatchTime_Click);
             // 
+            // labelTimeInView
+            // 
+            this.labelTimeInView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelTimeInView.Location = new System.Drawing.Point(834, 3);
+            this.labelTimeInView.Name = "labelTimeInView";
+            this.labelTimeInView.Size = new System.Drawing.Size(152, 15);
+            this.labelTimeInView.TabIndex = 7;
+            this.labelTimeInView.Text = "Time in View: 0.00";
+            this.labelTimeInView.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // MainGraphView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.labelTimeInView);
             this.Controls.Add(this.buttonMatchTime);
             this.Controls.Add(this.buttonAnalysis);
             this.Controls.Add(this.buttonResetZoom);
@@ -240,5 +252,6 @@
         private System.Windows.Forms.Button buttonResetZoom;
         private System.Windows.Forms.Button buttonAnalysis;
         private System.Windows.Forms.Button buttonMatchTime;
+        private System.Windows.Forms.Label labelTimeInView;
     }
 }
