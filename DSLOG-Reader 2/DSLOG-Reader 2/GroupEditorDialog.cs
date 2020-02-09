@@ -59,7 +59,16 @@ namespace DSLOG_Reader_2
                 }
                 treeViewPDP.BeginUpdate();
                 treeViewPDP.Nodes.Clear();
-                treeViewPDP.Nodes.AddRange(Profiles[comboBoxProfiles.SelectedIndex].Groups.ToTreeNodes().ToArray());
+                var groups = Profiles[comboBoxProfiles.SelectedIndex].Groups.ToTreeNodes().ToArray();
+                foreach(var group in groups)
+                {
+                    foreach(TreeNode node in group.Nodes)
+                    {
+                        if (node.Name.StartsWith(DSAttConstants.TotalPrefix)) node.Name = DSAttConstants.TotalPrefix;
+                        if (node.Name.StartsWith(DSAttConstants.DeltaPrefix)) node.Name = DSAttConstants.DeltaPrefix;
+                    }
+                }
+                treeViewPDP.Nodes.AddRange(groups);
                 foreach(var node in treeViewPDP.Nodes.Find(DSAttConstants.TotalPrefix, true))
                 {
                     node.NodeFont = TDFont;
@@ -428,11 +437,6 @@ namespace DSLOG_Reader_2
                 groups.Add(groupNode);
             }
             return groups;
-        }
-
-        private void buttonProfileSave_Click(object sender, EventArgs e)
-        {
-            
         }
 
         private void SaveProfile(int index = -1)

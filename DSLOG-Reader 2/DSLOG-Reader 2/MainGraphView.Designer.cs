@@ -94,7 +94,7 @@
             chartArea1.AxisY2.MajorTickMark.LineColor = System.Drawing.Color.WhiteSmoke;
             chartArea1.AxisY2.Maximum = 120D;
             chartArea1.AxisY2.Minimum = 0D;
-            chartArea1.AxisY2.Title = "Latency ms, Packet Loss %, roboRIO CPU %, CAN %, PDP Currents A";
+            chartArea1.AxisY2.Title = "Latency ms, Packet Loss %, roboRIO CPU %, CAN %, PDP A (Total PDP)";
             chartArea1.AxisY2.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             chartArea1.AxisY2.TitleForeColor = System.Drawing.Color.WhiteSmoke;
             chartArea1.BackColor = System.Drawing.Color.Black;
@@ -145,6 +145,7 @@
             // buttonAnalysis
             // 
             this.buttonAnalysis.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonAnalysis.BackColor = System.Drawing.SystemColors.Control;
             this.buttonAnalysis.BackgroundImage = global::DSLOG_Reader_2.Properties.Resources.Analysis_16x;
             this.buttonAnalysis.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.buttonAnalysis.Enabled = false;
@@ -152,7 +153,7 @@
             this.buttonAnalysis.Name = "buttonAnalysis";
             this.buttonAnalysis.Size = new System.Drawing.Size(23, 23);
             this.buttonAnalysis.TabIndex = 5;
-            this.buttonAnalysis.UseVisualStyleBackColor = true;
+            this.buttonAnalysis.UseVisualStyleBackColor = false;
             // 
             // buttonResetZoom
             // 

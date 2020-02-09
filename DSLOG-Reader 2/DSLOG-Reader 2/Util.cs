@@ -185,7 +185,7 @@ namespace DSLOG_Reader_2
         public const string RobotTele = "robottele";
         public const string Brownout = "brownout";
         public const string Watchdog = "watchdog";
-        public const string TotalPDP = "totalpdp";
+        public const string TotalPDP = "deftotalpdp";
         public const string Messages = "messages";
         public const string PDPPrefix = "pdp";
         public const string TotalPrefix = "total";

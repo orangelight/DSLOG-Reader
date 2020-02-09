@@ -494,7 +494,7 @@ namespace DSLOG_Reader_2
                             {
                                 if (lastEn.GetGroupPDPSd(kv.Value) != en.GetGroupPDPSd(kv.Value) || nextEn.GetGroupPDPSd(kv.Value) != en.GetGroupPDPSd(kv.Value))
                                 {
-                                    chart.Series[kv.Key].Points.AddXY( entryTime, en.GetGroupPDPSd(kv.Value) / (TotalPDPScale / 10.0));
+                                    chart.Series[kv.Key].Points.AddXY( entryTime, en.GetGroupPDPSd(kv.Value));
                                 }
                             }
 

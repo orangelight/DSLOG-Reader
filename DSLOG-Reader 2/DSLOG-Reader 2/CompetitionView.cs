@@ -243,7 +243,7 @@ namespace DSLOG_Reader_2
                 }
                 else if (node.Contains(DSAttConstants.DeltaPrefix))
                 {
-                    var d = new DataPoint(xLabelOffset, GenerateBoxPlotData(data.Select(en => en.GetGroupPDPSd(IdToPDPGroup[node].ToArray()) / (TotalPDPScale / 10.0)).ToList()));
+                    var d = new DataPoint(xLabelOffset, GenerateBoxPlotData(data.Select(en => en.GetGroupPDPSd(IdToPDPGroup[node].ToArray())).ToList()));
                     d.BorderColor = EnabledSeries[node].Item2;
                     d.BorderDashStyle = ChartDashStyle.Dash;
                     chart.Series[0].Points.Add(d);

@@ -104,6 +104,7 @@ namespace DSLOG_Reader_2
             var node = base.ToTreeNode();
             foreach (var child in Childern)
             {
+
                 node.Nodes.Add(child.ToTreeNode());
             }
             return node;
