@@ -95,23 +95,23 @@ namespace DSLOG_Reader_2
             }
             else if (name == DSAttConstants.LostPackets)
             {
-                return en.LostPackets * 100 + ((units) ? "%" : "");
+                return (en.LostPackets * 100).ToString("0.##") + ((units) ? "%" : "");
             }
             else if (name == DSAttConstants.Voltage)
             {
-                return en.Voltage + ((units) ? "V" : "");
+                return en.Voltage.ToString("0.##") + ((units) ? "V" : "");
             }
             else if (name == DSAttConstants.RoboRIOCPU)
             {
-                return en.RoboRioCPU * 100 + ((units) ? "%" : "");
+                return (en.RoboRioCPU * 100).ToString("0.##") + ((units) ? "%" : "");
             }
             else if (name == DSAttConstants.CANUtil)
             {
-                return en.CANUtil * 100 + ((units) ? "%" : "");
+                return (en.CANUtil * 100).ToString("0.##") + ((units) ? "%" : "");
             }
             else if (name.StartsWith(DSAttConstants.PDPPrefix))
             {
-                return en.GetPDPChannel(int.Parse(name.Substring(3))) + ((units) ? "A" : "");
+                return en.GetPDPChannel(int.Parse(name.Substring(3))).ToString("0.##") + ((units) ? "A" : "");
             }
             else if (name == DSAttConstants.DSDisabled)
             {
@@ -148,15 +148,15 @@ namespace DSLOG_Reader_2
             }
             else if (name == DSAttConstants.TotalPDP)
             {
-                return en.GetDPDTotal() + ((units) ? "A" : "");
+                return en.GetDPDTotal().ToString("0.##") + ((units) ? "A" : "");
             }
             else if (name.StartsWith(DSAttConstants.TotalPrefix))
             {
-                return en.GetGroupPDPTotal(idTOpdp[name]) + ((units) ? "A" : "");
+                return en.GetGroupPDPTotal(idTOpdp[name]).ToString("0.##") + ((units) ? "A" : "");
             }
             else if (name.StartsWith(DSAttConstants.DeltaPrefix))
             {
-                return en.GetGroupPDPSd(idTOpdp[name]) + ((units) ? "A" : "");
+                return en.GetGroupPDPSd(idTOpdp[name]).ToString("0.##") + ((units) ? "A" : "");
             }
             return "";
         }

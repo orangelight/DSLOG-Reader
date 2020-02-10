@@ -18,14 +18,16 @@ namespace DSLOG_Reader_2
     {
         public MainGraphView GraphView { get; set; }
         public MainForm MForm { get; set; }
-        private Dictionary<Double, String> EventsDict = new Dictionary<double, string>();
+        private Dictionary<Double, List<String>> EventsDict = new Dictionary<double, List<string>>();
         private int lastIndexSelectedEvents = -1;
         private string Filter = "";
         public bool FilterRepeated = false;
         public bool RemoveJoystick = false;
+        List<DSEVENTSEntry> Entries;
         public EventsView()
         {
             InitializeComponent();
+            listViewEvents.DoubleBuffered(true);
         }
 
 
@@ -33,6 +35,7 @@ namespace DSLOG_Reader_2
         {
             var fileName = $"{dir}\\{file.Name}.dsevents";
             EventsDict.Clear();
+            Entries = null;
             listViewEvents.Items.Clear();
             if (!File.Exists(fileName))
             {
@@ -44,35 +47,40 @@ namespace DSLOG_Reader_2
             {
                 return;
             }
-            foreach(var en in reader.Entries)
-            {
-                EventsDict[en.Time.ToOADate()] = en.Data;
-            }
+            Entries = reader.Entries;
             richTextBox1.Text = "";
             AddEvents();
         }
 
-        private void AddEvents()
+        private void AddEntryToDict(double key, string value)
         {
+            if (!EventsDict.ContainsKey(key)) EventsDict[key] = new List<string>();
+            EventsDict[key].Add(value);
+        }
+
+        public void AddEvents()
+        {
+            if (Entries == null) return;
             listViewEvents.BeginUpdate();
             listViewEvents.ListViewItemSorter = null;
             lastIndexSelectedEvents = -1;
             GraphView.ClearMessages();
             listViewEvents.Items.Clear();
             var dupDict = new Dictionary<string, DateTime>(StringComparer.OrdinalIgnoreCase);
-            foreach (var entry in EventsDict.Where(e=>e.Value.Contains(Filter, StringComparison.OrdinalIgnoreCase)).AsParallel().ToList())
+            EventsDict = new Dictionary<double, List<string>>();
+            foreach (var entry in Entries.Where(e => e.Data.Contains(Filter, StringComparison.OrdinalIgnoreCase)))
             {
-                DataPoint po = new DataPoint(entry.Key, 15);
+                DataPoint po = new DataPoint(entry.Time.ToOADate(), 15);
                 po.MarkerSize = 6;
-                
-                DateTime entryTime = DateTime.FromOADate(entry.Key);
 
-               
 
-               
+
+
+
                 ListViewItem item = new ListViewItem();
-                item.Text = entryTime.ToString("h:mm:ss.fff tt");
-                string entryText = entry.Value;
+                item.UseItemStyleForSubItems = false;
+                item.Text = entry.Time.ToString("h:mm:ss.fff tt");
+                string entryText = entry.Data;
 
                 if (RemoveJoystick)
                 {
@@ -82,45 +90,46 @@ namespace DSLOG_Reader_2
                     entryText = NoJoyText;
                 }
 
-                if (FilterRepeated && (dupDict.ContainsKey(entryText) && (dupDict[entryText] - entryTime).Duration().TotalSeconds < 4.0))
+                if (FilterRepeated && (dupDict.ContainsKey(entryText) && (dupDict[entryText] - entry.Time).Duration().TotalSeconds < 4.0))
                 {
                     continue;
                 }
-                dupDict[entryText] = entryTime;
+                dupDict[entryText] = entry.Time;
+                
                 item.SubItems.Add(entryText);
 
-                if (entry.Value.Contains("ERROR") || entry.Value.Contains("<flags> 1"))
+                if (entry.Data.Contains("ERROR") || entry.Data.Contains("<flags> 1"))
                 {
-                    item.BackColor = Color.Red;
+                     item.SubItems[1].BackColor = Color.Red;
                     po.Color = Color.Red;
                     po.YValues[0] = 14.7;
                 }
-                else if (entry.Value.Contains("<Code> 44004 "))
+                else if (entry.Data.Contains("<Code> 44004 "))
                 {
-                    item.BackColor = Color.SandyBrown;
+                     item.SubItems[1].BackColor = Color.SandyBrown;
                     po.Color = Color.SandyBrown;
                     po.MarkerStyle = MarkerStyle.Square;
                     po.YValues[0] = 14.7;
                 }
-                else if (entry.Value.Contains("<Code> 44008 "))
+                else if (entry.Data.Contains("<Code> 44008 "))
                 {
-                    int pFrom = entry.Value.IndexOf("Warning <Code> 44008 <radioLostEvents>  ") + "Warning <Code> 44008 <radioLostEvents>  ".Length;
-                    int pTo = entry.Value.IndexOf("\r<Description>FRC:  Robot radio detection times.");
-                    string processedData = entry.Value.Substring(pFrom, pTo - pFrom).Replace("<radioSeenEvents>", "~");
+                    int pFrom = entry.Data.IndexOf("Warning <Code> 44008 <radioLostEvents>  ") + "Warning <Code> 44008 <radioLostEvents>  ".Length;
+                    int pTo = entry.Data.IndexOf("\r<Description>FRC:  Robot radio detection times.");
+                    string processedData = entry.Data.Substring(pFrom, pTo - pFrom).Replace("<radioSeenEvents>", "~");
                     string[] dataInArray = processedData.Split('~');
                     if (!dataInArray[0].Trim().Equals(""))
                     {
                         double[] arrayLost = Array.ConvertAll(dataInArray[0].Trim().Split(','), Double.Parse);
                         foreach (double d in arrayLost)
                         {
-                            DateTime newTime = entryTime.AddSeconds(-d);
+                            DateTime newTime = entry.Time.AddSeconds(-d);
                             DataPoint pRL = new DataPoint(newTime.ToOADate(), 14.7);
                             pRL.Color = Color.Yellow;
                             pRL.MarkerSize = 6;
                             pRL.MarkerStyle = MarkerStyle.Square;
                             pRL.YValues[0] = 14.7;
                             GraphView.AddMessage(pRL);
-                            EventsDict[newTime.ToOADate()] = "Radio Lost";
+                            AddEntryToDict(newTime.ToOADate(), "Radio Lost");
                         }
                     }
                     if (dataInArray.Length > 1)
@@ -130,32 +139,43 @@ namespace DSLOG_Reader_2
                             double[] arrayLost = Array.ConvertAll(dataInArray[1].Trim().Split('<')[0].Split(','), Double.Parse);
                             foreach (double d in arrayLost)
                             {
-                                DateTime newTime = entryTime.AddSeconds(-d);
+                                DateTime newTime = entry.Time.AddSeconds(-d);
                                 DataPoint pRL = new DataPoint(newTime.ToOADate(), 14.7);
                                 pRL.Color = Color.Lime;
                                 pRL.MarkerSize = 6;
                                 pRL.MarkerStyle = MarkerStyle.Square;
                                 pRL.YValues[0] = 14.7;
                                 GraphView.AddMessage(pRL);
-                                EventsDict[newTime.ToOADate()] = "Radio Seen";
+                                AddEntryToDict(newTime.ToOADate(), "Radio Seen");
                             }
                         }
                     }
+                    
 
-                    item.BackColor = Color.Khaki;
+
+                     item.SubItems[1].BackColor = Color.Khaki;
                     po.Color = Color.Khaki;
                     po.YValues[0] = 14.7;
                 }
-                else if (entry.Value.Contains("Warning") || entry.Value.Contains("<flags> 2"))
+                else if (entry.Data.Contains("Warning") || entry.Data.Contains("<flags> 2") || entry.Data.Contains("<Code> -44009 "))
                 {
-                    item.BackColor = Color.Khaki;
+                    item.SubItems[1].BackColor = Color.Khaki;
                     po.Color = Color.Khaki;
                     po.YValues[0] = 14.7;
                 }
-                item.SubItems.Add("" + entry.Key);
+                item.SubItems.Add("" + entry.Time.ToOADate());
+                var mode = GraphView.GetEntryAt(entry.Time.ToOADate());
+
+                item.SubItems[0].BackColor = Color.DarkGray;
+                if (mode != null)
+                {
+                    if (mode.DSAuto) item.SubItems[0].BackColor = Color.Lime;
+                    else if (mode.DSTele) item.SubItems[0].BackColor = Color.Cyan;
+                }
+
                 listViewEvents.Items.Add(item);
                 GraphView.AddMessage(po);
-                EventsDict[entry.Key] = entry.Value;
+                AddEntryToDict(entry.Time.ToOADate(), entryText);
             }
             listViewEvents.Columns[0].Width = -2;
             listViewEvents.EndUpdate();
@@ -202,10 +222,11 @@ namespace DSLOG_Reader_2
 
         public bool TryGetEvent(double key, out string data)
         {
-            
-            bool found = EventsDict.TryGetValue(key, out data);
+            data = "";
+            List<string> raw;
+            bool found = EventsDict.TryGetValue(key, out raw);
             if (!found) return false;
-
+            data = string.Join("\n", raw);
             if (RemoveJoystick) data = RemoveJoyStickMessages(data);
             return true;
         }

@@ -92,6 +92,7 @@ namespace DSLOG_Reader_2
 
             IdToPDPGroup = new Dictionary<string, int[]>();
             ClearGraph();
+            
             chart.Series.Clear();
            
             foreach (var group in basic)
@@ -160,7 +161,13 @@ namespace DSLOG_Reader_2
                 }
             }
 
-            if (LogInfo != null) LoadLog(LogInfo, LastPath);
+            if (LogInfo != null)
+            {
+                LastEntry = 0;
+                InitChart();
+                PlotLog();
+                EventsView.AddEvents();
+            }
         }
 
         private Series MakeSeriesFromSettings(Series setting, SeriesChildNode node)
@@ -178,7 +185,6 @@ namespace DSLOG_Reader_2
 
         public void LoadLog(DSLOGFileEntry logInfo, string dir)
         {
-            
             StopStreaming();
             LogStreamer = null;
             buttonAnalysis.Enabled = false;
@@ -189,6 +195,8 @@ namespace DSLOG_Reader_2
             InitChart();
             LogEntries = null;
             ClearInfoLabel();
+            ProbeView.SetProbe(null);
+            
             if (File.Exists(dslogFile))
             {
                 DSLOGReader reader = null;
@@ -757,14 +765,23 @@ namespace DSLOG_Reader_2
 
         public void SetCursorPosition(double d)
         {
-            if (!Double.IsNaN(d))
-            {
+           
                 chart.ChartAreas[0].CursorX.SetCursorPosition(d);
                 SetCursorLineRed();
-                DateTime xValue = DateTime.FromOADate(d);
-                ProbeView.SetProbe(LogEntries.ElementAt((int)(xValue.Subtract(StartTime).TotalMilliseconds / 20)), chart.Series, IdToPDPGroup);
+               
+                ProbeView.SetProbe(GetEntryAt(d));
 
+            
+        }
+
+        public DSLOGEntry GetEntryAt(double d)
+        {
+            if (LogEntries != null && !Double.IsNaN(d) && d >= StartTime.ToOADate() && d <= EndTime.ToOADate())
+            {
+                DateTime xValue = DateTime.FromOADate(d);
+                return LogEntries.ElementAt((int)(xValue.Subtract(StartTime).TotalMilliseconds / 20));
             }
+            return null;
         }
     
     }
