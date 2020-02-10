@@ -168,6 +168,47 @@ namespace DSLOG_Reader_2
             var doubleBufferPropertyInfo = control.GetType().GetProperty("DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic);
             doubleBufferPropertyInfo.SetValue(control, enable, null);
         }
+
+        public static bool TryFindMatchStart(this List<DSLOGEntry> list, out DateTime matchTime)
+        {
+            foreach (var en in list)
+            {
+                if (en.RobotAuto)
+                {
+                    matchTime = en.Time;
+                    return true;
+                }
+            }
+            matchTime = DateTime.UtcNow;
+            return false;
+        }
+
+        public static string GetTableFromEntries(List<DSLOGEntry> entries, Dictionary<string, string> series, Dictionary<string, int[]> idTOpdp, bool UseMatchTime, DateTime matchTime, string sep = ",")
+        {
+            if (entries == null) return "";
+            StringBuilder csv = new StringBuilder();
+
+            List<string> headers = new List<string>();
+            headers.Add("Time");
+            foreach (string value in series.Values)
+            {
+                headers.Add(value);
+            }
+            csv.Append(string.Join(sep, headers) + "\n");
+            foreach (var entry in entries)
+            {
+                List<string> row = new List<string>();
+                if (UseMatchTime) row.Add((entry.Time - matchTime).TotalSeconds.ToString("0.00"));
+                else row.Add(entry.Time.ToString("HH:mm:ss.fff"));
+
+                foreach (string key in series.Keys)
+                {
+                    row.Add(entry.EntryAttToUnit(key, idTOpdp, false));
+                }
+                csv.Append(string.Join(sep, row) + "\n");
+            }
+            return csv.ToString();
+        }
     }
 
     public static class DSAttConstants

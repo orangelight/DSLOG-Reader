@@ -24,6 +24,7 @@ namespace DSLOG_Reader_2
             seriesView.AddObserver(exportView1);
             seriesView.AddObserver(competitionView1);
             seriesView.AddObserver(probeView1);
+            seriesView.AddObserver(fileListView);
             eventsView1.GraphView = mainGraphView;
             eventsView1.MForm = this;
             mainGraphView.MForm = this;

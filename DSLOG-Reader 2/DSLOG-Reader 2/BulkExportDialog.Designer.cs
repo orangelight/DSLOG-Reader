@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BulkExportDialog));
             this.listView = new System.Windows.Forms.ListView();
             this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -46,6 +47,10 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.buttonPath = new System.Windows.Forms.Button();
             this.labelTotal = new System.Windows.Forms.Label();
+            this.checkBoxAll = new System.Windows.Forms.CheckBox();
+            this.timerUpdateTotal = new System.Windows.Forms.Timer(this.components);
+            this.label1 = new System.Windows.Forms.Label();
+            this.checkBoxMatchTime = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // listView
@@ -62,13 +67,12 @@
             this.columnHeader1,
             this.columnHeaderEvent});
             this.listView.HideSelection = false;
-            this.listView.Location = new System.Drawing.Point(12, 31);
+            this.listView.Location = new System.Drawing.Point(12, 52);
             this.listView.Name = "listView";
-            this.listView.Size = new System.Drawing.Size(415, 284);
+            this.listView.Size = new System.Drawing.Size(415, 263);
             this.listView.TabIndex = 0;
             this.listView.UseCompatibleStateImageBehavior = false;
             this.listView.View = System.Windows.Forms.View.Details;
-            this.listView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listView_ItemChecked);
             // 
             // columnHeaderName
             // 
@@ -116,6 +120,7 @@
             this.buttonExport.TabIndex = 2;
             this.buttonExport.Text = "Export";
             this.buttonExport.UseVisualStyleBackColor = true;
+            this.buttonExport.Click += new System.EventHandler(this.buttonExport_Click);
             // 
             // buttonCancel
             // 
@@ -132,12 +137,15 @@
             // 
             this.backgroundWorkerExport.WorkerReportsProgress = true;
             this.backgroundWorkerExport.WorkerSupportsCancellation = true;
+            this.backgroundWorkerExport.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerExport_DoWork);
+            this.backgroundWorkerExport.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorkerExport_ProgressChanged);
+            this.backgroundWorkerExport.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerExport_RunWorkerCompleted);
             // 
             // checkBoxEvents
             // 
             this.checkBoxEvents.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBoxEvents.AutoSize = true;
-            this.checkBoxEvents.Location = new System.Drawing.Point(436, 100);
+            this.checkBoxEvents.Location = new System.Drawing.Point(267, 29);
             this.checkBoxEvents.Name = "checkBoxEvents";
             this.checkBoxEvents.Size = new System.Drawing.Size(107, 17);
             this.checkBoxEvents.TabIndex = 4;
@@ -150,7 +158,7 @@
             this.checkBoxLogs.AutoSize = true;
             this.checkBoxLogs.Checked = true;
             this.checkBoxLogs.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxLogs.Location = new System.Drawing.Point(436, 77);
+            this.checkBoxLogs.Location = new System.Drawing.Point(164, 29);
             this.checkBoxLogs.Name = "checkBoxLogs";
             this.checkBoxLogs.Size = new System.Drawing.Size(97, 17);
             this.checkBoxLogs.TabIndex = 5;
@@ -160,19 +168,21 @@
             // labelIntro
             // 
             this.labelIntro.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelIntro.Location = new System.Drawing.Point(433, 31);
+            this.labelIntro.Location = new System.Drawing.Point(433, 62);
             this.labelIntro.Name = "labelIntro";
-            this.labelIntro.Size = new System.Drawing.Size(156, 43);
+            this.labelIntro.Size = new System.Drawing.Size(156, 77);
             this.labelIntro.TabIndex = 6;
-            this.labelIntro.Text = "All logs on left will be exported to CSV";
+            this.labelIntro.Text = "All logs on left will be exported to CSV using the profile selected in the Graph " +
+    "tab with all series enabled";
             // 
             // textBox1
             // 
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(13, 5);
+            this.textBox1.Location = new System.Drawing.Point(71, 5);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(505, 20);
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(447, 20);
             this.textBox1.TabIndex = 7;
             // 
             // buttonPath
@@ -196,12 +206,53 @@
             this.labelTotal.TabIndex = 9;
             this.labelTotal.Text = "Total Logs:";
             // 
+            // checkBoxAll
+            // 
+            this.checkBoxAll.AutoSize = true;
+            this.checkBoxAll.Checked = true;
+            this.checkBoxAll.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxAll.Location = new System.Drawing.Point(13, 29);
+            this.checkBoxAll.Name = "checkBoxAll";
+            this.checkBoxAll.Size = new System.Drawing.Size(120, 17);
+            this.checkBoxAll.TabIndex = 10;
+            this.checkBoxAll.Text = "Check/Uncheck All";
+            this.checkBoxAll.UseVisualStyleBackColor = true;
+            this.checkBoxAll.CheckedChanged += new System.EventHandler(this.checkBoxAll_CheckedChanged);
+            // 
+            // timerUpdateTotal
+            // 
+            this.timerUpdateTotal.Enabled = true;
+            this.timerUpdateTotal.Interval = 500;
+            this.timerUpdateTotal.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(56, 13);
+            this.label1.TabIndex = 11;
+            this.label1.Text = "Export To:";
+            // 
+            // checkBoxMatchTime
+            // 
+            this.checkBoxMatchTime.AutoSize = true;
+            this.checkBoxMatchTime.Location = new System.Drawing.Point(426, 29);
+            this.checkBoxMatchTime.Name = "checkBoxMatchTime";
+            this.checkBoxMatchTime.Size = new System.Drawing.Size(163, 17);
+            this.checkBoxMatchTime.TabIndex = 12;
+            this.checkBoxMatchTime.Text = "Use Match Time for Matches";
+            this.checkBoxMatchTime.UseVisualStyleBackColor = true;
+            // 
             // BulkExportDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(595, 344);
+            this.Controls.Add(this.checkBoxMatchTime);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.checkBoxAll);
             this.Controls.Add(this.labelTotal);
             this.Controls.Add(this.buttonPath);
             this.Controls.Add(this.textBox1);
@@ -243,5 +294,9 @@
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.ColumnHeader columnHeaderEvent;
         private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.CheckBox checkBoxAll;
+        private System.Windows.Forms.Timer timerUpdateTotal;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox checkBoxMatchTime;
     }
 }

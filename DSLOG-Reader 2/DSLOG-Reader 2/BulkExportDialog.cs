@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DSLOG_Reader_Library;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,18 +16,23 @@ namespace DSLOG_Reader_2
     {
         public List<DSLOGFileEntry> Files { get; set; }
         public string FilePath { get; set; }
-        private bool Init = false;
+        private List<string> CheckedFiles;
+        public Dictionary<string, int[]> IdToPDPGroup { get; set; }
+        public Dictionary<string, string> Series { get; set; }
         public BulkExportDialog()
         {
             InitializeComponent();
+            CheckedFiles = new List<string>();
             listView.DoubleBuffered(true);
             textBox1.Text = Directory.GetCurrentDirectory();
         }
 
         private void BulkExportDialog_Shown(object sender, EventArgs e)
         {
+
             if (Files == null) return;
-            foreach(var file in Files)
+            listView.BeginUpdate();
+            foreach (var file in Files)
             {
                 var item = file.ToListViewItem();
                 item.Checked = true;
@@ -35,8 +41,8 @@ namespace DSLOG_Reader_2
             listView.Columns[0].Width = -2;
             listView.Columns[3].Width = -2;
             listView.Columns[5].Width = -2;
+            listView.EndUpdate();
             UpdateTotal();
-            Init = true;
         }
 
         private void UpdateTotal()
@@ -44,21 +50,111 @@ namespace DSLOG_Reader_2
             labelTotal.Text = $"Total Logs: {listView.CheckedItems.Count}";
         }
 
-        private void listView_ItemChecked(object sender, ItemCheckedEventArgs e)
-        {
-            if (!Init) return;
-            UpdateTotal();
-        }
-
         private void buttonPath_Click(object sender, EventArgs e)
         {
+            if (backgroundWorkerExport.IsBusy) return;
             FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
             folderBrowserDialog.SelectedPath = Directory.GetCurrentDirectory();
             var result = folderBrowserDialog.ShowDialog();
             if(result == DialogResult.OK)
             {
                 textBox1.Text = folderBrowserDialog.SelectedPath;
+                FilePath = textBox1.Text;
             }
+        }
+
+        private void checkBoxAll_CheckedChanged(object sender, EventArgs e)
+        {
+            listView.BeginUpdate();
+            foreach(ListViewItem item in listView.Items)
+            {
+                item.Checked = checkBoxAll.Checked;
+            }
+            listView.EndUpdate();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            UpdateTotal();
+        }
+
+        private void buttonExport_Click(object sender, EventArgs e)
+        {
+            if (backgroundWorkerExport.IsBusy) return;
+            CheckedFiles.Clear();
+            foreach (ListViewItem item in listView.CheckedItems)
+            {
+                CheckedFiles.Add(item.Text);
+            }
+
+            backgroundWorkerExport.RunWorkerAsync();
+        }
+
+        private void backgroundWorkerExport_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var tempDict = new Dictionary<string, DSLOGFileEntry>();
+            Files.ForEach(en => tempDict.Add(en.Name, en));
+            int i = 0;
+            foreach(string file in CheckedFiles)
+            {
+                DSLOGFileEntry entry;
+                if (tempDict.TryGetValue(file, out entry))
+                {
+                    if (checkBoxLogs.Checked)
+                    {
+                        string dsFile = $"{entry.FilePath}\\{entry.Name}.dslog";
+                        if (File.Exists(dsFile))
+                        {
+                            DSLOGReader reader = new DSLOGReader(dsFile);
+                            reader.Read();
+                            DateTime matchTime = DateTime.Now;
+                            
+                            if (entry.IsFMSMatch)
+                            {
+                                
+                                string data = Util.GetTableFromEntries(reader.Entries, Series, IdToPDPGroup, checkBoxMatchTime.Checked && reader.Entries.TryFindMatchStart(out matchTime), matchTime, ",");
+                                var dir = $"{FilePath}\\{entry.EventName}{entry.StartTime.Year}";
+                                if (!Directory.Exists(dir))
+                                {
+                                    Directory.CreateDirectory(dir);
+                                }
+                                File.WriteAllText($"{dir}\\{entry.Name} {entry.MatchType}_{entry.FMSMatchNum}.csv", data);
+                            }
+                            else
+                            {
+                                string data = Util.GetTableFromEntries(reader.Entries, Series, IdToPDPGroup, false, matchTime, ",");
+                                var dir = $"{FilePath}\\{entry.StartTime.Year}";
+                                if (!Directory.Exists(dir))
+                                {
+                                    Directory.CreateDirectory(dir);
+                                }
+                                File.WriteAllText($"{dir}\\{entry.Name}.csv", data);
+                            }
+
+                           
+                        }
+                    }
+                    if (checkBoxEvents.Checked)
+                    {
+
+                    }
+                }
+                backgroundWorkerExport.ReportProgress((int)((double)++i / CheckedFiles.Count * 100.0));
+            }   
+        }
+
+        
+
+
+
+        private void backgroundWorkerExport_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            progressBar.Value = e.ProgressPercentage;
+        }
+
+        private void backgroundWorkerExport_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            MessageBox.Show("Export Done!");
         }
     }
 }

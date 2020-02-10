@@ -42,6 +42,7 @@
             this.textBoxPath = new System.Windows.Forms.TextBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.timerFileUpdate = new System.Windows.Forms.Timer(this.components);
+            this.buttonChangePath = new System.Windows.Forms.Button();
             this.buttonOpenFile = new System.Windows.Forms.Button();
             this.buttonBulkExport = new System.Windows.Forms.Button();
             this.buttonFilter = new System.Windows.Forms.Button();
@@ -115,9 +116,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.filterSelectorCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.filterSelectorCombo.FormattingEnabled = true;
-            this.filterSelectorCombo.Location = new System.Drawing.Point(85, 0);
+            this.filterSelectorCombo.Location = new System.Drawing.Point(114, 0);
             this.filterSelectorCombo.Name = "filterSelectorCombo";
-            this.filterSelectorCombo.Size = new System.Drawing.Size(150, 21);
+            this.filterSelectorCombo.Size = new System.Drawing.Size(120, 21);
             this.filterSelectorCombo.TabIndex = 1;
             this.filterSelectorCombo.SelectedIndexChanged += new System.EventHandler(this.filterSelectorCombo_SelectedIndexChanged);
             // 
@@ -141,6 +142,17 @@
             // 
             this.timerFileUpdate.Interval = 500;
             this.timerFileUpdate.Tick += new System.EventHandler(this.timerFileUpdate_Tick);
+            // 
+            // buttonChangePath
+            // 
+            this.buttonChangePath.BackgroundImage = global::DSLOG_Reader_2.Properties.Resources.OpenFolder_16x;
+            this.buttonChangePath.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.buttonChangePath.Location = new System.Drawing.Point(84, -1);
+            this.buttonChangePath.Name = "buttonChangePath";
+            this.buttonChangePath.Size = new System.Drawing.Size(29, 23);
+            this.buttonChangePath.TabIndex = 9;
+            this.buttonChangePath.UseVisualStyleBackColor = true;
+            this.buttonChangePath.Click += new System.EventHandler(this.buttonChangePath_Click);
             // 
             // buttonOpenFile
             // 
@@ -201,6 +213,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.buttonChangePath);
             this.Controls.Add(this.buttonOpenFile);
             this.Controls.Add(this.buttonBulkExport);
             this.Controls.Add(this.buttonFilter);
@@ -235,5 +248,6 @@
         private System.Windows.Forms.Timer timerFileUpdate;
         private System.Windows.Forms.Button buttonBulkExport;
         private System.Windows.Forms.Button buttonOpenFile;
+        private System.Windows.Forms.Button buttonChangePath;
     }
 }

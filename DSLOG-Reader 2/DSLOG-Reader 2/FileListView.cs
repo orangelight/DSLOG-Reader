@@ -16,7 +16,7 @@ using System.Collections.Concurrent;
 
 namespace DSLOG_Reader_2
 {
-    public partial class FileListView : UserControl
+    public partial class FileListView : UserControl, SeriesViewObserver
     {
         private MainForm MForm;
         public EventsView EventView { get; set; }
@@ -29,6 +29,9 @@ namespace DSLOG_Reader_2
         private bool firstColumnResize = true;
         private ConcurrentQueue<string> LogUpdateQueue;
         public CompetitionView CompView { get; set; }
+        public SeriesView SeriesViewObserving { get; set; }
+        private Dictionary<string, int[]> IdToPDPGroup = new Dictionary<string, int[]>();
+        private Dictionary<string, string> Series = new Dictionary<string, string>();
         private bool AllowFillInEventNames = true;
         public FileListView()
         {
@@ -44,7 +47,7 @@ namespace DSLOG_Reader_2
 
         public void LoadFiles()
         {
-            filterUseless = false;
+            
             firstColumnResize = true;
             listView.Items.Clear();
             DSLOGFiles.Clear();
@@ -72,6 +75,7 @@ namespace DSLOG_Reader_2
             }
 
             InitFilterCombo();
+            FilterLogs();
             timerFileUpdate.Start();
         }
 
@@ -150,7 +154,7 @@ namespace DSLOG_Reader_2
 
         private void filterSelectorCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            FilterLogs();
+            FilterLogs(true);
         }
 
         private void listView_SelectedIndexChanged(object sender, EventArgs e)
@@ -349,6 +353,8 @@ namespace DSLOG_Reader_2
             BulkExportDialog bulkExport = new BulkExportDialog();
             bulkExport.FilePath = Path;
             bulkExport.Files = GetFilteredFiles().ToList();
+            bulkExport.IdToPDPGroup = IdToPDPGroup;
+            bulkExport.Series = Series;
             bulkExport.ShowDialog();
         }
 
@@ -366,6 +372,55 @@ namespace DSLOG_Reader_2
                 GraphLog(entry);
             }
             
+        }
+
+        private void buttonChangePath_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog browserDialog = new FolderBrowserDialog();
+            browserDialog.SelectedPath = textBoxPath.Text;
+            var result = browserDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                SetPath(browserDialog.SelectedPath);
+                LoadFiles();
+            }
+        }
+
+        public void SetSeries(SeriesGroupNodes basic, SeriesGroupNodes pdp)
+        {
+            IdToPDPGroup = new Dictionary<string, int[]>();
+            Series = new Dictionary<string, string>();
+            foreach (var group in pdp)
+            {
+                int[] pdpIds = group.Childern.Where(n => n.Name.StartsWith(DSAttConstants.PDPPrefix)).Select(n => int.Parse(n.Name.Replace(DSAttConstants.PDPPrefix, ""))).ToArray();
+                foreach (var node in group.Childern)
+                {
+                    if (node.Name.StartsWith(DSAttConstants.TotalPrefix) || node.Name.Contains(DSAttConstants.DeltaPrefix))
+                    {
+                        IdToPDPGroup[node.Name] = pdpIds;
+                    }
+                }
+            }
+            foreach(var bas in basic)
+            {
+                foreach(var entry in bas.Childern)
+                {
+                    Series.Add(entry.Name, entry.Text);
+                }
+                
+            }
+            foreach (var p in pdp)
+            {
+                foreach (var entry in p.Childern)
+                {
+                    Series.Add(entry.Name, entry.Text);
+                }
+            }
+        }
+
+        public void SetEnabledSeries(TreeNodeCollection groups)
+        {
+            //pass
         }
     }        
 }

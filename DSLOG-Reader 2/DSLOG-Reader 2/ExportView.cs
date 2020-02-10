@@ -94,28 +94,7 @@ namespace DSLOG_Reader_2
 
         private string GetTableFromView(string sep = ",")
         {
-            var entries = DSGraph.GetInViewEntries();
-            if (entries == null) return "";
-            StringBuilder csv = new StringBuilder();
-
-            List<string> headers = new List<string>();
-            headers.Add("Time");
-            foreach (string value in EnabledSeries.Values)
-            {
-                headers.Add(value);
-            }
-            csv.Append(string.Join(sep, headers) + "\n");
-            foreach (var entry in entries)
-            {
-                List<string> row = new List<string>();
-                row.Add(entry.Time.ToString("HH:mm:ss.fff"));
-                foreach (string key in EnabledSeries.Keys)
-                {
-                    row.Add(entry.EntryAttToUnit(key, IdToPDPGroup, false));
-                }
-                csv.Append(string.Join(sep, row) + "\n");
-            }
-            return csv.ToString();
+            return Util.GetTableFromEntries(DSGraph.GetInViewEntries(), EnabledSeries, IdToPDPGroup, (DSGraph.UseMatchTime && DSGraph.CanUseMatchTime), DSGraph.MatchTime, sep);
         }
 
         private bool ExportChartClipboard()

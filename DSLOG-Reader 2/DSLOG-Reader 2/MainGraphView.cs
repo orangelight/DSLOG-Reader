@@ -35,13 +35,15 @@ namespace DSLOG_Reader_2
         private DSLOGStreamer LogStreamer;
         private int LastEntry = 0;
         private bool AutoScrollLive = false;
-        private DateTime MatchTime;
-        private bool UseMatchTime = false;
-        private bool CanUseMatchTime = false;
+        public DateTime MatchTime { get; private set; }
+        public bool UseMatchTime { get; private set; }
+        public bool CanUseMatchTime { get; private set; }
         private double lastInviewSecs = -1;
         public MainGraphView()
         {
             InitializeComponent();
+            CanUseMatchTime = false;
+            UseMatchTime = false;
             InitSeriesSettings();
             for (double i = 0; i < 12; i++)
             {
@@ -262,16 +264,8 @@ namespace DSLOG_Reader_2
 
         private void SetUpMatchTime()
         {
-            bool foundMatchTime = false;
-            foreach (var en in LogEntries)
-            {
-                if (en.RobotAuto)
-                {
-                    MatchTime = en.Time;
-                    foundMatchTime = true;
-                    break;
-                }
-            }
+            DateTime matchTime;
+            bool foundMatchTime = LogEntries.TryFindMatchStart(out matchTime);
             if (!foundMatchTime)
             {
                 CanUseMatchTime = false;
@@ -279,6 +273,7 @@ namespace DSLOG_Reader_2
             }
             else
             {
+                MatchTime = matchTime;
                 CanUseMatchTime = true;
                 ChangeUseMatchTime(UseMatchTime);
             }
