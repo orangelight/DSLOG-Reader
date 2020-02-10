@@ -83,6 +83,16 @@ namespace DSLOG_Reader_2.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ExportTableToFile_16x {
+            get {
+                object obj = ResourceManager.GetObject("ExportTableToFile_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap FindNext_16x {
             get {
                 object obj = ResourceManager.GetObject("FindNext_16x", resourceCulture);

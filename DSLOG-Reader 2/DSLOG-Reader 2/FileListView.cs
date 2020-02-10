@@ -204,7 +204,7 @@ namespace DSLOG_Reader_2
             
             if (selectedEvent == "All Logs")
             {
-                foreach (var entry in DSLOGFiles.Values.Where(e=>!(e.Useless && filterUseless)))
+                foreach (var entry in GetFilteredFiles())
                 {
                     listView.Items.Add(entry.ToListViewItem(AllowFillInEventNames));
                 }
@@ -212,7 +212,7 @@ namespace DSLOG_Reader_2
             }
             else
             {
-                foreach (var entry in DSLOGFiles.Values.Where(e => !(e.Useless && filterUseless) || e.Live).Where(en => (!en.FMSFilledIn || AllowFillInEventNames) && en.EventName == selectedEvent.Substring(0, selectedEvent.Length-5) && en.StartTime.ToString("yyyy") == selectedEvent.GetLast(4)))
+                foreach (var entry in GetFilteredFiles())
                 {
                     listView.Items.Add(entry.ToListViewItem(AllowFillInEventNames));
                 }
@@ -338,6 +338,25 @@ namespace DSLOG_Reader_2
                 AllowFillInEventNames = settingsDialog.AllowEventFillIn;
                 LoadFiles();
             }
+        }
+        private IEnumerable<DSLOGFileEntry> GetFilteredFiles()
+        {
+            string selectedEvent = filterSelectorCombo.Items[filterSelectorCombo.SelectedIndex].ToString();
+            if (selectedEvent == "All Logs")
+            {
+                return DSLOGFiles.Values.Where(e => !(e.Useless && filterUseless));
+            }
+            else
+            {
+                return DSLOGFiles.Values.Where(e => !(e.Useless && filterUseless) || e.Live).Where(en => (!en.FMSFilledIn || AllowFillInEventNames) && en.EventName == selectedEvent.Substring(0, selectedEvent.Length - 5) && en.StartTime.ToString("yyyy") == selectedEvent.GetLast(4));
+            }
+        }
+        private void buttonBulkExport_Click(object sender, EventArgs e)
+        {
+            BulkExportDialog bulkExport = new BulkExportDialog();
+            bulkExport.FilePath = Path;
+            bulkExport.Files = GetFilteredFiles().ToList();
+            bulkExport.ShowDialog();
         }
     }        
 }

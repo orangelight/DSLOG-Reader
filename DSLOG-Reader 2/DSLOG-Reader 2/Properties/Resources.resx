@@ -154,10 +154,13 @@
   <data name="x_con" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\x_con.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Analysis_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Analysis_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="RepeatButton_16red" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\RepeatButton_16red.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Analysis_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Analysis_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ExportTableToFile_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ExportTableToFile_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

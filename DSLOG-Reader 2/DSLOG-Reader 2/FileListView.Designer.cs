@@ -40,11 +40,12 @@
             this.filterSelectorCombo = new System.Windows.Forms.ComboBox();
             this.timerScrollToBottom = new System.Windows.Forms.Timer(this.components);
             this.textBoxPath = new System.Windows.Forms.TextBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.timerFileUpdate = new System.Windows.Forms.Timer(this.components);
+            this.buttonBulkExport = new System.Windows.Forms.Button();
             this.buttonFilter = new System.Windows.Forms.Button();
             this.buttonRefreash = new System.Windows.Forms.Button();
             this.buttonSettings = new System.Windows.Forms.Button();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.timerFileUpdate = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // listView
@@ -66,7 +67,7 @@
             this.listView.Location = new System.Drawing.Point(0, 21);
             this.listView.MultiSelect = false;
             this.listView.Name = "listView";
-            this.listView.Size = new System.Drawing.Size(212, 344);
+            this.listView.Size = new System.Drawing.Size(293, 344);
             this.listView.TabIndex = 0;
             this.listView.UseCompatibleStateImageBehavior = false;
             this.listView.View = System.Windows.Forms.View.Details;
@@ -113,9 +114,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.filterSelectorCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.filterSelectorCombo.FormattingEnabled = true;
-            this.filterSelectorCombo.Location = new System.Drawing.Point(60, 0);
+            this.filterSelectorCombo.Location = new System.Drawing.Point(58, 0);
             this.filterSelectorCombo.Name = "filterSelectorCombo";
-            this.filterSelectorCombo.Size = new System.Drawing.Size(119, 21);
+            this.filterSelectorCombo.Size = new System.Drawing.Size(176, 21);
             this.filterSelectorCombo.TabIndex = 1;
             this.filterSelectorCombo.SelectedIndexChanged += new System.EventHandler(this.filterSelectorCombo_SelectedIndexChanged);
             // 
@@ -132,8 +133,25 @@
             this.textBoxPath.Location = new System.Drawing.Point(0, 367);
             this.textBoxPath.Name = "textBoxPath";
             this.textBoxPath.ReadOnly = true;
-            this.textBoxPath.Size = new System.Drawing.Size(212, 21);
+            this.textBoxPath.Size = new System.Drawing.Size(293, 21);
             this.textBoxPath.TabIndex = 3;
+            // 
+            // timerFileUpdate
+            // 
+            this.timerFileUpdate.Interval = 500;
+            this.timerFileUpdate.Tick += new System.EventHandler(this.timerFileUpdate_Tick);
+            // 
+            // buttonBulkExport
+            // 
+            this.buttonBulkExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonBulkExport.BackgroundImage = global::DSLOG_Reader_2.Properties.Resources.ExportTableToFile_16x;
+            this.buttonBulkExport.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.buttonBulkExport.Location = new System.Drawing.Point(235, -1);
+            this.buttonBulkExport.Name = "buttonBulkExport";
+            this.buttonBulkExport.Size = new System.Drawing.Size(29, 23);
+            this.buttonBulkExport.TabIndex = 7;
+            this.buttonBulkExport.UseVisualStyleBackColor = true;
+            this.buttonBulkExport.Click += new System.EventHandler(this.buttonBulkExport_Click);
             // 
             // buttonFilter
             // 
@@ -160,22 +178,18 @@
             // 
             this.buttonSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonSettings.Image = ((System.Drawing.Image)(resources.GetObject("buttonSettings.Image")));
-            this.buttonSettings.Location = new System.Drawing.Point(182, -1);
+            this.buttonSettings.Location = new System.Drawing.Point(263, -1);
             this.buttonSettings.Name = "buttonSettings";
             this.buttonSettings.Size = new System.Drawing.Size(29, 23);
             this.buttonSettings.TabIndex = 2;
             this.buttonSettings.UseVisualStyleBackColor = true;
             this.buttonSettings.Click += new System.EventHandler(this.buttonSettings_Click);
             // 
-            // timerFileUpdate
-            // 
-            this.timerFileUpdate.Interval = 500;
-            this.timerFileUpdate.Tick += new System.EventHandler(this.timerFileUpdate_Tick);
-            // 
             // FileListView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.buttonBulkExport);
             this.Controls.Add(this.buttonFilter);
             this.Controls.Add(this.buttonRefreash);
             this.Controls.Add(this.textBoxPath);
@@ -183,7 +197,7 @@
             this.Controls.Add(this.filterSelectorCombo);
             this.Controls.Add(this.listView);
             this.Name = "FileListView";
-            this.Size = new System.Drawing.Size(212, 388);
+            this.Size = new System.Drawing.Size(293, 388);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -206,5 +220,6 @@
         private System.Windows.Forms.Button buttonFilter;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Timer timerFileUpdate;
+        private System.Windows.Forms.Button buttonBulkExport;
     }
 }

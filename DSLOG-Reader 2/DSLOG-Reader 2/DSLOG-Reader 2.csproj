@@ -71,6 +71,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BulkExportDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BulkExportDialog.Designer.cs">
+      <DependentUpon>BulkExportDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="CacheLoadingDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -147,6 +153,9 @@
       <DependentUpon>SeriesView.cs</DependentUpon>
     </Compile>
     <Compile Include="Util.cs" />
+    <EmbeddedResource Include="BulkExportDialog.resx">
+      <DependentUpon>BulkExportDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CacheLoadingDialog.resx">
       <DependentUpon>CacheLoadingDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -209,6 +218,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="logo2.ico" />
+    <None Include="Resources\ExportTableToFile_16x.png" />
     <None Include="Resources\Analysis_16x.png" />
     <None Include="Resources\FindNext_16x.png" />
     <None Include="Resources\RepeatButton_16red.png" />
