@@ -145,7 +145,7 @@ namespace DSLOG_Reader_2
 
         private void treeViewPDP_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            if (((TreeNode)e.Item).Parent == null || ((TreeNode)e.Item).Name == DSAttConstants.TotalPrefix || ((TreeNode)e.Item).Name == DSAttConstants.DeltaPrefix || comboBoxProfiles.SelectedIndex == 0)
+            if (((TreeNode)e.Item).Name == DSAttConstants.TotalPrefix || ((TreeNode)e.Item).Name == DSAttConstants.DeltaPrefix || comboBoxProfiles.SelectedIndex == 0)
             {
                 return;
             }
@@ -185,44 +185,79 @@ namespace DSLOG_Reader_2
             {
                 return;
             }
-            if (targetNode.Parent != null)
-            {
-                targetNode = targetNode.Parent;
-            }
 
-            // Retrieve the node that was dragged.
             TreeNode draggedNode = (TreeNode)e.Data.GetData(typeof(TreeNode));
-
-            // Confirm that the node at the drop location is not 
-            // the dragged node or a descendant of the dragged node.
-            if (!draggedNode.Equals(targetNode) && !ContainsNode(draggedNode, targetNode))
+            if (draggedNode.Parent == null)
             {
-                // If it is a move operation, remove the node from its current 
-                // location and add it to the node at the drop location.
-                if (e.Effect == DragDropEffects.Move)
+                if (targetNode.Parent != null)
                 {
-                    if (NumOfPDPNodes(draggedNode.Parent) <=2)
-                    {
-                        draggedNode.Parent.Nodes.RemoveByKey(DSAttConstants.TotalPrefix);
-                        draggedNode.Parent.Nodes.RemoveByKey(DSAttConstants.DeltaPrefix);
-                    }
-                    
+                    return;
+                }
+
+                if (targetNode.Index == 0)
+                {
                     draggedNode.Remove();
-                    targetNode.Nodes.Add(draggedNode);
+                    treeViewPDP.Nodes.Insert(0, draggedNode);
                 }
-
-                // If it is a copy operation, clone the dragged node 
-                // and add it to the node at the drop location.
-                else if (e.Effect == DragDropEffects.Copy)
+                else
                 {
-                    targetNode.Nodes.Add((TreeNode)draggedNode.Clone());
+
+                    if (draggedNode.Index > targetNode.Index)
+                    {
+                        draggedNode.Remove();
+                        treeViewPDP.Nodes.Insert(targetNode.Index, draggedNode);
+                    }
+                    else
+                    {
+                        draggedNode.Remove();
+                        treeViewPDP.Nodes.Insert(targetNode.Index + 1, draggedNode);
+                    }
+
+
+                }
+            }
+            else
+            {
+                if (targetNode.Parent != null)
+                {
+                    targetNode = targetNode.Parent;
                 }
 
-                // Expand the node at the location 
-                // to show the dropped node.
-                targetNode.Expand();
-                CheckGroupTotalAndDelta();
+                // Retrieve the node that was dragged.
+                
+
+                // Confirm that the node at the drop location is not 
+                // the dragged node or a descendant of the dragged node.
+                if (!draggedNode.Equals(targetNode) && !ContainsNode(draggedNode, targetNode))
+                {
+                    // If it is a move operation, remove the node from its current 
+                    // location and add it to the node at the drop location.
+                    if (e.Effect == DragDropEffects.Move)
+                    {
+                        if (NumOfPDPNodes(draggedNode.Parent) <= 2)
+                        {
+                            draggedNode.Parent.Nodes.RemoveByKey(DSAttConstants.TotalPrefix);
+                            draggedNode.Parent.Nodes.RemoveByKey(DSAttConstants.DeltaPrefix);
+                        }
+
+                        draggedNode.Remove();
+                        targetNode.Nodes.Add(draggedNode);
+                    }
+
+                    // If it is a copy operation, clone the dragged node 
+                    // and add it to the node at the drop location.
+                    else if (e.Effect == DragDropEffects.Copy)
+                    {
+                        targetNode.Nodes.Add((TreeNode)draggedNode.Clone());
+                    }
+
+                    // Expand the node at the location 
+                    // to show the dropped node.
+                    targetNode.Expand();
+                    CheckGroupTotalAndDelta();
+                }
             }
+            
         }
 
         private bool ContainsNode(TreeNode node1, TreeNode node2)
@@ -450,7 +485,7 @@ namespace DSLOG_Reader_2
             SaveProfile();
             OK = true;
             XmlSerializer profilesSerializer = new XmlSerializer(typeof(GroupProfiles));
-            var fileStream = new StreamWriter(".dslogsettings.xml", false);
+            var fileStream = new StreamWriter(".dslogprofiles.xml", false);
             profilesSerializer.Serialize(fileStream, Profiles);
             fileStream.Close();
             this.Close();

@@ -119,17 +119,17 @@ namespace DSLOG_Reader_2
 
             treeView.ItemHeight = 20;
             treeView.ExpandAll();
-            if (File.Exists(".dslogsettings.xml"))
+            if (File.Exists(".dslogprofiles.xml"))
             {
                 FileStream fileStream = null;
                 try
                 {
                     XmlSerializer profilesSerializer = new XmlSerializer(typeof(GroupProfiles));
-                    fileStream = new FileStream(".dslogsettings.xml", FileMode.Open);
+                    fileStream = new FileStream(".dslogprofiles.xml", FileMode.Open);
                     Profiles = (GroupProfiles)profilesSerializer.Deserialize(fileStream);
                 } catch(Exception ex)
                 {
-                    MessageBox.Show($"Setting file is corrupted! {ex.Message}");
+                    MessageBox.Show($"Profile file is corrupted! {ex.Message}");
                     Profiles.Clear();
                     Profiles.Add(new GroupProfile("Default", defG));
                 }
