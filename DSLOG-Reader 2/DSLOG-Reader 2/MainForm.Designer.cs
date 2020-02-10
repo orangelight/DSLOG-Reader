@@ -140,6 +140,7 @@
             this.probeView1.Location = new System.Drawing.Point(3, 3);
             this.probeView1.Margin = new System.Windows.Forms.Padding(4);
             this.probeView1.Name = "probeView1";
+            this.probeView1.SeriesViewObserving = null;
             this.probeView1.Size = new System.Drawing.Size(160, 387);
             this.probeView1.TabIndex = 0;
             // 
@@ -162,6 +163,7 @@
             this.exportView1.Location = new System.Drawing.Point(3, 3);
             this.exportView1.Margin = new System.Windows.Forms.Padding(4);
             this.exportView1.Name = "exportView1";
+            this.exportView1.SeriesViewObserving = null;
             this.exportView1.Size = new System.Drawing.Size(160, 387);
             this.exportView1.TabIndex = 0;
             // 
@@ -220,6 +222,7 @@
             this.mainGraphView.MForm = null;
             this.mainGraphView.Name = "mainGraphView";
             this.mainGraphView.ProbeView = null;
+            this.mainGraphView.SeriesViewObserving = null;
             this.mainGraphView.Size = new System.Drawing.Size(744, 526);
             this.mainGraphView.TabIndex = 0;
             // 
@@ -240,6 +243,7 @@
             this.eventsView1.GraphView = null;
             this.eventsView1.Location = new System.Drawing.Point(3, 3);
             this.eventsView1.Margin = new System.Windows.Forms.Padding(2);
+            this.eventsView1.MForm = null;
             this.eventsView1.Name = "eventsView1";
             this.eventsView1.Size = new System.Drawing.Size(744, 526);
             this.eventsView1.TabIndex = 0;
@@ -261,6 +265,7 @@
             this.competitionView1.FileView = null;
             this.competitionView1.Location = new System.Drawing.Point(3, 3);
             this.competitionView1.Name = "competitionView1";
+            this.competitionView1.SeriesViewObserving = null;
             this.competitionView1.Size = new System.Drawing.Size(744, 526);
             this.competitionView1.TabIndex = 0;
             // 
@@ -280,6 +285,7 @@
             this.buttonHelp.Size = new System.Drawing.Size(22, 22);
             this.buttonHelp.TabIndex = 0;
             this.buttonHelp.UseVisualStyleBackColor = true;
+            this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
             // 
             // MainForm
             // 

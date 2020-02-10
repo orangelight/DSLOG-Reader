@@ -102,6 +102,12 @@
     <Compile Include="FileListView.Designer.cs">
       <DependentUpon>FileListView.cs</DependentUpon>
     </Compile>
+    <Compile Include="FileListViewSettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FileListViewSettingsDialog.Designer.cs">
+      <DependentUpon>FileListViewSettingsDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="GroupEditorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -155,6 +161,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FileListView.resx">
       <DependentUpon>FileListView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FileListViewSettingsDialog.resx">
+      <DependentUpon>FileListViewSettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GroupEditorDialog.resx">
       <DependentUpon>GroupEditorDialog.cs</DependentUpon>

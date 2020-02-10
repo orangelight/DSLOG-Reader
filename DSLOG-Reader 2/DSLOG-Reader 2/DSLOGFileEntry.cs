@@ -202,7 +202,7 @@ namespace DSLOG_Reader_2
             return false;
         }
 
-        public ListViewItem ToListViewItem()
+        public ListViewItem ToListViewItem(bool useFilledInEvent = true)
         {
             string[] subItems = new string[6];
             Color backColor = SystemColors.ControlLightLight;
@@ -223,7 +223,7 @@ namespace DSLOG_Reader_2
                 if (IsFMSMatch)
                 {
                     subItems[3] = FMSMatchNum.ToString();
-                    subItems[5] = EventName;
+                    if (useFilledInEvent || !FMSFilledIn) subItems[5] = EventName;
                     backColor = GetMatchTypeColor();
                 }
                

@@ -29,6 +29,7 @@ namespace DSLOG_Reader_2
         private bool firstColumnResize = true;
         private ConcurrentQueue<string> LogUpdateQueue;
         public CompetitionView CompView { get; set; }
+        private bool AllowFillInEventNames = true;
         public FileListView()
         {
             InitializeComponent();
@@ -62,7 +63,7 @@ namespace DSLOG_Reader_2
                 listView.BeginUpdate();
                 foreach (var entry in DSLOGFiles.Values)
                 {
-                    listView.Items.Add(entry.ToListViewItem());
+                    listView.Items.Add(entry.ToListViewItem(AllowFillInEventNames));
                 }
                 listView.EndUpdate();
                 //sroll down to bottom (need to use timer cuz it's weird
@@ -79,11 +80,11 @@ namespace DSLOG_Reader_2
             var fmsMatches = DSLOGFiles.Values.Where(e => e.IsFMSMatch);
             foreach (var match in fmsMatches)
             {
-                if (string.IsNullOrWhiteSpace(match.EventName))
+                if (string.IsNullOrWhiteSpace(match.EventName) || match.FMSFilledIn)
                 {
                     var nearestEvent = fmsMatches.Where(e => !string.IsNullOrWhiteSpace(e.EventName)).OrderBy(e => Math.Abs((e.StartTime - match.StartTime).Ticks)).First();
                     TimeSpan span = nearestEvent.StartTime - match.StartTime;
-                    if (Math.Abs((span).TotalDays) < 5)
+                    if (Math.Abs((span).TotalDays) < 4)
                     {
                         //if (match.MatchType == nearestEvent.MatchType && ((span.TotalSeconds < 0 && match.FMSMatchNum < nearestEvent.FMSMatchNum) || (span.TotalSeconds > 0 && match.FMSMatchNum > nearestEvent.FMSMatchNum)))
                         //{
@@ -205,17 +206,17 @@ namespace DSLOG_Reader_2
             {
                 foreach (var entry in DSLOGFiles.Values.Where(e=>!(e.Useless && filterUseless)))
                 {
-                    listView.Items.Add(entry.ToListViewItem());
+                    listView.Items.Add(entry.ToListViewItem(AllowFillInEventNames));
                 }
                 if(lastFilter != selectedEvent) CompView.SetEventMatches(new List<DSLOGFileEntry>());
             }
             else
             {
-                foreach (var entry in DSLOGFiles.Values.Where(e => !(e.Useless && filterUseless) || e.Live).Where(en => en.EventName == selectedEvent.Substring(0, selectedEvent.Length-5) && en.StartTime.ToString("yyyy") == selectedEvent.GetLast(4)))
+                foreach (var entry in DSLOGFiles.Values.Where(e => !(e.Useless && filterUseless) || e.Live).Where(en => (!en.FMSFilledIn || AllowFillInEventNames) && en.EventName == selectedEvent.Substring(0, selectedEvent.Length-5) && en.StartTime.ToString("yyyy") == selectedEvent.GetLast(4)))
                 {
-                    listView.Items.Add(entry.ToListViewItem());
+                    listView.Items.Add(entry.ToListViewItem(AllowFillInEventNames));
                 }
-                if (lastFilter != selectedEvent) CompView.SetEventMatches(DSLOGFiles.Values.Where(e => !(e.Useless) && !e.Live).Where(en => en.EventName == selectedEvent.Substring(0, selectedEvent.Length - 5) && en.StartTime.ToString("yyyy") == selectedEvent.GetLast(4)).ToList());
+                if (lastFilter != selectedEvent) CompView.SetEventMatches(DSLOGFiles.Values.Where(e => !(e.Useless) && !e.Live).Where(en => (!en.FMSFilledIn || AllowFillInEventNames) && en.EventName == selectedEvent.Substring(0, selectedEvent.Length - 5) && en.StartTime.ToString("yyyy") == selectedEvent.GetLast(4)).ToList());
             }
             listView.EndUpdate();
             //sroll down to bottom (need to use timer cuz it's weird)
@@ -325,6 +326,18 @@ namespace DSLOG_Reader_2
             }
 
             if (listChanged) FilterLogs(true);
+        }
+
+        private void buttonSettings_Click(object sender, EventArgs e)
+        {
+            FileListViewSettingsDialog settingsDialog = new FileListViewSettingsDialog();
+            settingsDialog.AllowEventFillIn = AllowFillInEventNames;
+            var result = settingsDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                AllowFillInEventNames = settingsDialog.AllowEventFillIn;
+                LoadFiles();
+            }
         }
     }        
 }

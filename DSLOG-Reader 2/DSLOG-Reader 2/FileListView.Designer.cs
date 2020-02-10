@@ -162,9 +162,10 @@
             this.buttonSettings.Image = ((System.Drawing.Image)(resources.GetObject("buttonSettings.Image")));
             this.buttonSettings.Location = new System.Drawing.Point(182, -1);
             this.buttonSettings.Name = "buttonSettings";
-            this.buttonSettings.Size = new System.Drawing.Size(29, 21);
+            this.buttonSettings.Size = new System.Drawing.Size(29, 23);
             this.buttonSettings.TabIndex = 2;
             this.buttonSettings.UseVisualStyleBackColor = true;
+            this.buttonSettings.Click += new System.EventHandler(this.buttonSettings_Click);
             // 
             // timerFileUpdate
             // 

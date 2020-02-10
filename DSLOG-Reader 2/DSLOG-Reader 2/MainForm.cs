@@ -84,5 +84,10 @@ namespace DSLOG_Reader_2
         {
             tabControlRight.SelectedIndex = index;
         }
+
+        private void buttonHelp_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/orangelight/DSLOG-Reader/blob/master/Help.md");
+        }
     }
 }
