@@ -30,6 +30,12 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BulkExportDialog));
             this.listView = new System.Windows.Forms.ListView();
+            this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderSec = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderNum = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderEvent = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.buttonExport = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
@@ -40,12 +46,6 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.buttonPath = new System.Windows.Forms.Button();
             this.labelTotal = new System.Windows.Forms.Label();
-            this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderSec = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderNum = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderEvent = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // listView
@@ -69,6 +69,35 @@
             this.listView.UseCompatibleStateImageBehavior = false;
             this.listView.View = System.Windows.Forms.View.Details;
             this.listView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listView_ItemChecked);
+            // 
+            // columnHeaderName
+            // 
+            this.columnHeaderName.Text = "Name";
+            this.columnHeaderName.Width = 120;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Width = 0;
+            // 
+            // columnHeaderSec
+            // 
+            this.columnHeaderSec.Text = "";
+            this.columnHeaderSec.Width = 0;
+            // 
+            // columnHeaderNum
+            // 
+            this.columnHeaderNum.Text = "Match #";
+            this.columnHeaderNum.Width = 55;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "";
+            this.columnHeader1.Width = 0;
+            // 
+            // columnHeaderEvent
+            // 
+            this.columnHeaderEvent.Text = "Event";
+            this.columnHeaderEvent.Width = 70;
             // 
             // progressBar
             // 
@@ -119,6 +148,8 @@
             // 
             this.checkBoxLogs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBoxLogs.AutoSize = true;
+            this.checkBoxLogs.Checked = true;
+            this.checkBoxLogs.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxLogs.Location = new System.Drawing.Point(436, 77);
             this.checkBoxLogs.Name = "checkBoxLogs";
             this.checkBoxLogs.Size = new System.Drawing.Size(97, 17);
@@ -153,6 +184,7 @@
             this.buttonPath.TabIndex = 8;
             this.buttonPath.Text = "Change";
             this.buttonPath.UseVisualStyleBackColor = true;
+            this.buttonPath.Click += new System.EventHandler(this.buttonPath_Click);
             // 
             // labelTotal
             // 
@@ -163,35 +195,6 @@
             this.labelTotal.Size = new System.Drawing.Size(60, 13);
             this.labelTotal.TabIndex = 9;
             this.labelTotal.Text = "Total Logs:";
-            // 
-            // columnHeaderName
-            // 
-            this.columnHeaderName.Text = "Name";
-            this.columnHeaderName.Width = 120;
-            // 
-            // columnHeaderSec
-            // 
-            this.columnHeaderSec.Text = "";
-            this.columnHeaderSec.Width = 0;
-            // 
-            // columnHeaderNum
-            // 
-            this.columnHeaderNum.Text = "Match #";
-            this.columnHeaderNum.Width = 55;
-            // 
-            // columnHeader4
-            // 
-            this.columnHeader4.Width = 0;
-            // 
-            // columnHeaderEvent
-            // 
-            this.columnHeaderEvent.Text = "Event";
-            this.columnHeaderEvent.Width = 70;
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "";
-            this.columnHeader1.Width = 0;
             // 
             // BulkExportDialog
             // 

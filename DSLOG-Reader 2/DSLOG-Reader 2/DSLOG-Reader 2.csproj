@@ -218,6 +218,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="logo2.ico" />
+    <None Include="Resources\OpenFile_16x.png" />
     <None Include="Resources\ExportTableToFile_16x.png" />
     <None Include="Resources\Analysis_16x.png" />
     <None Include="Resources\FindNext_16x.png" />

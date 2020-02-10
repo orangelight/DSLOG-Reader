@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ namespace DSLOG_Reader_2
         {
             InitializeComponent();
             listView.DoubleBuffered(true);
+            textBox1.Text = Directory.GetCurrentDirectory();
         }
 
         private void BulkExportDialog_Shown(object sender, EventArgs e)
@@ -46,6 +48,17 @@ namespace DSLOG_Reader_2
         {
             if (!Init) return;
             UpdateTotal();
+        }
+
+        private void buttonPath_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+            folderBrowserDialog.SelectedPath = Directory.GetCurrentDirectory();
+            var result = folderBrowserDialog.ShowDialog();
+            if(result == DialogResult.OK)
+            {
+                textBox1.Text = folderBrowserDialog.SelectedPath;
+            }
         }
     }
 }

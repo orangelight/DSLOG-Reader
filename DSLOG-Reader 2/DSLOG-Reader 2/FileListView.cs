@@ -252,15 +252,6 @@ namespace DSLOG_Reader_2
                 {
                     listView.Columns[i].Width = (int)Math.Ceiling(listView.Columns[i].Width * 1.05);
                 }
-               
-                //listView.AutoResizeColumn(i, ColumnHeaderAutoResizeStyle.HeaderSize);
-                //int headerWidth = listView.Columns[i].Width;
-                //listView.AutoResizeColumn(i, ColumnHeaderAutoResizeStyle.ColumnContent);
-                //if (headerWidth > listView.Columns[i].Width)
-                //{
-                //    listView.AutoResizeColumn(i, ColumnHeaderAutoResizeStyle.HeaderSize);
-                //}
-
             }
         }
 
@@ -357,6 +348,22 @@ namespace DSLOG_Reader_2
             bulkExport.FilePath = Path;
             bulkExport.Files = GetFilteredFiles().ToList();
             bulkExport.ShowDialog();
+        }
+
+        private void buttonOpenFile_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Filter = "DSLOG Files (.dslog)|*.dslog";
+            fileDialog.Multiselect = false;
+            var result = fileDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                DSLOGFileEntry entry = new DSLOGFileEntry(System.IO.Path.GetFileName(fileDialog.FileName).Replace(".dslog", ""), System.IO.Path.GetDirectoryName(fileDialog.FileName));
+                DSLOGFiles.Add(entry.Name+" Opened", entry);
+                FilterLogs(true);
+                GraphLog(entry);
+            }
+            
         }
     }        
 }

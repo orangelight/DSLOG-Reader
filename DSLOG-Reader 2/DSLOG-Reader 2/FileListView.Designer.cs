@@ -42,6 +42,7 @@
             this.textBoxPath = new System.Windows.Forms.TextBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.timerFileUpdate = new System.Windows.Forms.Timer(this.components);
+            this.buttonOpenFile = new System.Windows.Forms.Button();
             this.buttonBulkExport = new System.Windows.Forms.Button();
             this.buttonFilter = new System.Windows.Forms.Button();
             this.buttonRefreash = new System.Windows.Forms.Button();
@@ -114,9 +115,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.filterSelectorCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.filterSelectorCombo.FormattingEnabled = true;
-            this.filterSelectorCombo.Location = new System.Drawing.Point(58, 0);
+            this.filterSelectorCombo.Location = new System.Drawing.Point(85, 0);
             this.filterSelectorCombo.Name = "filterSelectorCombo";
-            this.filterSelectorCombo.Size = new System.Drawing.Size(176, 21);
+            this.filterSelectorCombo.Size = new System.Drawing.Size(150, 21);
             this.filterSelectorCombo.TabIndex = 1;
             this.filterSelectorCombo.SelectedIndexChanged += new System.EventHandler(this.filterSelectorCombo_SelectedIndexChanged);
             // 
@@ -141,6 +142,17 @@
             this.timerFileUpdate.Interval = 500;
             this.timerFileUpdate.Tick += new System.EventHandler(this.timerFileUpdate_Tick);
             // 
+            // buttonOpenFile
+            // 
+            this.buttonOpenFile.BackgroundImage = global::DSLOG_Reader_2.Properties.Resources.OpenFile_16x;
+            this.buttonOpenFile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.buttonOpenFile.Location = new System.Drawing.Point(0, -1);
+            this.buttonOpenFile.Name = "buttonOpenFile";
+            this.buttonOpenFile.Size = new System.Drawing.Size(29, 23);
+            this.buttonOpenFile.TabIndex = 8;
+            this.buttonOpenFile.UseVisualStyleBackColor = true;
+            this.buttonOpenFile.Click += new System.EventHandler(this.buttonOpenFile_Click);
+            // 
             // buttonBulkExport
             // 
             this.buttonBulkExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -157,7 +169,7 @@
             // 
             this.buttonFilter.BackgroundImage = global::DSLOG_Reader_2.Properties.Resources.RunFilter_16x;
             this.buttonFilter.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.buttonFilter.Location = new System.Drawing.Point(27, -1);
+            this.buttonFilter.Location = new System.Drawing.Point(56, -1);
             this.buttonFilter.Name = "buttonFilter";
             this.buttonFilter.Size = new System.Drawing.Size(29, 23);
             this.buttonFilter.TabIndex = 6;
@@ -167,7 +179,7 @@
             // buttonRefreash
             // 
             this.buttonRefreash.Image = global::DSLOG_Reader_2.Properties.Resources.Refresh_grey_16xMD;
-            this.buttonRefreash.Location = new System.Drawing.Point(-1, -1);
+            this.buttonRefreash.Location = new System.Drawing.Point(28, -1);
             this.buttonRefreash.Name = "buttonRefreash";
             this.buttonRefreash.Size = new System.Drawing.Size(29, 23);
             this.buttonRefreash.TabIndex = 4;
@@ -189,6 +201,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.buttonOpenFile);
             this.Controls.Add(this.buttonBulkExport);
             this.Controls.Add(this.buttonFilter);
             this.Controls.Add(this.buttonRefreash);
@@ -221,5 +234,6 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Timer timerFileUpdate;
         private System.Windows.Forms.Button buttonBulkExport;
+        private System.Windows.Forms.Button buttonOpenFile;
     }
 }
