@@ -55,7 +55,7 @@ namespace DSLOG_Reader_2
             if (Directory.Exists(Path))
             {
                
-                DSLOGFileEntryCache cache = new DSLOGFileEntryCache(@"C:\Users\Public\Documents\FRC\.dslog.cache");
+                DSLOGFileEntryCache cache = new DSLOGFileEntryCache($"{Path}\\.dslog.cache");
                 CacheLoadingDialog dialog = new CacheLoadingDialog(cache, DSLOGFiles, Path);
                 dialog.ShowDialog();
                 FillInMissingFMSEventInfo();
@@ -173,8 +173,8 @@ namespace DSLOG_Reader_2
         {
             if (MainChart !=null)
             {
-                MainChart.LoadLog(file, Path);
-                EventView.LoadLog(file, Path);
+                MainChart.LoadLog(file);
+                EventView.LoadLog(file);
             }
         }
 
@@ -307,7 +307,7 @@ namespace DSLOG_Reader_2
                 try
                 {
                     File.OpenRead($"{Path}\\{entry.Name}.dslog").Close();
-                    entry.PopulateInfo(Path);
+                    entry.PopulateInfo();
                     listChanged = true;
                 }
                 catch (IOException ex)
@@ -323,10 +323,12 @@ namespace DSLOG_Reader_2
         {
             FileListViewSettingsDialog settingsDialog = new FileListViewSettingsDialog();
             settingsDialog.AllowEventFillIn = AllowFillInEventNames;
+            settingsDialog.FolderPath = Path;
             var result = settingsDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
                 AllowFillInEventNames = settingsDialog.AllowEventFillIn;
+                SetPath(settingsDialog.FolderPath);
                 LoadFiles();
             }
         }

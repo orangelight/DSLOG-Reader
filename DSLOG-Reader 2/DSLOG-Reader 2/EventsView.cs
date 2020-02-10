@@ -31,9 +31,9 @@ namespace DSLOG_Reader_2
         }
 
 
-        public void LoadLog(DSLOGFileEntry file, string dir)
+        public void LoadLog(DSLOGFileEntry file)
         {
-            var fileName = $"{dir}\\{file.Name}.dsevents";
+            var fileName = $"{file.FilePath}\\{file.Name}.dsevents";
             EventsDict.Clear();
             Entries = null;
             listViewEvents.Items.Clear();
@@ -72,11 +72,6 @@ namespace DSLOG_Reader_2
             {
                 DataPoint po = new DataPoint(entry.Time.ToOADate(), 15);
                 po.MarkerSize = 6;
-
-
-
-
-
                 ListViewItem item = new ListViewItem();
                 item.UseItemStyleForSubItems = false;
                 item.Text = entry.Time.ToString("h:mm:ss.fff tt");

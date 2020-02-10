@@ -183,15 +183,15 @@ namespace DSLOG_Reader_2
             return newMode;
         }
 
-        public void LoadLog(DSLOGFileEntry logInfo, string dir)
+        public void LoadLog(DSLOGFileEntry logInfo)
         {
             StopStreaming();
             LogStreamer = null;
             buttonAnalysis.Enabled = false;
-            LastPath = dir;
+            LastPath = logInfo.FilePath;
             LastFile = logInfo.Name;
             LogInfo = logInfo;
-            string dslogFile = $"{dir}\\{logInfo.Name}.dslog";
+            string dslogFile = $"{logInfo.FilePath}\\{logInfo.Name}.dslog";
             InitChart();
             LogEntries = null;
             ClearInfoLabel();

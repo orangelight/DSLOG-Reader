@@ -36,34 +36,36 @@ namespace DSLOG_Reader_2
         public bool FMSFilledIn { get; set; }
         public bool Useless { get; set; }
         public bool Live { get; set; }
+        public string FilePath { get; set; }
         public DSLOGFileEntry(string fileName, string dir)
         {
             Name = fileName;
+            FilePath = dir;
             MatchType = FMSMatchType.NA;
             IsFMSMatch = false;
             EventName = "";
             
-            Valid = PopulateInfo(dir);
+            Valid = PopulateInfo();
             FMSFilledIn = false;
         }
 
-        public bool PopulateInfo(string dir)
+        public bool PopulateInfo()
         {
-            SetSeconds(dir);
-            if (!SetTime(dir) || !SetFMS(dir) || !SetUseless(dir))
+            SetSeconds();
+            if (!SetTime() || !SetFMS() || !SetUseless())
             {
                 return false;
             }
 
-            Live = CheckLive(dir);
+            Live = CheckLive();
             return true;
         }
-        private bool CheckLive(string dir)
+        private bool CheckLive()
         {
             if (StartTime == null || (StartTime - DateTime.Now).Duration().TotalHours > 6) return false;
             try
             {
-                File.OpenRead(dir + "\\" + Name + ".dslog").Close();
+                File.OpenRead(FilePath + "\\" + Name + ".dslog").Close();
             }
             catch (IOException ex)
             {
@@ -71,12 +73,12 @@ namespace DSLOG_Reader_2
             }
             return false;
         }
-        private bool SetTime(string dir)
+        private bool SetTime()
         {
             DateTime sTime;
             if (!DateTime.TryParseExact(Name, "yyyy_MM_dd HH_mm_ss ddd", CultureInfo.InvariantCulture, DateTimeStyles.None, out sTime))
             {
-                DSLOGReader reader = new DSLOGReader(dir + "\\" + Name + ".dslog");
+                DSLOGReader reader = new DSLOGReader(FilePath + "\\" + Name + ".dslog");
                 reader.OnlyReadMetaData();
                 if (reader.Version != 3)
                 {
@@ -91,14 +93,14 @@ namespace DSLOG_Reader_2
             return true;
         }
 
-        private void SetSeconds(string dir)
+        private void SetSeconds()
         {
-            Seconds = ((new FileInfo(dir + "\\" + Name + ".dslog").Length - 19) / 35) / 50;
+            Seconds = ((new FileInfo(FilePath + "\\" + Name + ".dslog").Length - 19) / 35) / 50;
         }
 
-        private bool SetFMS(string dir)
+        private bool SetFMS()
         {
-            string dseventsPath = dir + "\\" + Name + ".dsevents";
+            string dseventsPath = FilePath + "\\" + Name + ".dsevents";
             if (File.Exists(dseventsPath))
             {
                 DSEVENTSReader reader = new DSEVENTSReader(dseventsPath);
@@ -160,9 +162,9 @@ namespace DSLOG_Reader_2
             return true;
         }
 
-        private bool SetUseless(string dir)
+        private bool SetUseless()
         {
-            string dslogPath = dir + "\\" + Name + ".dslog";
+            string dslogPath = FilePath + "\\" + Name + ".dslog";
             if (File.Exists(dslogPath))
             {
                 if (Seconds <= 20 && !IsFMSMatch)
@@ -257,23 +259,29 @@ namespace DSLOG_Reader_2
                     return SystemColors.ControlLightLight;
             }
         }
-
-        public DSLOGFileEntry(string entry)
+        public DSLOGFileEntry()
         {
+
+        }
+        public static DSLOGFileEntry FromCache(string entry, string dir)
+        {
+            var logFile = new DSLOGFileEntry();
             string[] data = entry.Split(',');
-            Name = data[0];
-            IsFMSMatch = bool.Parse(data[1]);
-            Seconds = long.Parse(data[2]);
-            StartTime = DateTime.Parse(data[3]);
-            Useless = bool.Parse(data[4]);
-            if (IsFMSMatch)
+            logFile.Name = data[0];
+            logFile.FilePath = dir;
+            logFile.IsFMSMatch = bool.Parse(data[1]);
+            logFile.Seconds = long.Parse(data[2]);
+            logFile.StartTime = DateTime.Parse(data[3]);
+            logFile.Useless = bool.Parse(data[4]);
+            if (logFile.IsFMSMatch)
             {
-                FMSFilledIn = bool.Parse(data[5]);
-                MatchType = (FMSMatchType) Enum.Parse(typeof(FMSMatchType), data[6]);
-                FMSMatchNum = int.Parse(data[7]);
-                EventName = data[8];
+                logFile.FMSFilledIn = bool.Parse(data[5]);
+                logFile.MatchType = (FMSMatchType) Enum.Parse(typeof(FMSMatchType), data[6]);
+                logFile.FMSMatchNum = int.Parse(data[7]);
+                logFile.EventName = data[8];
             }
-            Valid = true;
+            logFile.Valid = true;
+            return logFile;
         }
 
         public string ToCacheEntry()
@@ -300,7 +308,7 @@ namespace DSLOG_Reader_2
     {
         private Dictionary<string, DSLOGFileEntry> Cache;
         private List<DSLOGFileEntry> NewEntries;
-        public string Path { get; private set; }
+        public string FilePath { get; private set; }
 
         public bool New { get; private set; }
 
@@ -312,7 +320,7 @@ namespace DSLOG_Reader_2
                 string[] lines = File.ReadAllLines(file);
                 foreach(var line in lines)
                 {
-                    var entry = new DSLOGFileEntry(line.Replace("\n", ""));
+                    var entry = DSLOGFileEntry.FromCache(line.Replace("\n", ""), Path.GetDirectoryName(file));
                     Cache.Add(entry.Name, entry);
                 }
                 New = false;
@@ -321,7 +329,7 @@ namespace DSLOG_Reader_2
             {
                 New = true;
             }
-            Path = file;
+            FilePath = file;
             NewEntries = new List<DSLOGFileEntry>();
         }
 
@@ -346,7 +354,7 @@ namespace DSLOG_Reader_2
                 sb.Append(entry.ToCacheEntry());
                 sb.Append("\n");
             }
-            File.AppendAllText(Path, sb.ToString());
+            File.AppendAllText(FilePath, sb.ToString());
             NewEntries.Clear();
         }
     }

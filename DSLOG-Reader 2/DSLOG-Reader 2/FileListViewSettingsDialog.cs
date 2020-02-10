@@ -13,6 +13,7 @@ namespace DSLOG_Reader_2
     public partial class FileListViewSettingsDialog : Form
     {
         public bool AllowEventFillIn { get; set; }
+        public string FolderPath { get; set; }
         public FileListViewSettingsDialog()
         {
             InitializeComponent();
@@ -34,11 +35,24 @@ namespace DSLOG_Reader_2
         private void FileListViewSettingsDialog_Shown(object sender, EventArgs e)
         {
             checkBoxFillIn.Checked = AllowEventFillIn;
+            textBoxPath.Text = FolderPath;
         }
 
         private void checkBoxFillIn_CheckedChanged(object sender, EventArgs e)
         {
             AllowEventFillIn = checkBoxFillIn.Checked;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog browserDialog = new FolderBrowserDialog();
+            browserDialog.SelectedPath = textBoxPath.Text;
+            var result = browserDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                textBoxPath.Text = browserDialog.SelectedPath;
+                FolderPath = browserDialog.SelectedPath;
+            }
         }
     }
 }
