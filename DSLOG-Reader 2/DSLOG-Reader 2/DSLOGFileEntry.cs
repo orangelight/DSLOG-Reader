@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -51,13 +52,22 @@ namespace DSLOG_Reader_2
 
         public bool PopulateInfo()
         {
-            SetSeconds();
-            if (!SetTime() || !SetFMS() || !SetUseless())
+            try
             {
+                SetSeconds();
+                if (!SetTime() || !SetFMS() || !SetUseless())
+                {
+                    Useless = true;
+                    return false;
+                }
+
+                
+            } catch(Exception ex)
+            {
+                Useless = true;
                 return false;
             }
-
-            Live = CheckLive();
+           Live = CheckLive();
             return true;
         }
         private bool CheckLive()
@@ -306,7 +316,7 @@ namespace DSLOG_Reader_2
 
     public class DSLOGFileEntryCache
     {
-        private Dictionary<string, DSLOGFileEntry> Cache;
+        private ConcurrentDictionary<string, DSLOGFileEntry> Cache;
         private List<DSLOGFileEntry> NewEntries;
         public string FilePath { get; private set; }
 
@@ -314,14 +324,15 @@ namespace DSLOG_Reader_2
 
         public DSLOGFileEntryCache(string file)
         {
-            Cache = new Dictionary<string, DSLOGFileEntry>();
+            Cache = new ConcurrentDictionary<string, DSLOGFileEntry>();
             if (File.Exists(file))
             {
                 string[] lines = File.ReadAllLines(file);
                 foreach(var line in lines)
                 {
                     var entry = DSLOGFileEntry.FromCache(line.Replace("\n", ""), Path.GetDirectoryName(file));
-                    Cache.Add(entry.Name, entry);
+                    Cache.TryAdd(entry.Name, entry);
+                    //Cache.Add(entry.Name, entry);
                 }
                 New = false;
             }
@@ -340,7 +351,7 @@ namespace DSLOG_Reader_2
         public DSLOGFileEntry AddEntry(string filename, string dir)
         {
             var entry = new DSLOGFileEntry(filename, dir);
-            Cache.Add(entry.Name, entry);
+            Cache.TryAdd(entry.Name, entry);
             NewEntries.Add(entry);
             return entry;
         }

@@ -147,7 +147,7 @@
             // 
             this.buttonChangePath.BackgroundImage = global::DSLOG_Reader_2.Properties.Resources.OpenFolder_16x;
             this.buttonChangePath.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.buttonChangePath.Location = new System.Drawing.Point(84, -1);
+            this.buttonChangePath.Location = new System.Drawing.Point(28, -1);
             this.buttonChangePath.Name = "buttonChangePath";
             this.buttonChangePath.Size = new System.Drawing.Size(29, 23);
             this.buttonChangePath.TabIndex = 9;
@@ -181,7 +181,7 @@
             // 
             this.buttonFilter.BackgroundImage = global::DSLOG_Reader_2.Properties.Resources.RunFilter_16x;
             this.buttonFilter.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.buttonFilter.Location = new System.Drawing.Point(56, -1);
+            this.buttonFilter.Location = new System.Drawing.Point(84, -1);
             this.buttonFilter.Name = "buttonFilter";
             this.buttonFilter.Size = new System.Drawing.Size(29, 23);
             this.buttonFilter.TabIndex = 6;
@@ -191,7 +191,7 @@
             // buttonRefreash
             // 
             this.buttonRefreash.Image = global::DSLOG_Reader_2.Properties.Resources.Refresh_grey_16xMD;
-            this.buttonRefreash.Location = new System.Drawing.Point(28, -1);
+            this.buttonRefreash.Location = new System.Drawing.Point(56, -1);
             this.buttonRefreash.Name = "buttonRefreash";
             this.buttonRefreash.Size = new System.Drawing.Size(29, 23);
             this.buttonRefreash.TabIndex = 4;

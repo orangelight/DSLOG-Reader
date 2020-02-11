@@ -19,12 +19,15 @@ namespace DSLOG_Reader_2
         private List<string> CheckedFiles;
         public Dictionary<string, int[]> IdToPDPGroup { get; set; }
         public Dictionary<string, string> Series { get; set; }
+        public bool UseFilledInEvents { get; set; }
+        private volatile int TotalExported = 0;
         public BulkExportDialog()
         {
             InitializeComponent();
             CheckedFiles = new List<string>();
             listView.DoubleBuffered(true);
             textBox1.Text = Directory.GetCurrentDirectory();
+            FilePath = textBox1.Text;
         }
 
         private void BulkExportDialog_Shown(object sender, EventArgs e)
@@ -34,7 +37,7 @@ namespace DSLOG_Reader_2
             listView.BeginUpdate();
             foreach (var file in Files)
             {
-                var item = file.ToListViewItem();
+                var item = file.ToListViewItem(UseFilledInEvents);
                 item.Checked = true;
                 listView.Items.Add(item);
             }
@@ -94,8 +97,8 @@ namespace DSLOG_Reader_2
         {
             var tempDict = new Dictionary<string, DSLOGFileEntry>();
             Files.ForEach(en => tempDict.Add(en.Name, en));
-            int i = 0;
-            foreach(string file in CheckedFiles)
+            TotalExported = 0;
+            Parallel.ForEach(CheckedFiles, (file) =>
             {
                 DSLOGFileEntry entry;
                 if (tempDict.TryGetValue(file, out entry))
@@ -108,12 +111,13 @@ namespace DSLOG_Reader_2
                             DSLOGReader reader = new DSLOGReader(dsFile);
                             reader.Read();
                             DateTime matchTime = DateTime.Now;
-                            
+
                             if (entry.IsFMSMatch)
                             {
-                                
+                                string eventName = entry.EventName;
+                                if (!UseFilledInEvents && entry.FMSFilledIn) eventName = "";
                                 string data = Util.GetTableFromEntries(reader.Entries, Series, IdToPDPGroup, checkBoxMatchTime.Checked && reader.Entries.TryFindMatchStart(out matchTime), matchTime, ",");
-                                var dir = $"{FilePath}\\{entry.EventName}{entry.StartTime.Year}";
+                                var dir = $"{FilePath}\\{eventName}{entry.StartTime.Year}";
                                 if (!Directory.Exists(dir))
                                 {
                                     Directory.CreateDirectory(dir);
@@ -131,16 +135,21 @@ namespace DSLOG_Reader_2
                                 File.WriteAllText($"{dir}\\{entry.Name}.csv", data);
                             }
 
-                           
+
                         }
                     }
                     if (checkBoxEvents.Checked)
                     {
-
+                        //Export events
                     }
                 }
-                backgroundWorkerExport.ReportProgress((int)((double)++i / CheckedFiles.Count * 100.0));
-            }   
+                int precent = (int)((double)++TotalExported / CheckedFiles.Count * 100.0);
+                backgroundWorkerExport.ReportProgress(precent);
+            });
+            //foreach(string file in CheckedFiles)
+            //{
+                
+            //}   
         }
 
         

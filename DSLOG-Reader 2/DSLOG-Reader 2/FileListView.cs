@@ -175,7 +175,7 @@ namespace DSLOG_Reader_2
 
         private void GraphLog(DSLOGFileEntry file)
         {
-            if (MainChart !=null)
+            if (MainChart !=null && file != null && file.Valid)
             {
                 MainChart.LoadLog(file);
                 EventView.LoadLog(file);
@@ -354,6 +354,7 @@ namespace DSLOG_Reader_2
             bulkExport.FilePath = Path;
             bulkExport.Files = GetFilteredFiles().ToList();
             bulkExport.IdToPDPGroup = IdToPDPGroup;
+            bulkExport.UseFilledInEvents = AllowFillInEventNames;
             bulkExport.Series = Series;
             bulkExport.ShowDialog();
         }

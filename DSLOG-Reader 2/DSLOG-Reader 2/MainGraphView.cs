@@ -212,7 +212,15 @@ namespace DSLOG_Reader_2
                 else
                 {
                     reader = new DSLOGReader(dslogFile);
-                    reader.Read();
+                    try
+                    {
+                        reader.Read();
+                    } catch (Exception ex)
+                    {
+                        MessageBox.Show("Log Corrupted!");
+                        return;
+                    }
+                    
                 }
                
                 

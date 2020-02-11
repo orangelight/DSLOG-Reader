@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -18,9 +19,10 @@ namespace DSLOG_Reader_2
         private Dictionary<string, DSLOGFileEntry> DSLOGFiles;
         private string Path;
         private FileInfo[] Files;
-        private int UselessFiles = 0;
+        private volatile int UselessFiles = 0;
         private Stopwatch stopWatch = new Stopwatch();
-        List<double> lastEst = new List<double>();
+        private List<double> lastEst = new List<double>();
+        private volatile int EntryNum = 0;
         public CacheLoadingDialog(DSLOGFileEntryCache cache, Dictionary<string, DSLOGFileEntry> fileList, string path)
         {
             InitializeComponent();
@@ -43,28 +45,36 @@ namespace DSLOG_Reader_2
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-
-          
-            for (int y = 0; y < Files.Count(); y++)
+            ConcurrentBag<DSLOGFileEntry> fileEntryList = new ConcurrentBag<DSLOGFileEntry>();
+            int lastNum = -1;
+            Parallel.ForEach(Files, (file) =>
             {
                 DSLOGFileEntry entry;
-                
-                string name = Files[y].Name.Replace(".dslog", "");
+
+                string name = file.Name.Replace(".dslog", "");
                 if (Cache.TryGetEntry(name, out entry))
                 {
-                    DSLOGFiles.Add(entry.Name, entry);
-                    
+                    fileEntryList.Add(entry);
+
                 }
                 else
                 {
                     entry = Cache.AddEntry(name, Path);
-                    
-                    DSLOGFiles.Add(entry.Name, entry);
+
+                    fileEntryList.Add(entry);
                     if (entry.Useless) UselessFiles++;
                 }
-               
-                int num =(int) (100.0* ((double)y / (double)Files.Count()));
-                backgroundWorker1.ReportProgress(num);
+                int num = (int)(100.0 * ((double)EntryNum++ / (double)Files.Count()));
+                if (num > lastNum)
+                {
+                    backgroundWorker1.ReportProgress(num);
+                }
+                
+            });
+
+            foreach(var entry in fileEntryList.OrderBy(en => en.StartTime))
+            {
+                DSLOGFiles.Add(entry.Name, entry);
             }
         }
 

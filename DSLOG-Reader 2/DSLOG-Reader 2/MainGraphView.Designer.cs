@@ -200,7 +200,7 @@
             // buttonMatchTime
             // 
             this.buttonMatchTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonMatchTime.BackColor = System.Drawing.Color.Red;
+            this.buttonMatchTime.BackColor = System.Drawing.Color.Gray;
             this.buttonMatchTime.BackgroundImage = global::DSLOG_Reader_2.Properties.Resources.Time_16x;
             this.buttonMatchTime.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.buttonMatchTime.FlatAppearance.BorderSize = 0;
