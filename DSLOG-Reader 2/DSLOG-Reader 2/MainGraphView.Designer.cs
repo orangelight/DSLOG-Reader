@@ -154,6 +154,7 @@
             this.buttonAnalysis.Size = new System.Drawing.Size(23, 23);
             this.buttonAnalysis.TabIndex = 5;
             this.buttonAnalysis.UseVisualStyleBackColor = false;
+            this.buttonAnalysis.Click += new System.EventHandler(this.buttonAnalysis_Click);
             // 
             // buttonResetZoom
             // 

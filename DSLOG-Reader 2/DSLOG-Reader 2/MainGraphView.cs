@@ -788,6 +788,12 @@ namespace DSLOG_Reader_2
             
         }
 
+        private void buttonAnalysis_Click(object sender, EventArgs e)
+        {
+            DiagnosticDialog diagnosticDialog = new DiagnosticDialog();
+            diagnosticDialog.Show();
+        }
+
         public DSLOGEntry GetEntryAt(double d)
         {
             if (LogEntries != null && !Double.IsNaN(d) && d >= StartTime.ToOADate() && d <= EndTime.ToOADate())

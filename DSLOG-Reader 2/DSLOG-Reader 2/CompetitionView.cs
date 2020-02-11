@@ -31,6 +31,7 @@ namespace DSLOG_Reader_2
         private List<DSLOGFileEntry> Matches = new List<DSLOGFileEntry>();
         private GraphMode CurrentMode = GraphMode.Both;
         private string currentTabMainView;
+        private volatile bool Plotting = false;
         public CompetitionView()
         {
             InitializeComponent();
@@ -126,10 +127,10 @@ namespace DSLOG_Reader_2
         public void SetEventMatches(List<DSLOGFileEntry> matches)
         {
             
-            if (backgroundWorkerReadMatches.IsBusy)
+            if (backgroundWorkerReadMatches.IsBusy || Plotting)
             {
                 backgroundWorkerReadMatches.CancelAsync();
-                while (backgroundWorkerReadMatches.IsBusy)
+                while (backgroundWorkerReadMatches.IsBusy || Plotting)
                     Application.DoEvents();
             }
             Util.ClearPointsQuick(chart.Series[0]);
@@ -143,10 +144,10 @@ namespace DSLOG_Reader_2
 
         private void ReadMatches()
         {
-            if (backgroundWorkerReadMatches.IsBusy)
+            if (backgroundWorkerReadMatches.IsBusy || Plotting)
             {
                 backgroundWorkerReadMatches.CancelAsync();
-                while (backgroundWorkerReadMatches.IsBusy)
+                while (backgroundWorkerReadMatches.IsBusy || Plotting)
                     Application.DoEvents();
             }
             backgroundWorkerReadMatches.RunWorkerAsync();
@@ -163,14 +164,16 @@ namespace DSLOG_Reader_2
 
         private void PlotMatches()
         {
-            if (backgroundWorkerReadMatches.IsBusy) return;
+            if (backgroundWorkerReadMatches.IsBusy || Plotting) return;
+            if (Matches.Count == 0) return;
+            Plotting = true;
             xLabelOffset = 0;
             Util.ClearPointsQuick(chart.Series[0]);
             Util.ClearPointsQuick(chart.Series[1]);
             chart.ChartAreas[0].AxisX.CustomLabels.Clear();
             chart.Annotations.Clear();
             chart.Titles.Clear();
-            if (Matches.Count == 0) return;
+            
 
             for (int i = 0; i < Matches.Count; i++)
             {
@@ -217,6 +220,7 @@ namespace DSLOG_Reader_2
             }
             chart.Titles.Add(new Title(string.Join(", ", title), Docking.Top, new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold), Color.White));
             SetYLabels();
+            Plotting = false;
         }
 
         private void PlotMatch(IEnumerable<DSLOGEntry> data)
