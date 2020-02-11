@@ -89,6 +89,12 @@
     <Compile Include="CompetitionView.Designer.cs">
       <DependentUpon>CompetitionView.cs</DependentUpon>
     </Compile>
+    <Compile Include="DiagnosticDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DiagnosticDialog.Designer.cs">
+      <DependentUpon>DiagnosticDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="DSLOGFileEntry.cs" />
     <Compile Include="EventsView.cs">
       <SubType>UserControl</SubType>
@@ -162,6 +168,9 @@
     <EmbeddedResource Include="CompetitionView.resx">
       <DependentUpon>CompetitionView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DiagnosticDialog.resx">
+      <DependentUpon>DiagnosticDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EventsView.resx">
       <DependentUpon>EventsView.cs</DependentUpon>
     </EmbeddedResource>
@@ -218,6 +227,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="logo2.ico" />
+    <None Include="Resources\Important_16x.png" />
     <None Include="Resources\OpenFolder_16x.png" />
     <None Include="Resources\OpenFile_16x.png" />
     <None Include="Resources\ExportTableToFile_16x.png" />

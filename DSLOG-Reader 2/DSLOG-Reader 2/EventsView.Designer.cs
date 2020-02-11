@@ -33,10 +33,11 @@
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.buttonDup = new System.Windows.Forms.Button();
-            this.buttonJoystick = new System.Windows.Forms.Button();
             this.textBoxSearch = new System.Windows.Forms.TextBox();
             this.backgroundWorkerLoadEvents = new System.ComponentModel.BackgroundWorker();
+            this.buttonImportant = new System.Windows.Forms.Button();
+            this.buttonDup = new System.Windows.Forms.Button();
+            this.buttonJoystick = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // richTextBox1
@@ -91,6 +92,35 @@
             this.columnHeader3.Text = "";
             this.columnHeader3.Width = 0;
             // 
+            // textBoxSearch
+            // 
+            this.textBoxSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxSearch.Location = new System.Drawing.Point(587, 0);
+            this.textBoxSearch.Name = "textBoxSearch";
+            this.textBoxSearch.Size = new System.Drawing.Size(211, 20);
+            this.textBoxSearch.TabIndex = 4;
+            this.textBoxSearch.TextChanged += new System.EventHandler(this.textBoxSearch_TextChanged);
+            // 
+            // backgroundWorkerLoadEvents
+            // 
+            this.backgroundWorkerLoadEvents.WorkerSupportsCancellation = true;
+            this.backgroundWorkerLoadEvents.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerLoadEvents_DoWork);
+            // 
+            // buttonImportant
+            // 
+            this.buttonImportant.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonImportant.BackColor = System.Drawing.Color.Red;
+            this.buttonImportant.BackgroundImage = global::DSLOG_Reader_2.Properties.Resources.Important_16x;
+            this.buttonImportant.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.buttonImportant.FlatAppearance.BorderSize = 0;
+            this.buttonImportant.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonImportant.Location = new System.Drawing.Point(800, -1);
+            this.buttonImportant.Name = "buttonImportant";
+            this.buttonImportant.Size = new System.Drawing.Size(23, 23);
+            this.buttonImportant.TabIndex = 5;
+            this.buttonImportant.UseVisualStyleBackColor = false;
+            this.buttonImportant.Click += new System.EventHandler(this.buttonImportant_Click);
+            // 
             // buttonDup
             // 
             this.buttonDup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -124,24 +154,11 @@
             this.buttonJoystick.UseVisualStyleBackColor = false;
             this.buttonJoystick.Click += new System.EventHandler(this.buttonJoystick_Click);
             // 
-            // textBoxSearch
-            // 
-            this.textBoxSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxSearch.Location = new System.Drawing.Point(611, 0);
-            this.textBoxSearch.Name = "textBoxSearch";
-            this.textBoxSearch.Size = new System.Drawing.Size(211, 20);
-            this.textBoxSearch.TabIndex = 4;
-            this.textBoxSearch.TextChanged += new System.EventHandler(this.textBoxSearch_TextChanged);
-            // 
-            // backgroundWorkerLoadEvents
-            // 
-            this.backgroundWorkerLoadEvents.WorkerSupportsCancellation = true;
-            this.backgroundWorkerLoadEvents.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerLoadEvents_DoWork);
-            // 
             // EventsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.Controls.Add(this.buttonImportant);
             this.Controls.Add(this.textBoxSearch);
             this.Controls.Add(this.buttonDup);
             this.Controls.Add(this.buttonJoystick);
@@ -166,5 +183,6 @@
         private System.Windows.Forms.Button buttonDup;
         private System.Windows.Forms.TextBox textBoxSearch;
         private System.ComponentModel.BackgroundWorker backgroundWorkerLoadEvents;
+        private System.Windows.Forms.Button buttonImportant;
     }
 }

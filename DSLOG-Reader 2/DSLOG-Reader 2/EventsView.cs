@@ -21,8 +21,9 @@ namespace DSLOG_Reader_2
         private Dictionary<Double, List<String>> EventsDict = new Dictionary<double, List<string>>();
         private int lastIndexSelectedEvents = -1;
         private string Filter = "";
-        public bool FilterRepeated = false;
-        public bool RemoveJoystick = false;
+        private bool FilterRepeated = false;
+        private bool RemoveJoystick = false;
+        private bool FilterImportant = false;
         List<DSEVENTSEntry> Entries;
         public EventsView()
         {
@@ -82,13 +83,15 @@ namespace DSLOG_Reader_2
                     var NoJoyText = RemoveJoyStickMessages(entryText);
                     if (!NoJoyText.Contains(Filter, StringComparison.OrdinalIgnoreCase)) continue;
                     if (string.IsNullOrWhiteSpace(NoJoyText)) continue;
-                    entryText = NoJoyText;
+                    entryText = NoJoyText.Replace("   ", " ").Replace("   ", " ");
                 }
 
                 if (FilterRepeated && (dupDict.ContainsKey(entryText) && (dupDict[entryText] - entry.Time).Duration().TotalSeconds < 4.0))
                 {
                     continue;
                 }
+
+                if (FilterImportant && !IsMessageImportant(entryText)) continue;
                 dupDict[entryText] = entry.Time;
                 
                 item.SubItems.Add(entryText);
@@ -186,7 +189,7 @@ namespace DSLOG_Reader_2
 
         private string RemoveJoyStickMessages(string message)
         {
-            return Regex.Replace(message, @"(Info Joystick [0-9]+: \(.*?\)[0-9]+ axes, [0-9]+ buttons, [0-9]+ POVs\.)|(<TagVersion>1 <time> (\d+:)?-?\d+\.\d+ <count> 1 <flags> 0 <Code> 1 <details> Joystick (Button|axis|POV)? \d+ on port \d+ not available, check if controller is plugged in <location> edu\.wpi\.first\.wpilibj\.DriverStation\.reportJoystickUnpluggedWarning\(DriverStation\.java:1110\) <stack>)|(<TagVersion>1 <time> (\d+:)?-?\d+\.\d+ <message> Warning at edu\.wpi\.first\.wpilibj\.DriverStation\.reportJoystickUnpluggedWarning\(DriverStation\.java:1110\): Joystick (Button|axis|POV)? \d on port \d not available, check if controller is plugged in)", "").Trim();
+            return Regex.Replace(message, @"(Info Joystick [0-9]+: \(.*?\)[0-9]+ axes, [0-9]+ buttons, [0-9]+ POVs\.)|(<TagVersion>1 <time> (\d+:)?-?\d+\.\d+ <count> 1 <flags> 0 <Code> 1 <details> Joystick (Button|axis|POV)? \d+ on port \d+ not available, check if controller is plugged in <location> .*? <stack>)|(<TagVersion>1 <time> (\d+:)?-?\d+\.\d+ <message> Warning at .*?: Joystick (Button|axis|POV)? \d on port \d not available, check if controller is plugged in)", "").Trim();
         }
 
         private void ListViewEvents_SelectedIndexChanged(object sender, EventArgs e)
@@ -278,6 +281,25 @@ namespace DSLOG_Reader_2
         private void backgroundWorkerLoadEvents_DoWork(object sender, DoWorkEventArgs e)
         {
 
+        }
+
+        private bool IsMessageImportant(string data)
+        {
+            return Regex.Match(data, "(ERROR)|(<flags> [1-2])|(<Code> -44009)|(<Code> 44008)|(<Code> 44004)|(Warning)").Captures.Count > 0;
+        }
+
+        private void buttonImportant_Click(object sender, EventArgs e)
+        {
+            FilterImportant = !FilterImportant;
+            if (FilterImportant)
+            {
+                buttonImportant.BackColor = Color.Lime;
+            }
+            else
+            {
+                buttonImportant.BackColor = Color.Red;
+            }
+            AddEvents();
         }
     }
 }
