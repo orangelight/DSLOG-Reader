@@ -30,15 +30,13 @@ namespace DSLOG_Reader_2
         private List<DSLOGReader> MatchReaders = new List<DSLOGReader>();
         private List<DSLOGFileEntry> Matches = new List<DSLOGFileEntry>();
         private GraphMode CurrentMode = GraphMode.Both;
+        private string currentTabMainView;
         public CompetitionView()
         {
             InitializeComponent();
-            for (double i = 0; i < 12; i++)
-            {
-                chart.ChartAreas[0].AxisY2.CustomLabels.Add(i * 10, i * 10 + .001, $"{ i * 10} ({i * TotalPDPScale})");
-            }
-            chart.ChartAreas[0].AxisY2.CustomLabels.Add(120, 120 - .001, $"{ 120} ({12 * TotalPDPScale})");
+           
             SetSeries();
+            SetYLabels();
             comboBoxMode.SelectedIndex = 0;
         }
 
@@ -56,7 +54,29 @@ namespace DSLOG_Reader_2
                 }
             }
             PlotMatches();
+        }
 
+        private void SetYLabels()
+        {
+            chart.ChartAreas[0].AxisY2.CustomLabels.Clear();
+            foreach (var series in EnabledSeries.Keys)
+            {
+                if ((series.StartsWith(DSAttConstants.TotalPrefix) || series == DSAttConstants.TotalPDP))
+                {
+                    for (double i = 0; i < 12; i++)
+                    {
+                        chart.ChartAreas[0].AxisY2.CustomLabels.Add(i * 10, i * 10 + .001, $"{ i * 10} ({i * TotalPDPScale})");
+                    }
+                    chart.ChartAreas[0].AxisY2.CustomLabels.Add(120, 120 - .001, $"{ 120} ({12 * TotalPDPScale})");
+                    return;
+                }
+            }
+
+            for (double i = 0; i < 12; i++)
+            {
+                chart.ChartAreas[0].AxisY2.CustomLabels.Add(i * 10, i * 10 + .001, $"{ i * 10}");
+            }
+            chart.ChartAreas[0].AxisY2.CustomLabels.Add(120, 120 - .001, $"{ 120}");
         }
 
         public void SetSeries(SeriesGroupNodes basic, SeriesGroupNodes pdp)
@@ -98,7 +118,10 @@ namespace DSLOG_Reader_2
 
 
         }
-
+        public void SaveChartImage(string file)
+        {
+            chart.SaveImage(file, ChartImageFormat.Png);
+        }
 
         public void SetEventMatches(List<DSLOGFileEntry> matches)
         {
@@ -109,11 +132,33 @@ namespace DSLOG_Reader_2
                 while (backgroundWorkerReadMatches.IsBusy)
                     Application.DoEvents();
             }
+            Util.ClearPointsQuick(chart.Series[0]);
+            Util.ClearPointsQuick(chart.Series[1]);
             Matches.Clear();
             MatchReaders.Clear();
             Matches = matches;
             progressBarEvents.Value = 0;
+            if (currentTabMainView == "Competition") ReadMatches();
+        }
+
+        private void ReadMatches()
+        {
+            if (backgroundWorkerReadMatches.IsBusy)
+            {
+                backgroundWorkerReadMatches.CancelAsync();
+                while (backgroundWorkerReadMatches.IsBusy)
+                    Application.DoEvents();
+            }
             backgroundWorkerReadMatches.RunWorkerAsync();
+        }
+
+        public void SetCurrentMainTab(string tab)
+        {
+            currentTabMainView = tab;
+            if (currentTabMainView == "Competition" && MatchReaders.Count == 0 && Matches.Count != 0)
+            {
+                ReadMatches();
+            }
         }
 
         private void PlotMatches()
@@ -171,6 +216,7 @@ namespace DSLOG_Reader_2
                 title.Add(EnabledSeries[node].Item1);
             }
             chart.Titles.Add(new Title(string.Join(", ", title), Docking.Top, new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold), Color.White));
+            SetYLabels();
         }
 
         private void PlotMatch(IEnumerable<DSLOGEntry> data)

@@ -34,6 +34,7 @@ namespace DSLOG_Reader_2
             seriesView.LoadSeries();
             exportView1.DSGraph = mainGraphView;
             exportView1.DSEvents = eventsView1;
+            exportView1.Comp = competitionView1;
             SetExportMode();
         }
 
@@ -63,6 +64,7 @@ namespace DSLOG_Reader_2
         private void tabControl2_Selected(object sender, TabControlEventArgs e)
         { 
             SetExportMode();
+            competitionView1.SetCurrentMainTab(tabControlRight.SelectedTab.Text);
         }
 
         private void SetExportMode()

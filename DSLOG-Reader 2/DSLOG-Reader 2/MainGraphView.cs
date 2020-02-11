@@ -45,11 +45,7 @@ namespace DSLOG_Reader_2
             CanUseMatchTime = false;
             UseMatchTime = false;
             InitSeriesSettings();
-            for (double i = 0; i < 12; i++)
-            {
-                chart.ChartAreas[0].AxisY2.CustomLabels.Add(i*10, i*10+.001, $"{ i*10} ({i * TotalPDPScale})");
-            }
-            chart.ChartAreas[0].AxisY2.CustomLabels.Add(120, 120 - .001, $"{ 120} ({12 * TotalPDPScale})");
+            
         }
 
         public void InitSeriesSettings()
@@ -343,10 +339,23 @@ namespace DSLOG_Reader_2
 
                 }
             }
-           
-           
-            
+        }
 
+        private void SetYLabels()
+        {
+            chart.ChartAreas[0].AxisY2.CustomLabels.Clear();
+            foreach (var series in chart.Series)
+            {
+                if ((series.Name.StartsWith(DSAttConstants.TotalPrefix) || series.Name == DSAttConstants.TotalPDP) && series.Enabled)
+                {
+                    for (double i = 0; i < 12; i++)
+                    {
+                        chart.ChartAreas[0].AxisY2.CustomLabels.Add(i * 10, i * 10 + .001, $"{ i * 10} ({i * TotalPDPScale})");
+                    }
+                    chart.ChartAreas[0].AxisY2.CustomLabels.Add(120, 120 - .001, $"{ 120} ({12 * TotalPDPScale})");
+                    break;
+                }
+            }
         }
 
         private double GetNiceIntervalNumber(double num)
@@ -524,6 +533,7 @@ namespace DSLOG_Reader_2
                 }
                
                 ChangeChartLabels();
+                SetYLabels();
             }
         }
 
@@ -536,6 +546,7 @@ namespace DSLOG_Reader_2
                     chart.Series[node.Name].Enabled = node.Checked;
                 }
             }
+            SetYLabels();
         }
 
         public void ClearMessages()

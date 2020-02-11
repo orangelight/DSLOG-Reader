@@ -15,7 +15,7 @@ namespace DSLOG_Reader_2
     public partial class BulkExportDialog : Form
     {
         public List<DSLOGFileEntry> Files { get; set; }
-        public string FilePath { get; set; }
+        private string FilePath;
         private List<string> CheckedFiles;
         public Dictionary<string, int[]> IdToPDPGroup { get; set; }
         public Dictionary<string, string> Series { get; set; }
@@ -103,6 +103,7 @@ namespace DSLOG_Reader_2
                 DSLOGFileEntry entry;
                 if (tempDict.TryGetValue(file, out entry))
                 {
+                    DateTime matchTime = DateTime.Now;
                     if (checkBoxLogs.Checked)
                     {
                         string dsFile = $"{entry.FilePath}\\{entry.Name}.dslog";
@@ -110,13 +111,13 @@ namespace DSLOG_Reader_2
                         {
                             DSLOGReader reader = new DSLOGReader(dsFile);
                             reader.Read();
-                            DateTime matchTime = DateTime.Now;
+                            
 
                             if (entry.IsFMSMatch)
                             {
                                 string eventName = entry.EventName;
                                 if (!UseFilledInEvents && entry.FMSFilledIn) eventName = "";
-                                string data = Util.GetTableFromEntries(reader.Entries, Series, IdToPDPGroup, checkBoxMatchTime.Checked && reader.Entries.TryFindMatchStart(out matchTime), matchTime, ",");
+                                string data = Util.GetTableFromLogEntries(reader.Entries, Series, IdToPDPGroup, checkBoxMatchTime.Checked && reader.Entries.TryFindMatchStart(out matchTime), matchTime, ",");
                                 var dir = $"{FilePath}\\{eventName}{entry.StartTime.Year}";
                                 if (!Directory.Exists(dir))
                                 {
@@ -126,7 +127,7 @@ namespace DSLOG_Reader_2
                             }
                             else
                             {
-                                string data = Util.GetTableFromEntries(reader.Entries, Series, IdToPDPGroup, false, matchTime, ",");
+                                string data = Util.GetTableFromLogEntries(reader.Entries, Series, IdToPDPGroup, false, matchTime, ",");
                                 var dir = $"{FilePath}\\{entry.StartTime.Year}";
                                 if (!Directory.Exists(dir))
                                 {
@@ -140,16 +141,40 @@ namespace DSLOG_Reader_2
                     }
                     if (checkBoxEvents.Checked)
                     {
-                        //Export events
+                        string dsFile = $"{entry.FilePath}\\{entry.Name}.dsevents";
+                        if (File.Exists(dsFile))
+                        {
+                            DSEVENTSReader reader = new DSEVENTSReader(dsFile);
+                            reader.Read();
+
+                            if (entry.IsFMSMatch)
+                            {
+                                string eventName = entry.EventName;
+                                if (!UseFilledInEvents && entry.FMSFilledIn) eventName = "";
+                                string data = Util.GetTableFromEvents(reader.Entries, checkBoxMatchTime.Checked && checkBoxLogs.Checked, matchTime, ",");
+                                var dir = $"{FilePath}\\{eventName}{entry.StartTime.Year}";
+                                if (!Directory.Exists(dir))
+                                {
+                                    Directory.CreateDirectory(dir);
+                                }
+                                File.WriteAllText($"{dir}\\{entry.Name} {entry.MatchType}_{entry.FMSMatchNum}_Events.csv", data);
+                            }
+                            else
+                            {
+                                string data = Util.GetTableFromEvents(reader.Entries, false, matchTime, ",");
+                                var dir = $"{FilePath}\\{entry.StartTime.Year}";
+                                if (!Directory.Exists(dir))
+                                {
+                                    Directory.CreateDirectory(dir);
+                                }
+                                File.WriteAllText($"{dir}\\{entry.Name}_Events.csv", data);
+                            }
+                        }
                     }
                 }
                 int precent = (int)((double)++TotalExported / CheckedFiles.Count * 100.0);
                 backgroundWorkerExport.ReportProgress(precent);
             });
-            //foreach(string file in CheckedFiles)
-            //{
-                
-            //}   
         }
 
         

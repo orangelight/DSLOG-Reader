@@ -23,6 +23,7 @@ namespace DSLOG_Reader_2
         public ExportMode CurrentMode { get; private set; }
         public MainGraphView DSGraph { get; set; }
         public EventsView DSEvents { get; set; }
+        public CompetitionView Comp { get; set; }
         public SeriesView SeriesViewObserving { get; set; }
 
         private Dictionary<string, string> EnabledSeries = new Dictionary<string, string>();
@@ -71,7 +72,8 @@ namespace DSLOG_Reader_2
                 SaveFileDialog saveFile = new SaveFileDialog();
                 saveFile.Filter = "PNG FIle|*.png";
                 saveFile.Title = "Save the PNG Image";
-                if (CurrentMode == ExportMode.Chart && saveFile.ShowDialog() == DialogResult.OK && ExportChartImage(saveFile.FileName))
+                if (CurrentMode == ExportMode.Chart && saveFile.ShowDialog() == DialogResult.OK && ExportChartImage(saveFile.FileName)
+                    ||CurrentMode == ExportMode.Compititon && saveFile.ShowDialog() == DialogResult.OK && ExportCompImage(saveFile.FileName))
                 {
                     MessageBox.Show("Export to Image Complete!");
                     return;
@@ -94,7 +96,7 @@ namespace DSLOG_Reader_2
 
         private string GetTableFromView(string sep = ",")
         {
-            return Util.GetTableFromEntries(DSGraph.GetInViewEntries(), EnabledSeries, IdToPDPGroup, (DSGraph.UseMatchTime && DSGraph.CanUseMatchTime), DSGraph.MatchTime, sep);
+            return Util.GetTableFromLogEntries(DSGraph.GetInViewEntries(), EnabledSeries, IdToPDPGroup, (DSGraph.UseMatchTime && DSGraph.CanUseMatchTime), DSGraph.MatchTime, sep);
         }
 
         private bool ExportChartClipboard()
@@ -115,6 +117,11 @@ namespace DSLOG_Reader_2
             return true;
         }
 
+        private bool ExportCompImage(string file)
+        {
+            Comp.SaveChartImage(file);
+            return true;
+        }
         private bool ExportEventsCSV(string file)
         {
             var events = GetEventsFromView(",");

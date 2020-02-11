@@ -351,7 +351,6 @@ namespace DSLOG_Reader_2
         private void buttonBulkExport_Click(object sender, EventArgs e)
         {
             BulkExportDialog bulkExport = new BulkExportDialog();
-            bulkExport.FilePath = Path;
             bulkExport.Files = GetFilteredFiles().ToList();
             bulkExport.IdToPDPGroup = IdToPDPGroup;
             bulkExport.UseFilledInEvents = AllowFillInEventNames;

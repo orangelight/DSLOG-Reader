@@ -76,10 +76,8 @@ namespace DSLOG_Reader_Library
             {
                 group.Add(PdpValues[slot]);
             }
-            double avg = group.Average();
-            //Perform the Sum of (value-avg)_2_2      
-            double sum = group.Sum(d => Math.Pow(d - avg, 2));
-            //Put it all together      
+            double avg = group.Average();    
+            double sum = group.Sum(d => Math.Pow(d - avg, 2));    
             return Math.Sqrt((sum) / (group.Count() - 1));
         }
     }

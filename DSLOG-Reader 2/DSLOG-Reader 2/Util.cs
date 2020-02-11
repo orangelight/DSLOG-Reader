@@ -183,7 +183,26 @@ namespace DSLOG_Reader_2
             return false;
         }
 
-        public static string GetTableFromEntries(List<DSLOGEntry> entries, Dictionary<string, string> series, Dictionary<string, int[]> idTOpdp, bool UseMatchTime, DateTime matchTime, string sep = ",")
+
+        public static string GetTableFromEvents(List<DSEVENTSEntry> entries, bool UseMatchTime, DateTime matchTime, string sep = ",")
+        {
+            if (entries == null) return "";
+            StringBuilder csv = new StringBuilder();
+
+            csv.Append("Time,Message\n");
+            foreach (var entry in entries)
+            {
+                List<string> row = new List<string>();
+                if (UseMatchTime) row.Add((entry.Time - matchTime).TotalSeconds.ToString("0.00"));
+                else row.Add(entry.Time.ToString("HH:mm:ss.fff"));
+
+                row.Add(entry.Data);
+                csv.Append(string.Join(sep, row) + "\n");
+            }
+            return csv.ToString();
+        }
+
+        public static string GetTableFromLogEntries(List<DSLOGEntry> entries, Dictionary<string, string> series, Dictionary<string, int[]> idTOpdp, bool UseMatchTime, DateTime matchTime, string sep = ",")
         {
             if (entries == null) return "";
             StringBuilder csv = new StringBuilder();

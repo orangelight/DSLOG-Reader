@@ -145,25 +145,31 @@
             // 
             this.checkBoxEvents.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBoxEvents.AutoSize = true;
-            this.checkBoxEvents.Location = new System.Drawing.Point(267, 29);
+            this.checkBoxEvents.BackColor = System.Drawing.SystemColors.Control;
+            this.checkBoxEvents.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.checkBoxEvents.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBoxEvents.Location = new System.Drawing.Point(263, 29);
             this.checkBoxEvents.Name = "checkBoxEvents";
-            this.checkBoxEvents.Size = new System.Drawing.Size(107, 17);
+            this.checkBoxEvents.Size = new System.Drawing.Size(122, 17);
             this.checkBoxEvents.TabIndex = 4;
             this.checkBoxEvents.Text = "Export DSEvents";
-            this.checkBoxEvents.UseVisualStyleBackColor = true;
+            this.checkBoxEvents.UseVisualStyleBackColor = false;
             // 
             // checkBoxLogs
             // 
             this.checkBoxLogs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBoxLogs.AutoSize = true;
+            this.checkBoxLogs.BackColor = System.Drawing.SystemColors.Control;
             this.checkBoxLogs.Checked = true;
             this.checkBoxLogs.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxLogs.Location = new System.Drawing.Point(164, 29);
+            this.checkBoxLogs.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.checkBoxLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBoxLogs.Location = new System.Drawing.Point(151, 29);
             this.checkBoxLogs.Name = "checkBoxLogs";
-            this.checkBoxLogs.Size = new System.Drawing.Size(97, 17);
+            this.checkBoxLogs.Size = new System.Drawing.Size(110, 17);
             this.checkBoxLogs.TabIndex = 5;
             this.checkBoxLogs.Text = "Export DSLogs";
-            this.checkBoxLogs.UseVisualStyleBackColor = true;
+            this.checkBoxLogs.UseVisualStyleBackColor = false;
             // 
             // labelIntro
             // 

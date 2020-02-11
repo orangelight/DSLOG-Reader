@@ -94,6 +94,7 @@
             this.fileListView.MainChart = null;
             this.fileListView.Margin = new System.Windows.Forms.Padding(4);
             this.fileListView.Name = "fileListView";
+            this.fileListView.SeriesViewObserving = null;
             this.fileListView.Size = new System.Drawing.Size(340, 529);
             this.fileListView.TabIndex = 0;
             // 
