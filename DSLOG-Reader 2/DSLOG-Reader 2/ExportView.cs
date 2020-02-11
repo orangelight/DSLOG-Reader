@@ -24,6 +24,7 @@ namespace DSLOG_Reader_2
         public MainGraphView DSGraph { get; set; }
         public EventsView DSEvents { get; set; }
         public CompetitionView Comp { get; set; }
+        public FileListView Files { get; set; }
         public SeriesView SeriesViewObserving { get; set; }
 
         private Dictionary<string, string> EnabledSeries = new Dictionary<string, string>();
@@ -186,6 +187,11 @@ namespace DSLOG_Reader_2
             }
 
             labelTotalCol.Text = $"Total  Columns: {EnabledSeries.Count+1}";//+1 for time
+        }
+
+        private void buttonBulk_Click(object sender, EventArgs e)
+        {
+            Files.BulkExport();
         }
     }
 }

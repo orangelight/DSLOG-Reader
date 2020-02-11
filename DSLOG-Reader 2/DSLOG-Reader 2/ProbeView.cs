@@ -82,7 +82,7 @@ namespace DSLOG_Reader_2
                     seriesLabel.Visible = true;
                     seriesLabel.AutoSize = true;
                     seriesLabel.BackColor = ser.Value.Item2;
-                    seriesLabel.Location = new Point(4, (24 * labelNum++) + 7);
+                    seriesLabel.Location = new Point(4, ((seriesLabel.Height) * labelNum++) + 7);
                     Controls.Add(seriesLabel);
                 }
             }

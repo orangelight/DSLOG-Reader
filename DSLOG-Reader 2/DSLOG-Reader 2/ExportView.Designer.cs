@@ -32,6 +32,7 @@
             this.buttonExport = new System.Windows.Forms.Button();
             this.labelTotalCol = new System.Windows.Forms.Label();
             this.labelMode = new System.Windows.Forms.Label();
+            this.buttonBulk = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // comboBoxExportType
@@ -82,10 +83,23 @@
             this.labelMode.TabIndex = 3;
             this.labelMode.Text = "Export Mode:";
             // 
+            // buttonBulk
+            // 
+            this.buttonBulk.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonBulk.Location = new System.Drawing.Point(1, 269);
+            this.buttonBulk.Name = "buttonBulk";
+            this.buttonBulk.Size = new System.Drawing.Size(176, 62);
+            this.buttonBulk.TabIndex = 4;
+            this.buttonBulk.Text = "Bulk Export";
+            this.buttonBulk.UseVisualStyleBackColor = true;
+            this.buttonBulk.Click += new System.EventHandler(this.buttonBulk_Click);
+            // 
             // ExportView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.buttonBulk);
             this.Controls.Add(this.labelMode);
             this.Controls.Add(this.labelTotalCol);
             this.Controls.Add(this.buttonExport);
@@ -104,5 +118,6 @@
         private System.Windows.Forms.Button buttonExport;
         private System.Windows.Forms.Label labelTotalCol;
         private System.Windows.Forms.Label labelMode;
+        private System.Windows.Forms.Button buttonBulk;
     }
 }

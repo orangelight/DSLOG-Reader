@@ -33,7 +33,8 @@
             // ProbeView
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.DoubleBuffered = true;
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "ProbeView";
             this.Size = new System.Drawing.Size(227, 347);
             this.ResumeLayout(false);

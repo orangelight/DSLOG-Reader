@@ -350,12 +350,18 @@ namespace DSLOG_Reader_2
         }
         private void buttonBulkExport_Click(object sender, EventArgs e)
         {
+            BulkExport();
+        }
+
+        public void BulkExport()
+        {
             BulkExportDialog bulkExport = new BulkExportDialog();
             bulkExport.Files = GetFilteredFiles().ToList();
             bulkExport.IdToPDPGroup = IdToPDPGroup;
             bulkExport.UseFilledInEvents = AllowFillInEventNames;
             bulkExport.Series = Series;
             bulkExport.ShowDialog();
+
         }
 
         private void buttonOpenFile_Click(object sender, EventArgs e)
