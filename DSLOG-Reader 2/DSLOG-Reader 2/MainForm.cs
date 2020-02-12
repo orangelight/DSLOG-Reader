@@ -12,6 +12,14 @@ namespace DSLOG_Reader_2
 {
     public partial class MainForm : Form
     {
+
+        public enum MainMode
+        {
+            Chart,
+            Events,
+            Compititon
+        }
+
         public MainForm()
         {
             InitializeComponent();
@@ -38,7 +46,7 @@ namespace DSLOG_Reader_2
             exportView1.DSEvents = eventsView1;
             exportView1.Comp = competitionView1;
             exportView1.Files = fileListView;
-            SetExportMode();
+            SetMode();
         }
 
         private void TimerCompMode_Tick(object sender, EventArgs e)
@@ -66,24 +74,46 @@ namespace DSLOG_Reader_2
 
         private void tabControl2_Selected(object sender, TabControlEventArgs e)
         { 
-            SetExportMode();
+            SetMode();
             competitionView1.SetCurrentMainTab(tabControlRight.SelectedTab.Text);
         }
 
-        private void SetExportMode()
+        private void SetMode()
         {
             if (tabControlRight.SelectedIndex == 0)
             {
-                exportView1.SetMode(ExportView.ExportMode.Chart);
+                exportView1.SetMode(MainMode.Chart);
+                eventsView1.SetMode(MainMode.Chart);
+
             }
             if (tabControlRight.SelectedIndex == 1)
             {
-                exportView1.SetMode(ExportView.ExportMode.Events);
+                exportView1.SetMode(MainMode.Events);
+                eventsView1.SetMode(MainMode.Events);
             }
             if (tabControlRight.SelectedIndex == 2)
             {
-                exportView1.SetMode(ExportView.ExportMode.Compititon);
+                exportView1.SetMode(MainMode.Compititon);
+                eventsView1.SetMode(MainMode.Compititon);
             }
+        }
+
+        public MainMode GetCurrentMode()
+        {
+            if (tabControlRight.SelectedIndex == 0)
+            {
+                return MainMode.Chart;
+
+            }
+            if (tabControlRight.SelectedIndex == 1)
+            {
+                return MainMode.Events;
+            }
+            if (tabControlRight.SelectedIndex == 2)
+            {
+                return MainMode.Compititon;
+            }
+            return MainMode.Chart;
         }
 
         public void SetRightTabIndex(int index)

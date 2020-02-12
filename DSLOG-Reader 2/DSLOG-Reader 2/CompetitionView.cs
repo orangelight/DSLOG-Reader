@@ -228,7 +228,18 @@ namespace DSLOG_Reader_2
             var dumpyData = new DataPoint(0, 0);
             dumpyData.BorderColor = Color.Transparent;
             chart.Series[1].Points.Add(dumpyData);
-
+            if (data == null || data.Count() == 0)
+            {
+                foreach (string node in EnabledSeries.Keys)
+                {
+                    var d = new DataPoint(xLabelOffset, new double[] { 0, 0, 0, 0, 0, 0 });
+                    d.BorderColor = Color.Transparent;
+                    chart.Series[0].Points.Add(d);
+                    xLabelOffset += 1;
+                }
+                return;
+            }
+           
             
             foreach (string node in EnabledSeries.Keys)
             {

@@ -283,6 +283,11 @@ namespace DSLOG_Reader_2
             return treeView.Nodes;
         }
 
+        public string GetProfileName()
+        {
+            return Profiles[comboBoxProfiles.SelectedIndex].Name;
+        }
+
         public void AddObserver(SeriesViewObserver ob)
         {
             Observers.Add(ob);

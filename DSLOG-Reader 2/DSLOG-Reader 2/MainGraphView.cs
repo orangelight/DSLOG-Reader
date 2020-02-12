@@ -768,7 +768,14 @@ namespace DSLOG_Reader_2
 
         private void ChangeUseMatchTime(bool use, bool force = false)
         {
+            if (use != UseMatchTime)
+            {
+                UseMatchTime = use;
+                EventsView.AddEvents();
+            }
+
             UseMatchTime = use;
+            
             if (!CanUseMatchTime)
             {
                 UseMatchTime = false;

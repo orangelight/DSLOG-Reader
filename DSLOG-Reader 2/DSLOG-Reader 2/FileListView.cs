@@ -360,6 +360,7 @@ namespace DSLOG_Reader_2
             bulkExport.IdToPDPGroup = IdToPDPGroup;
             bulkExport.UseFilledInEvents = AllowFillInEventNames;
             bulkExport.Series = Series;
+            bulkExport.ProfileName = SeriesViewObserving.GetProfileName();
             bulkExport.ShowDialog();
 
         }

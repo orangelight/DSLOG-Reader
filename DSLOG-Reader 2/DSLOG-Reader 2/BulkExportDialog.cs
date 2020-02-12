@@ -20,6 +20,7 @@ namespace DSLOG_Reader_2
         public Dictionary<string, int[]> IdToPDPGroup { get; set; }
         public Dictionary<string, string> Series { get; set; }
         public bool UseFilledInEvents { get; set; }
+        public string ProfileName { get; set; }
         private volatile int TotalExported = 0;
         public BulkExportDialog()
         {
@@ -35,6 +36,7 @@ namespace DSLOG_Reader_2
 
             if (Files == null) return;
             listView.BeginUpdate();
+            labelIntro.Text = $"All logs on left will be exported to CSV using the {ProfileName} profile selected in the Graph tab with all series enabled";
             foreach (var file in Files)
             {
                 var item = file.ToListViewItem(UseFilledInEvents);
