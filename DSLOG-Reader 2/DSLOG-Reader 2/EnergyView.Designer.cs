@@ -1,6 +1,6 @@
 ﻿namespace DSLOG_Reader_2
 {
-    partial class ProbeView
+    partial class EnergyView
     {
         /// <summary> 
         /// Required designer variable.
@@ -30,14 +30,13 @@
         {
             this.SuspendLayout();
             // 
-            // ProbeView
+            // EnergyView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.DoubleBuffered = true;
-            this.Margin = new System.Windows.Forms.Padding(4);
-            this.Name = "ProbeView";
-            this.Size = new System.Drawing.Size(227, 347);
+            this.Name = "EnergyView";
+            this.Size = new System.Drawing.Size(204, 407);
             this.ResumeLayout(false);
 
         }

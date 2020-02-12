@@ -96,6 +96,12 @@
       <DependentUpon>DiagnosticDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="DSLOGFileEntry.cs" />
+    <Compile Include="EnergyView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EnergyView.Designer.cs">
+      <DependentUpon>EnergyView.cs</DependentUpon>
+    </Compile>
     <Compile Include="EventsView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -170,6 +176,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DiagnosticDialog.resx">
       <DependentUpon>DiagnosticDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EnergyView.resx">
+      <DependentUpon>EnergyView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EventsView.resx">
       <DependentUpon>EventsView.cs</DependentUpon>

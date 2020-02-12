@@ -81,7 +81,7 @@ namespace DSLOG_Reader_2
                     seriesLabel.Text = $"{ser.Value.Item1}: { Entry.EntryAttToUnit(ser.Key, IdToPDPGroup)}";
                     seriesLabel.Visible = true;
                     seriesLabel.AutoSize = true;
-                    seriesLabel.BackColor = ser.Value.Item2;
+                    //seriesLabel.BackColor = ser.Value.Item2;
                     seriesLabel.Location = new Point(4, ((seriesLabel.Height) * labelNum++) + 7);
                     Controls.Add(seriesLabel);
                 }

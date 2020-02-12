@@ -27,6 +27,7 @@ namespace DSLOG_Reader_2
         public MainForm MForm {get;set; }
         public EventsView EventsView { get; set; }
         public ProbeView ProbeView { get; set; }
+        public EnergyView EnergyView { get; set; }
         public SeriesView SeriesViewObserving { get; set; }
 
         private int PointCount = 1;
@@ -255,6 +256,7 @@ namespace DSLOG_Reader_2
 
                 PlotLog();
                 PointCount = LogEntries.Count;
+                SetEnergy();
 
                 area.AxisX.ScaleView.ZoomReset();
                 if (logInfo.Live)
@@ -303,6 +305,7 @@ namespace DSLOG_Reader_2
         
         private void ChangeChartLabels(bool force = false)
         {
+            
             labelTimeInView.Text = $"Time in View: {GetTotalSecoundsInView().ToString("0.##")} Sec";
             if (UseMatchTime && CanUseMatchTime)
             {
@@ -598,6 +601,19 @@ namespace DSLOG_Reader_2
             {
                 if (chart.ChartAreas[0].AxisX.ScaleView.ViewMinimum < chart.ChartAreas[0].AxisX.Minimum || chart.ChartAreas[0].AxisX.ScaleView.ViewMaximum > chart.ChartAreas[0].AxisX.Maximum) chart.ChartAreas[0].AxisX.ScaleView.ZoomReset();
                 ChangeChartLabels();
+                
+            }
+        }
+
+        private void SetEnergy()
+        {
+            if (LogEntries != null)
+            {
+                EnergyView.SetEnergy(LogEntries);
+            }
+            else
+            {
+                EnergyView.SetEnergy(null);
             }
         }
 
@@ -723,11 +739,13 @@ namespace DSLOG_Reader_2
         private void buttonFindMatch_Click(object sender, EventArgs e)
         {
             ZoomIntoMatch();
+            ChangeChartLabels();
         }
 
         private void buttonResetZoom_Click(object sender, EventArgs e)
         {
             ResetZoom();
+            ChangeChartLabels();
         }
 
         public List<DSLOGEntry> GetInViewEntries()

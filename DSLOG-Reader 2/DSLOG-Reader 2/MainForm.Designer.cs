@@ -37,6 +37,8 @@
             this.tabControl3 = new System.Windows.Forms.TabControl();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.probeView1 = new DSLOG_Reader_2.ProbeView();
+            this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.energyView1 = new DSLOG_Reader_2.EnergyView();
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.exportView1 = new DSLOG_Reader_2.ExportView();
             this.richTextBoxGraph = new System.Windows.Forms.RichTextBox();
@@ -55,6 +57,7 @@
             this.tabPage2.SuspendLayout();
             this.tabControl3.SuspendLayout();
             this.tabPage5.SuspendLayout();
+            this.tabPage8.SuspendLayout();
             this.tabPage6.SuspendLayout();
             this.tabControlRight.SuspendLayout();
             this.tabPage3.SuspendLayout();
@@ -116,6 +119,7 @@
             this.tabControl3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.tabControl3.Controls.Add(this.tabPage5);
+            this.tabControl3.Controls.Add(this.tabPage8);
             this.tabControl3.Controls.Add(this.tabPage6);
             this.tabControl3.Location = new System.Drawing.Point(3, 3);
             this.tabControl3.Name = "tabControl3";
@@ -145,6 +149,28 @@
             this.probeView1.Size = new System.Drawing.Size(160, 387);
             this.probeView1.TabIndex = 0;
             // 
+            // tabPage8
+            // 
+            this.tabPage8.Controls.Add(this.energyView1);
+            this.tabPage8.Location = new System.Drawing.Point(4, 22);
+            this.tabPage8.Name = "tabPage8";
+            this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage8.Size = new System.Drawing.Size(166, 393);
+            this.tabPage8.TabIndex = 2;
+            this.tabPage8.Text = "Energy";
+            this.tabPage8.UseVisualStyleBackColor = true;
+            // 
+            // energyView1
+            // 
+            this.energyView1.AutoScroll = true;
+            this.energyView1.AutoSize = true;
+            this.energyView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.energyView1.Location = new System.Drawing.Point(3, 3);
+            this.energyView1.Name = "energyView1";
+            this.energyView1.SeriesViewObserving = null;
+            this.energyView1.Size = new System.Drawing.Size(160, 387);
+            this.energyView1.TabIndex = 0;
+            // 
             // tabPage6
             // 
             this.tabPage6.Controls.Add(this.exportView1);
@@ -158,9 +184,11 @@
             // 
             // exportView1
             // 
+            this.exportView1.Comp = null;
             this.exportView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.exportView1.DSEvents = null;
             this.exportView1.DSGraph = null;
+            this.exportView1.Files = null;
             this.exportView1.Location = new System.Drawing.Point(3, 3);
             this.exportView1.Margin = new System.Windows.Forms.Padding(4);
             this.exportView1.Name = "exportView1";
@@ -217,6 +245,7 @@
             // mainGraphView
             // 
             this.mainGraphView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mainGraphView.EnergyView = null;
             this.mainGraphView.EventsView = null;
             this.mainGraphView.Location = new System.Drawing.Point(3, 3);
             this.mainGraphView.Margin = new System.Windows.Forms.Padding(4);
@@ -307,6 +336,8 @@
             this.tabPage2.ResumeLayout(false);
             this.tabControl3.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
+            this.tabPage8.ResumeLayout(false);
+            this.tabPage8.PerformLayout();
             this.tabPage6.ResumeLayout(false);
             this.tabControlRight.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
@@ -338,5 +369,7 @@
         private EventsView eventsView1;
         private System.Windows.Forms.TabPage tabPage7;
         private CompetitionView competitionView1;
+        private System.Windows.Forms.TabPage tabPage8;
+        private EnergyView energyView1;
     }
 }
