@@ -16,7 +16,6 @@ namespace DSLOG_Reader_2
     {
         private DSLOGEntry Entry;
         private Dictionary<string, int[]> IdToPDPGroup;
-        private Dictionary<string, Tuple<string, Color>> EnabledSeries = new Dictionary<string, Tuple<string, Color>>();
         public ProbeView()
         {
             InitializeComponent();
@@ -31,18 +30,51 @@ namespace DSLOG_Reader_2
             Entry = entry;
             DisplayEntry();
         }
+
+        private TreeNode CopyTreeNode(TreeNode node)
+        {
+            TreeNode newNode = new TreeNode();
+            newNode.Text = node.Text;
+            newNode.Name = node.Name;
+            newNode.BackColor = node.BackColor;
+            return newNode;
+        }
+
         public void SetEnabledSeries(TreeNodeCollection groups)
         {
-            EnabledSeries.Clear();
+            treeView1.BeginUpdate();
+            treeView1.Nodes.Clear();
+            var timeNode = new TreeNode();
+            timeNode.Text = "Time:";
+            timeNode.Name = "time";
+            treeView1.Nodes.Add(timeNode);
+
             foreach (TreeNode group in groups)
             {
+                bool keepGroup = false;
                 foreach (TreeNode node in group.Nodes)
                 {
-                    if (node.Name == DSAttConstants.Messages || !node.Checked) continue;
-
-                    EnabledSeries.Add(node.Name, new Tuple<string, Color>(node.Text, node.BackColor));
+                    if (node.Checked && node.Name != DSAttConstants.Messages)
+                    {
+                        keepGroup = true;
+                        break;
+                    }            
                 }
+                if (!keepGroup) continue;
+                TreeNode newGroup = CopyTreeNode(group);
+                foreach (TreeNode node in group.Nodes)
+                {
+                    if (node.Checked && node.Name != DSAttConstants.Messages)
+                    {
+                        TreeNode newNode = CopyTreeNode(node);
+                        newGroup.Nodes.Add(newNode);
+                    }
+                }
+                treeView1.Nodes.Add(newGroup);
+                treeView1.ExpandAll();
+
             }
+            treeView1.EndUpdate();
             DisplayEntry();
         }
 
@@ -60,32 +92,53 @@ namespace DSLOG_Reader_2
                     }
                 }
             }
-            DisplayEntry();
+            //DisplayEntry();
         }
-
-        private void DisplayEntry()
+        private void ResetTreeView()
         {
-            Controls.Clear();
-            if (Entry != null && IdToPDPGroup != null)
+            treeView1.Visible = false;
+            foreach (TreeNode group in treeView1.Nodes)
             {
-                int labelNum = 0;
-                Label timeLabel = new Label();
-                timeLabel.Text = $"Time: {Entry.Time.ToString("HH:mm:ss.fff")}";
-                timeLabel.Visible = true;
-                timeLabel.AutoSize = true;
-                timeLabel.Location = new Point(4, (24 * labelNum++) + 7);
-                Controls.Add(timeLabel);
-                foreach (var ser in EnabledSeries)
+                if (group.Name == "time")
                 {
-                    Label seriesLabel = new Label();
-                    seriesLabel.Text = $"{ser.Value.Item1}: { Entry.EntryAttToUnit(ser.Key, IdToPDPGroup)}";
-                    seriesLabel.Visible = true;
-                    seriesLabel.AutoSize = true;
-                    //seriesLabel.BackColor = ser.Value.Item2;
-                    seriesLabel.Location = new Point(4, ((seriesLabel.Height) * labelNum++) + 7);
-                    Controls.Add(seriesLabel);
+                    group.Text = $"Time:";
+                    continue;
+                }
+                foreach (TreeNode node in group.Nodes)
+                {
+                    int i = node.Text.LastIndexOf(": ");
+                    if (i > 0) node.Text = node.Text.Substring(0, i);
                 }
             }
+        }
+        private void DisplayEntry()
+        {
+            treeView1.BeginUpdate();
+            ResetTreeView();
+            //Controls.Clear();
+            if (Entry != null && IdToPDPGroup != null)
+            {
+               
+                foreach (TreeNode group in treeView1.Nodes)
+                {
+                    if (group.Name == "time")
+                    {
+                        group.Text = $"Time: {Entry.Time.ToString("HH:mm:ss.fff")}";
+                        continue;
+                    }
+                    foreach(TreeNode node in group.Nodes)
+                    {
+                        node.Text = $"{node.Text}: { Entry.EntryAttToUnit(node.Name, IdToPDPGroup)}";
+                    }
+                }
+                treeView1.Visible = true;
+            }
+            treeView1.EndUpdate();
+        }
+
+        private void treeView1_BeforeCollapse(object sender, TreeViewCancelEventArgs e)
+        {
+            e.Cancel = true;
         }
     }
 }
