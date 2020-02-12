@@ -228,6 +228,15 @@ namespace DSLOG_Reader_2
             }
             return csv.ToString();
         }
+
+        public static TreeNode CopyTreeNode(this TreeNode node)
+        {
+            TreeNode newNode = new TreeNode();
+            newNode.Text = node.Text;
+            newNode.Name = node.Name;
+            newNode.BackColor = node.BackColor;
+            return newNode;
+        }
     }
 
     public static class DSAttConstants

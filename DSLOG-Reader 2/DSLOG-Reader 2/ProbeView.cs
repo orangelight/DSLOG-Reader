@@ -31,14 +31,7 @@ namespace DSLOG_Reader_2
             DisplayEntry();
         }
 
-        private TreeNode CopyTreeNode(TreeNode node)
-        {
-            TreeNode newNode = new TreeNode();
-            newNode.Text = node.Text;
-            newNode.Name = node.Name;
-            newNode.BackColor = node.BackColor;
-            return newNode;
-        }
+        
 
         public void SetEnabledSeries(TreeNodeCollection groups)
         {
@@ -61,12 +54,12 @@ namespace DSLOG_Reader_2
                     }            
                 }
                 if (!keepGroup) continue;
-                TreeNode newGroup = CopyTreeNode(group);
+                TreeNode newGroup = group.CopyTreeNode();
                 foreach (TreeNode node in group.Nodes)
                 {
                     if (node.Checked && node.Name != DSAttConstants.Messages)
                     {
-                        TreeNode newNode = CopyTreeNode(node);
+                        TreeNode newNode = node.CopyTreeNode();
                         newGroup.Nodes.Add(newNode);
                     }
                 }
