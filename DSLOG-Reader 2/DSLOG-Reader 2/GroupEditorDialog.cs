@@ -504,6 +504,12 @@ namespace DSLOG_Reader_2
 
         private void treeViewPDP_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
         {
+            if (e.Node != null && e.Label.Contains(":"))
+            {
+                e.CancelEdit = true;
+                return;
+            }
+
             if (e.Node != null && e.Node.Nodes.Count > 0)
             {
                 var totals = e.Node.Nodes.Find(DSAttConstants.TotalPrefix, true);
@@ -517,6 +523,8 @@ namespace DSLOG_Reader_2
                     delta.Text = $"{e.Label} Delta";
                 }
             }
+
+          
         }
     }
 }
