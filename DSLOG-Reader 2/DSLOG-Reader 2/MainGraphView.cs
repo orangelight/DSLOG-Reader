@@ -164,7 +164,7 @@ namespace DSLOG_Reader_2
             {
                 LastEntry = 0;
                 InitChart();
-                PlotLog();
+                backgroundWorkerPlot.RunWorkerAsync();
                 EventsView.AddEvents();
             }
         }
@@ -254,16 +254,17 @@ namespace DSLOG_Reader_2
                     ChangeUseMatchTime(false);
                 }
 
-                PlotLog();
-                PointCount = LogEntries.Count;
-                SetEnergy();
+                backgroundWorkerPlot.RunWorkerAsync();
+                //PlotLog();
+                //PointCount = LogEntries.Count;
+                //SetEnergy();
 
-                area.AxisX.ScaleView.ZoomReset();
-                if (logInfo.Live)
-                {
-                    labelFileInfo.BackColor = Color.Lime;
-                    timerStream.Start();
-                }
+                //area.AxisX.ScaleView.ZoomReset();
+                //if (logInfo.Live)
+                //{
+                //    labelFileInfo.BackColor = Color.Lime;
+                //    timerStream.Start();
+                //}
             }
            
         }
@@ -400,6 +401,8 @@ namespace DSLOG_Reader_2
 
         private void PlotLog()
         {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
             if (LogEntries != null)
             {
                 var tripTimeSeries = chart.Series[DSAttConstants.TripTime];
@@ -416,127 +419,200 @@ namespace DSLOG_Reader_2
                 var brownoutSeries = chart.Series[DSAttConstants.Brownout];
                 var watchdogSeries = chart.Series[DSAttConstants.Watchdog];
                 var totalPDPSeries = chart.Series[DSAttConstants.TotalPDP];
-                SetEnabledSeries(SeriesViewObserving.GetSeries());
+                Dictionary<string, Series> series = new Dictionary<string, Series>();
+                
                 int packetnum = 0;
-                for (; LastEntry < LogEntries.Count; LastEntry++)
+                chart.Invoke((Action)(() =>
                 {
-                    DSLOGEntry en = LogEntries.ElementAt(LastEntry);
-                    //Adds points to first and last x values
-                    double entryTime = en.Time.ToOADate();
-                   
-                    if (LastEntry == 0 || LastEntry == LogEntries.Count - 1)
+                    foreach (var s in chart.Series)
                     {
-                        if (LastEntry == LogEntries.Count - 1)
-                        {
-                            chart.ChartAreas[0].AxisX.Maximum = entryTime;
-                            if (AutoScrollLive) chart.ChartAreas[0].AxisX.ScaleView.Scroll(entryTime);
-                        }
-                        tripTimeSeries.Points.AddXY( entryTime, en.TripTime);
-                        voltageSeries.Points.AddXY( entryTime, en.Voltage);
-                        lostPacketsSeries.Points.AddXY( entryTime, en.LostPackets * 100);
-                        roborioCPUSeries.Points.AddXY( entryTime, en.RoboRioCPU * 100);
-                        canUtilSeries.Points.AddXY( entryTime, en.CANUtil * 100);
-                        for (int i = 0; i < 16; i++)
-                        {
-                            chart.Series[DSAttConstants.PDPPrefix + i].Points.AddXY( entryTime, en.GetPDPChannel(i));
-                        }
-                        totalPDPSeries.Points.AddXY( entryTime, en.GetDPDTotal() / (TotalPDPScale/10.0));
-
-                        foreach(var kv in IdToPDPGroup)
-                        {
-                            if(kv.Key.StartsWith(DSAttConstants.TotalPrefix))
-                            {
-                                chart.Series[kv.Key].Points.AddXY( entryTime, en.GetGroupPDPTotal(kv.Value) / (TotalPDPScale / 10.0));
-                            }
-                            else
-                            {
-                                chart.Series[kv.Key].Points.AddXY( entryTime, en.GetGroupPDPSd(kv.Value)/ (TotalPDPScale / 10.0));
-                            }
-                            
-                        }
+                        series.Add(s.Name, s);
                     }
-                    else
+                    chart.Series.Clear();
+                }));
+                var t1 = Task.Run(() =>
+                {
+                    for (; LastEntry < LogEntries.Count; LastEntry++)
                     {
-                        var lastEn = LogEntries.ElementAt(LastEntry - 1);
-                        var nextEn = LogEntries.ElementAt(LastEntry + 1);
-                        //Checks if value is differnt around it so we don't plot everypoint
-                        if (lastEn.TripTime != en.TripTime || nextEn.TripTime != en.TripTime)
-                        {
-                            tripTimeSeries.Points.AddXY( entryTime, en.TripTime);
-                        }
-                        if ((lastEn.LostPackets != en.LostPackets || nextEn.LostPackets != en.LostPackets) || lastEn.LostPackets != 0)
-                        {
-                            //the bar graphs are too much so we have to do this
-                            if (packetnum % 4 == 0)
-                            {
-                                lostPacketsSeries.Points.AddXY( entryTime, 0);
-                            }
-                            else
-                            {
-                                lostPacketsSeries.Points.AddXY( entryTime, (en.LostPackets < 1) ? en.LostPackets * 100 : 100);
+                        DSLOGEntry en = LogEntries.ElementAt(LastEntry);
+                        //Adds points to first and last x values
+                        double entryTime = en.Time.ToOADate();
 
-                            }
-                            packetnum++;
-                        }
-                        if (lastEn.Voltage != en.Voltage || nextEn.Voltage != en.Voltage && en.Voltage < 17)
-                        {
-                            voltageSeries.Points.AddXY( entryTime, en.Voltage);
-                        }
-                        if (lastEn.RoboRioCPU != en.RoboRioCPU || nextEn.RoboRioCPU != en.RoboRioCPU)
-                        {
-                            roborioCPUSeries.Points.AddXY( entryTime, en.RoboRioCPU * 100);
-                        }
-                        if (lastEn.CANUtil != en.CANUtil || nextEn.CANUtil != en.CANUtil)
-                        {
-                            canUtilSeries.Points.AddXY( entryTime, en.CANUtil * 100);
-                        }
-                        for (int i = 0; i < 16; i++)
-                        {
-                            if (lastEn.GetPDPChannel(i) != en.GetPDPChannel(i) || nextEn.GetPDPChannel(i) != en.GetPDPChannel(i))
-                            {
-                                chart.Series[DSAttConstants.PDPPrefix + i].Points.AddXY( entryTime, en.GetPDPChannel(i));
-                            }
-                        }
 
-                        if (lastEn.GetDPDTotal() != en.GetDPDTotal() || nextEn.GetDPDTotal() != en.GetDPDTotal())
-                        {
-                            totalPDPSeries.Points.AddXY( entryTime, en.GetDPDTotal()/ (TotalPDPScale / 10.0));
-                        }
 
-                        foreach (var kv in IdToPDPGroup)
+                        if (LastEntry == 0 || LastEntry == LogEntries.Count - 1)
                         {
-                            if (kv.Key.StartsWith(DSAttConstants.TotalPrefix))
+                            if (LastEntry == LogEntries.Count - 1)
                             {
-                                if (lastEn.GetGroupPDPTotal(kv.Value) != en.GetGroupPDPTotal(kv.Value) || nextEn.GetGroupPDPTotal(kv.Value) != en.GetGroupPDPTotal(kv.Value))
+                                chart.Invoke((Action)(() =>
                                 {
-                                    chart.Series[kv.Key].Points.AddXY( entryTime, en.GetGroupPDPTotal(kv.Value) / (TotalPDPScale / 10.0));
+                                    chart.ChartAreas[0].AxisX.Maximum = entryTime;
+                                    if (AutoScrollLive) chart.ChartAreas[0].AxisX.ScaleView.Scroll(entryTime);
+                                }));
+                            }
+                            tripTimeSeries.Points.AddXY(entryTime, en.TripTime);
+                            voltageSeries.Points.AddXY(entryTime, en.Voltage);
+                            lostPacketsSeries.Points.AddXY(entryTime, en.LostPackets * 100);
+                            roborioCPUSeries.Points.AddXY(entryTime, en.RoboRioCPU * 100);
+                            canUtilSeries.Points.AddXY(entryTime, en.CANUtil * 100);
+                           
+                        }
+                        else
+                        {
+                            var lastEn = LogEntries.ElementAt(LastEntry - 1);
+                            var nextEn = LogEntries.ElementAt(LastEntry + 1);
+                            //Checks if value is differnt around it so we don't plot everypoint
+                            if (lastEn.TripTime != en.TripTime || nextEn.TripTime != en.TripTime)
+                            {
+                                tripTimeSeries.Points.AddXY(entryTime, en.TripTime);
+                            }
+                            if ((lastEn.LostPackets != en.LostPackets || nextEn.LostPackets != en.LostPackets) || lastEn.LostPackets != 0)
+                            {
+                                //the bar graphs are too much so we have to do this
+                                if (packetnum % 4 == 0)
+                                {
+                                    lostPacketsSeries.Points.AddXY(entryTime, 0);
                                 }
+                                else
+                                {
+                                    lostPacketsSeries.Points.AddXY(entryTime, (en.LostPackets < 1) ? en.LostPackets * 100 : 100);
+
+                                }
+                                packetnum++;
+                            }
+                            if (lastEn.Voltage != en.Voltage || nextEn.Voltage != en.Voltage && en.Voltage < 17)
+                            {
+                                voltageSeries.Points.AddXY(entryTime, en.Voltage);
+                            }
+                            if (lastEn.RoboRioCPU != en.RoboRioCPU || nextEn.RoboRioCPU != en.RoboRioCPU)
+                            {
+                                roborioCPUSeries.Points.AddXY(entryTime, en.RoboRioCPU * 100);
+                            }
+                            if (lastEn.CANUtil != en.CANUtil || nextEn.CANUtil != en.CANUtil)
+                            {
+                                canUtilSeries.Points.AddXY(entryTime, en.CANUtil * 100);
+                            }
+                           
+                        }
+
+
+                    }
+                });
+
+                var t2 = Task.Run(() =>
+                {
+                    for (int i = 0; i < LogEntries.Count; i++)
+                    {
+                        DSLOGEntry en = LogEntries.ElementAt(i);
+                        //Adds points to first and last x values
+                        double entryTime = en.Time.ToOADate();
+                        if (en.DSDisabled) dsDisabledSeries.Points.AddXY(entryTime, 15.9);
+                        if (en.DSAuto) dsAutoSeries.Points.AddXY(entryTime, 15.9);
+                        if (en.DSTele) dsTeleSeries.Points.AddXY(entryTime, 15.9);
+
+                        if (en.RobotDisabled) robotDisabledSeries.Points.AddXY(entryTime, 16.8);
+                        if (en.RobotAuto) robotAutoSeries.Points.AddXY(entryTime, 16.5);
+                        if (en.RobotTele) robotTeleSeries.Points.AddXY(entryTime, 16.2);
+
+                        if (en.Brownout) brownoutSeries.Points.AddXY(entryTime, 15.6);
+                        if (en.Watchdog) watchdogSeries.Points.AddXY(entryTime, 15.3);
+                    }
+                });
+
+                var t3 = Task.Run(() =>
+                {
+                    for (int index_l = 0; index_l < LogEntries.Count; index_l++)
+                    {
+                        DSLOGEntry en = LogEntries.ElementAt(index_l);
+                        //Adds points to first and last x values
+                        double entryTime = en.Time.ToOADate();
+
+
+
+                        if (index_l == 0 || index_l == LogEntries.Count - 1)
+                        {
+                            if (index_l == LogEntries.Count - 1)
+                            {
                                 
                             }
-                            else
+                            for (int i = 0; i < 16; i++)
                             {
-                                if (lastEn.GetGroupPDPSd(kv.Value) != en.GetGroupPDPSd(kv.Value) || nextEn.GetGroupPDPSd(kv.Value) != en.GetGroupPDPSd(kv.Value))
+                                series[DSAttConstants.PDPPrefix + i].Points.AddXY(entryTime, en.GetPDPChannel(i));
+                            }
+                            totalPDPSeries.Points.AddXY(entryTime, en.GetDPDTotal() / (TotalPDPScale / 10.0));
+
+                            foreach (var kv in IdToPDPGroup)
+                            {
+                                if (kv.Key.StartsWith(DSAttConstants.TotalPrefix))
                                 {
-                                    chart.Series[kv.Key].Points.AddXY( entryTime, en.GetGroupPDPSd(kv.Value));
+                                    series[kv.Key].Points.AddXY(entryTime, en.GetGroupPDPTotal(kv.Value) / (TotalPDPScale / 10.0));
+                                }
+                                else
+                                {
+                                    series[kv.Key].Points.AddXY(entryTime, en.GetGroupPDPSd(kv.Value) / (TotalPDPScale / 10.0));
+                                }
+
+                            }
+                        }
+                        else
+                        {
+                            var lastEn = LogEntries.ElementAt(index_l - 1);
+                            var nextEn = LogEntries.ElementAt(index_l + 1);
+                            //Checks if value is differnt around it so we don't plot everypoint
+                            
+                            for (int i = 0; i < 16; i++)
+                            {
+                                if (lastEn.GetPDPChannel(i) != en.GetPDPChannel(i) || nextEn.GetPDPChannel(i) != en.GetPDPChannel(i))
+                                {
+                                    series[DSAttConstants.PDPPrefix + i].Points.AddXY(entryTime, en.GetPDPChannel(i));
                                 }
                             }
 
+                            if (lastEn.GetDPDTotal() != en.GetDPDTotal() || nextEn.GetDPDTotal() != en.GetDPDTotal())
+                            {
+                                totalPDPSeries.Points.AddXY(entryTime, en.GetDPDTotal() / (TotalPDPScale / 10.0));
+                            }
+
+                            foreach (var kv in IdToPDPGroup)
+                            {
+                                if (kv.Key.StartsWith(DSAttConstants.TotalPrefix))
+                                {
+                                    if (lastEn.GetGroupPDPTotal(kv.Value) != en.GetGroupPDPTotal(kv.Value) || nextEn.GetGroupPDPTotal(kv.Value) != en.GetGroupPDPTotal(kv.Value))
+                                    {
+                                        series[kv.Key].Points.AddXY(entryTime, en.GetGroupPDPTotal(kv.Value) / (TotalPDPScale / 10.0));
+                                    }
+
+                                }
+                                else
+                                {
+                                    if (lastEn.GetGroupPDPSd(kv.Value) != en.GetGroupPDPSd(kv.Value) || nextEn.GetGroupPDPSd(kv.Value) != en.GetGroupPDPSd(kv.Value))
+                                    {
+                                        series[kv.Key].Points.AddXY(entryTime, en.GetGroupPDPSd(kv.Value));
+                                    }
+                                }
+
+                            }
                         }
+
+
                     }
-                    if (en.DSDisabled) dsDisabledSeries.Points.AddXY(entryTime, 15.9);
-                    if (en.DSAuto) dsAutoSeries.Points.AddXY(entryTime, 15.9);
-                    if (en.DSTele) dsTeleSeries.Points.AddXY(entryTime, 15.9);
-
-                    if (en.RobotDisabled) robotDisabledSeries.Points.AddXY(entryTime, 16.8);
-                    if (en.RobotAuto) robotAutoSeries.Points.AddXY(entryTime, 16.5);
-                    if (en.RobotTele) robotTeleSeries.Points.AddXY(entryTime, 16.2);
-
-                    if (en.Brownout) brownoutSeries.Points.AddXY(entryTime, 15.6);
-                    if (en.Watchdog) watchdogSeries.Points.AddXY(entryTime, 15.3);
-                }
-               
-                ChangeChartLabels();
-                SetYLabels();
+                });
+                t1.Wait();
+                t2.Wait();
+                t3.Wait();
+                
+                chart.Invoke((Action)(() =>
+                {
+                    foreach (var s in series)
+                    {
+                        chart.Series[s.Key] = s.Value;
+                    }
+                    SetEnabledSeries(SeriesViewObserving.GetSeries());
+                    ChangeChartLabels();
+                    SetYLabels();
+                }));
+                stopwatch.Stop();
+                //MessageBox.Show(""+stopwatch.ElapsedMilliseconds);
             }
         }
 
@@ -817,6 +893,27 @@ namespace DSLOG_Reader_2
         {
             DiagnosticDialog diagnosticDialog = new DiagnosticDialog();
             diagnosticDialog.Show();
+        }
+
+        private void backgroundWorkerPlot_DoWork(object sender, DoWorkEventArgs e)
+        {
+            //chart.BeginInvoke((Action)(() =>
+            //{
+                PlotLog();
+            //}));
+        }
+
+        private void backgroundWorkerPlot_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            PointCount = LogEntries.Count;
+            SetEnergy();
+
+            chart.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+            if (LogInfo.Live)
+            {
+                labelFileInfo.BackColor = Color.Lime;
+                timerStream.Start();
+            }
         }
 
         public DSLOGEntry GetEntryAt(double d)
