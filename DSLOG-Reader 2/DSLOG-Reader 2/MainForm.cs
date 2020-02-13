@@ -46,6 +46,7 @@ namespace DSLOG_Reader_2
             exportView1.DSEvents = eventsView1;
             exportView1.Comp = competitionView1;
             exportView1.Files = fileListView;
+            probeView1.MainGraph = mainGraphView;
             SetMode();
         }
 

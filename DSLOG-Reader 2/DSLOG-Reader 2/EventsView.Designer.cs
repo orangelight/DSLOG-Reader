@@ -34,7 +34,6 @@
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.textBoxSearch = new System.Windows.Forms.TextBox();
-            this.backgroundWorkerLoadEvents = new System.ComponentModel.BackgroundWorker();
             this.buttonImportant = new System.Windows.Forms.Button();
             this.buttonDup = new System.Windows.Forms.Button();
             this.buttonJoystick = new System.Windows.Forms.Button();
@@ -100,11 +99,6 @@
             this.textBoxSearch.Size = new System.Drawing.Size(211, 20);
             this.textBoxSearch.TabIndex = 4;
             this.textBoxSearch.TextChanged += new System.EventHandler(this.textBoxSearch_TextChanged);
-            // 
-            // backgroundWorkerLoadEvents
-            // 
-            this.backgroundWorkerLoadEvents.WorkerSupportsCancellation = true;
-            this.backgroundWorkerLoadEvents.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerLoadEvents_DoWork);
             // 
             // buttonImportant
             // 
@@ -182,7 +176,6 @@
         private System.Windows.Forms.Button buttonJoystick;
         private System.Windows.Forms.Button buttonDup;
         private System.Windows.Forms.TextBox textBoxSearch;
-        private System.ComponentModel.BackgroundWorker backgroundWorkerLoadEvents;
         private System.Windows.Forms.Button buttonImportant;
     }
 }

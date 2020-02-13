@@ -65,30 +65,18 @@ namespace DSLOG_Reader_2
         {
             if (Entries == null) return;
             
-            if (MForm.GetCurrentMode() != MainMode.Events)
+            if (MForm.GetCurrentMode() != MainMode.Events) //TODO Merge this with else for no repeated code
             {
                 RefreshEvents = true;
-                //listViewEvents.BeginUpdate();
-                //listViewEvents.ListViewItemSorter = null;
-                //lastIndexSelectedEvents = -1;
+
                 GraphView.ClearMessages();
-                //listViewEvents.Items.Clear();
+
                 var dupDict = new Dictionary<string, DateTime>(StringComparer.OrdinalIgnoreCase);
                 EventsDict = new Dictionary<double, List<string>>();
                 foreach (var entry in Entries.Where(e => e.Data.Contains(Filter, StringComparison.OrdinalIgnoreCase)))
                 {
                     DataPoint po = new DataPoint(entry.Time.ToOADate(), 15);
                     po.MarkerSize = 6;
-                    //ListViewItem item = new ListViewItem();
-                    //item.UseItemStyleForSubItems = false;
-                    //if (GraphView.CanUseMatchTime && GraphView.UseMatchTime)
-                    //{
-                    //    //item.Text = ((entry.Time - GraphView.MatchTime).TotalMilliseconds / 1000.0).ToString("0.###");
-                    //}
-                    //else
-                    //{
-                    //    //item.Text = entry.Time.ToString("h:mm:ss.fff tt");
-                    //}
 
                     string entryText = entry.Data;
 
@@ -175,22 +163,11 @@ namespace DSLOG_Reader_2
                         po.Color = Color.Khaki;
                         po.YValues[0] = 14.7;
                     }
-                    //item.SubItems.Add("" + entry.Time.ToOADate());
-                    var mode = GraphView.GetEntryAt(entry.Time.ToOADate());
+                    
 
-                    //item.SubItems[0].BackColor = Color.DarkGray;
-                    //if (mode != null)
-                    //{
-                    //    if (mode.DSAuto) item.SubItems[0].BackColor = Color.Lime;
-                    //    else if (mode.DSTele) item.SubItems[0].BackColor = Color.Cyan;
-                    //}
-
-                    //listViewEvents.Items.Add(item);
                     GraphView.AddMessage(po);
                     AddEntryToDict(entry.Time.ToOADate(), entryText);
                 }
-                //listViewEvents.Columns[0].Width = -2;
-                //listViewEvents.EndUpdate();
             }
             else
             {

@@ -16,6 +16,7 @@ namespace DSLOG_Reader_2
     {
         private DSLOGEntry Entry;
         private Dictionary<string, int[]> IdToPDPGroup;
+        public MainGraphView MainGraph { get; set; }
         public ProbeView()
         {
             InitializeComponent();
@@ -108,7 +109,6 @@ namespace DSLOG_Reader_2
         {
             treeView1.BeginUpdate();
             ResetTreeView();
-            //Controls.Clear();
             if (Entry != null && IdToPDPGroup != null)
             {
                
@@ -116,7 +116,15 @@ namespace DSLOG_Reader_2
                 {
                     if (group.Name == "time")
                     {
-                        group.Text = $"Time: {Entry.Time.ToString("HH:mm:ss.fff")}";
+                        if (MainGraph.UseMatchTime && MainGraph.CanUseMatchTime)
+                        {
+                            group.Text = $"Time: {((Entry.Time-MainGraph.MatchTime).TotalMilliseconds / 1000.0).ToString("0.###")}";
+                        }
+                        else
+                        {
+                            group.Text = $"Time: {Entry.Time.ToString("HH:mm:ss.fff")}";
+                        }
+                        
                         continue;
                     }
                     foreach(TreeNode node in group.Nodes)
