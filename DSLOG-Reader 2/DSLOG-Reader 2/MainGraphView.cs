@@ -40,6 +40,7 @@ namespace DSLOG_Reader_2
         public bool UseMatchTime { get; private set; }
         public bool CanUseMatchTime { get; private set; }
         private double lastInviewSecs = -1;
+        private volatile bool LoadingLog = false, PlottingLog = false;
         public MainGraphView()
         {
             InitializeComponent();
@@ -86,9 +87,9 @@ namespace DSLOG_Reader_2
             SeriesSettings["messages"] = messages;
         }
 
-        public void SetSeries(SeriesGroupNodes basic, SeriesGroupNodes pdp)
+        public async void SetSeries(SeriesGroupNodes basic, SeriesGroupNodes pdp)
         {
-
+            WaitForLoadingPlotting();
             IdToPDPGroup = new Dictionary<string, int[]>();
             ClearGraph();
             
@@ -164,7 +165,8 @@ namespace DSLOG_Reader_2
             {
                 LastEntry = 0;
                 InitChart();
-                backgroundWorkerPlot.RunWorkerAsync();
+                var t = Task.Run(() => { PlotLog(); });
+                await t;
                 EventsView.AddEvents();
             }
         }
@@ -182,20 +184,29 @@ namespace DSLOG_Reader_2
             return newMode;
         }
 
+        private void WaitForLoadingPlotting()
+        {
+            while (LoadingLog || PlottingLog) Application.DoEvents();
+        }
         public void LoadLog(DSLOGFileEntry logInfo)
         {
-            StopStreaming();
-            LogStreamer = null;
-            buttonAnalysis.Enabled = false;
+            WaitForLoadingPlotting();
+            LoadingLog = true;
             LastPath = logInfo.FilePath;
             LastFile = logInfo.Name;
             LogInfo = logInfo;
             string dslogFile = $"{logInfo.FilePath}\\{logInfo.Name}.dslog";
-            InitChart();
-            LogEntries = null;
-            ClearInfoLabel();
-            ProbeView.SetProbe(null);
-            
+            chart.Invoke((Action)(() =>
+            {
+                StopStreaming();
+                LogStreamer = null;
+                buttonAnalysis.Enabled = false;
+                InitChart();
+                LogEntries = null;
+                ClearInfoLabel();
+                ProbeView.SetProbe(null);
+            }));
+
             if (File.Exists(dslogFile))
             {
                 DSLOGReader reader = null;
@@ -226,45 +237,53 @@ namespace DSLOG_Reader_2
                 {
                     return;
                 }
+                chart.Invoke((Action)(() =>
+                {
 
+                    if (logInfo.Live) LogStreamer.Stream();
+
+                    ChartArea area = chart.ChartAreas[0];
+                    StartTime = reader.StartTime;
+                    EndTime = reader.Entries.Last().Time;
+                    LogEntries = reader.Entries;
+                    area.AxisX.Minimum = StartTime.ToOADate();
+                    area.AxisX.Maximum = EndTime.ToOADate();
+                    area.CursorX.IntervalOffset = reader.StartTime.Millisecond % 20;
+
+
+                    labelFileInfo.Text = $"{logInfo.Name}.dslog";
+
+
+                    if (logInfo.IsFMSMatch)
+                    {
+                        labelFileInfo.Text = labelFileInfo.Text + $" ({logInfo.EventName} {logInfo.MatchType.ToString()} {logInfo.FMSMatchNum})";
+                        labelFileInfo.BackColor = logInfo.GetMatchTypeColor();
+                        buttonAnalysis.Enabled = true;
+                        SetUpMatchTime();
+                    }
+                    else
+                    {
+                        CanUseMatchTime = false;
+                        ChangeUseMatchTime(false);
+                    }
+                }));
+
+
+                PlotLog();
+                PointCount = LogEntries.Count;
                 if (logInfo.Live) LogStreamer.Stream();
-                
-                ChartArea area = chart.ChartAreas[0];
-                StartTime = reader.StartTime;
-                EndTime = reader.Entries.Last().Time;
-                LogEntries = reader.Entries;
-                area.AxisX.Minimum = StartTime.ToOADate();
-                area.AxisX.Maximum = EndTime.ToOADate();
-                area.CursorX.IntervalOffset = reader.StartTime.Millisecond % 20;
-               
-
-                labelFileInfo.Text = $"{logInfo.Name}.dslog";
-                
-                if (logInfo.IsFMSMatch)
+                chart.Invoke((Action)(() =>
                 {
-                    labelFileInfo.Text = labelFileInfo.Text + $" ({logInfo.EventName} {logInfo.MatchType.ToString()} {logInfo.FMSMatchNum})";
-                    labelFileInfo.BackColor = logInfo.GetMatchTypeColor();
-                    buttonAnalysis.Enabled = true;
-                    SetUpMatchTime();
-                }
-                else
-                {
-                    
-                    CanUseMatchTime = false;
-                    ChangeUseMatchTime(false);
-                }
+                    SetEnergy();
 
-                backgroundWorkerPlot.RunWorkerAsync();
-                //PlotLog();
-                //PointCount = LogEntries.Count;
-                //SetEnergy();
-
-                //area.AxisX.ScaleView.ZoomReset();
-                //if (logInfo.Live)
-                //{
-                //    labelFileInfo.BackColor = Color.Lime;
-                //    timerStream.Start();
-                //}
+                    chart.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+                    if (logInfo.Live)
+                    {
+                        labelFileInfo.BackColor = Color.Lime;
+                        timerStream.Start();
+                    }
+                }));
+                LoadingLog = false;
             }
            
         }
@@ -401,6 +420,7 @@ namespace DSLOG_Reader_2
 
         private void PlotLog()
         {
+            PlottingLog = true;
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             if (LogEntries != null)
@@ -426,23 +446,24 @@ namespace DSLOG_Reader_2
                 {
                     foreach (var s in chart.Series)
                     {
+                        s.Enabled = false;
                         series.Add(s.Name, s);
                     }
                     chart.Series.Clear();
                 }));
                 var t1 = Task.Run(() =>
                 {
-                    for (; LastEntry < LogEntries.Count; LastEntry++)
+                    for (int i = 0; i < LogEntries.Count; i++)
                     {
-                        DSLOGEntry en = LogEntries.ElementAt(LastEntry);
+                        DSLOGEntry en = LogEntries.ElementAt(i);
                         //Adds points to first and last x values
                         double entryTime = en.Time.ToOADate();
 
 
 
-                        if (LastEntry == 0 || LastEntry == LogEntries.Count - 1)
+                        if (i == 0 || i == LogEntries.Count - 1)
                         {
-                            if (LastEntry == LogEntries.Count - 1)
+                            if (i == LogEntries.Count - 1)
                             {
                                 chart.Invoke((Action)(() =>
                                 {
@@ -459,8 +480,8 @@ namespace DSLOG_Reader_2
                         }
                         else
                         {
-                            var lastEn = LogEntries.ElementAt(LastEntry - 1);
-                            var nextEn = LogEntries.ElementAt(LastEntry + 1);
+                            var lastEn = LogEntries.ElementAt(i - 1);
+                            var nextEn = LogEntries.ElementAt(i + 1);
                             //Checks if value is differnt around it so we don't plot everypoint
                             if (lastEn.TripTime != en.TripTime || nextEn.TripTime != en.TripTime)
                             {
@@ -494,8 +515,7 @@ namespace DSLOG_Reader_2
                             }
                            
                         }
-
-
+                        //Debug.WriteLine($"{(double)i/LogEntries.Count}");
                     }
                 });
 
@@ -594,47 +614,55 @@ namespace DSLOG_Reader_2
                             }
                         }
 
-
                     }
                 });
                 t1.Wait();
                 t2.Wait();
                 t3.Wait();
+                //Task.WaitAll(t1, t2, t3);
                 
                 chart.Invoke((Action)(() =>
                 {
+                   
                     foreach (var s in series)
                     {
                         chart.Series[s.Key] = s.Value;
                     }
-                    SetEnabledSeries(SeriesViewObserving.GetSeries());
+                    SetEnabledSeriesPrivate();
                     ChangeChartLabels();
                     SetYLabels();
                 }));
+                PlottingLog = false;
                 stopwatch.Stop();
                 //MessageBox.Show(""+stopwatch.ElapsedMilliseconds);
             }
         }
-
-        public void SetEnabledSeries(TreeNodeCollection groups)
+        private void SetEnabledSeriesPrivate()
         {
-            foreach(TreeNode group in groups)
+            foreach (TreeNode group in SeriesViewObserving.GetSeries())
             {
-                foreach(TreeNode node in group.Nodes)
+                foreach (TreeNode node in group.Nodes)
                 {
                     chart.Series[node.Name].Enabled = node.Checked;
                 }
             }
+        }
+        public void SetEnabledSeries(TreeNodeCollection groups)
+        {
+            WaitForLoadingPlotting();
+            SetEnabledSeriesPrivate();
             SetYLabels();
         }
 
         public void ClearMessages()
         {
+            WaitForLoadingPlotting();
             Util.ClearPointsQuick(chart.Series[DSAttConstants.Messages]);
         }
 
         private void Chart_MouseMove(object sender, MouseEventArgs e)
         {
+            if (PlottingLog || LoadingLog) return;
             var pos = e.Location;
             if (prevPosition.HasValue && pos == prevPosition.Value) return;
             prevPosition = pos;
@@ -706,6 +734,7 @@ namespace DSLOG_Reader_2
 
         private void Chart_CursorPositionChanged(object sender, CursorEventArgs e)
         {
+            if (LoadingLog || PlottingLog) return;
             if (LogEntries != null)
             {
                 SetCursorPosition(e.NewPosition);
@@ -814,12 +843,14 @@ namespace DSLOG_Reader_2
 
         private void buttonFindMatch_Click(object sender, EventArgs e)
         {
+            WaitForLoadingPlotting();
             ZoomIntoMatch();
             ChangeChartLabels();
         }
 
         private void buttonResetZoom_Click(object sender, EventArgs e)
         {
+            WaitForLoadingPlotting();
             ResetZoom();
             ChangeChartLabels();
         }
@@ -832,6 +863,7 @@ namespace DSLOG_Reader_2
 
         public void SaveChartImage(string file)
         {
+            WaitForLoadingPlotting();
             chart.ChartAreas[0].AxisX.ScrollBar.Enabled = false;
             chart.SaveImage(file, ChartImageFormat.Png);
             chart.ChartAreas[0].AxisX.ScrollBar.Enabled = true;
@@ -839,6 +871,7 @@ namespace DSLOG_Reader_2
 
         private void buttonMatchTime_Click(object sender, EventArgs e)
         {
+            WaitForLoadingPlotting();
             ChangeUseMatchTime(!UseMatchTime,true);
         }
 
@@ -895,25 +928,16 @@ namespace DSLOG_Reader_2
             diagnosticDialog.Show();
         }
 
-        private void backgroundWorkerPlot_DoWork(object sender, DoWorkEventArgs e)
-        {
-            //chart.BeginInvoke((Action)(() =>
-            //{
-                PlotLog();
-            //}));
-        }
 
         private void backgroundWorkerPlot_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            PointCount = LogEntries.Count;
-            SetEnergy();
 
-            chart.ChartAreas[0].AxisX.ScaleView.ZoomReset();
-            if (LogInfo.Live)
+            if (e.Cancelled)
             {
-                labelFileInfo.BackColor = Color.Lime;
-                timerStream.Start();
+                
+                return;
             }
+           
         }
 
         public DSLOGEntry GetEntryAt(double d)
