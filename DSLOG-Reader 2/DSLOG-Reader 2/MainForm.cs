@@ -126,5 +126,13 @@ namespace DSLOG_Reader_2
         {
             System.Diagnostics.Process.Start("https://github.com/orangelight/DSLOG-Reader/blob/master/Help.md");
         }
+
+        public void SetLiveLog(bool live)
+        {
+            if (live)
+            {
+
+            }
+        }
     }
 }

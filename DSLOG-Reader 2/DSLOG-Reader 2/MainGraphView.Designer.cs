@@ -30,7 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.GraphCorsorLine = new System.Windows.Forms.Timer(this.components);
             this.labelFileInfo = new System.Windows.Forms.Label();
@@ -111,9 +110,6 @@
             this.chart.ChartAreas.Add(chartArea1);
             this.chart.Location = new System.Drawing.Point(0, 22);
             this.chart.Name = "chart";
-            series1.ChartArea = "ChartArea";
-            series1.Name = "Series1";
-            this.chart.Series.Add(series1);
             this.chart.Size = new System.Drawing.Size(1104, 553);
             this.chart.TabIndex = 0;
             this.chart.Text = "chart";

@@ -289,6 +289,7 @@ namespace DSLOG_Reader_2
                 if (LogUpdateQueue.TryDequeue(out file))
                 {
                     FileInfo fileInfo = new FileInfo($"{Path}\\{file}.dslog");
+                    if (!fileInfo.Exists) continue;
                     if (fileInfo.Length < 100)
                     {
                         AddBack.Add(file);
@@ -325,7 +326,11 @@ namespace DSLOG_Reader_2
                 }
                 catch (IOException ex)
                 {
-
+                    if (listView.Items[listView.Items.Count - 1].Text == entry.Name)
+                    {
+                        entry.SetSeconds();
+                        listView.Items[listView.Items.Count - 1].SubItems[2].Text = entry.Seconds.ToString();
+                    }
                 }
             }
 
@@ -350,7 +355,7 @@ namespace DSLOG_Reader_2
             string selectedEvent = filterSelectorCombo.Items[filterSelectorCombo.SelectedIndex].ToString();
             if (selectedEvent == "All Logs")
             {
-                return DSLOGFiles.Values.Where(e => !(e.Useless && filterUseless));
+                return DSLOGFiles.Values.Where(e => !(e.Useless && filterUseless) || e.Live);
             }
             else
             {
