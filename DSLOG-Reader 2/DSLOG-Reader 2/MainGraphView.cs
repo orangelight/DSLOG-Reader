@@ -475,8 +475,6 @@ namespace DSLOG_Reader_2
         private void PlotLog()
         {
             PlottingLog = true;
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
             if (LogEntries != null)
             {
                 Dictionary<string, Series> series = new Dictionary<string, Series>();
@@ -529,7 +527,6 @@ namespace DSLOG_Reader_2
                 LastEntry = LogEntries.Count;
                 LastEnergyAdd = DateTime.Now;
                 PlottingLog = false;
-                stopwatch.Stop();
             }
         }
 
