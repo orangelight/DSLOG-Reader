@@ -19,6 +19,7 @@ namespace DSLOG_Reader_2
         public EnergyView()
         {
             InitializeComponent();
+            treeView1.DoubleBuffered(true);
         }
 
         public void SetEnergy(IEnumerable<DSLOGEntry> entries)
@@ -30,6 +31,17 @@ namespace DSLOG_Reader_2
                 EnergyCache.Add(i, entries.Where(en=> en.Voltage < 30).Sum(en => (en.GetPDPChannel(i) * MillToHour20) * en.Voltage)*3.6);
             }
             EnergyCache.Add(-1, EnergyCache.Sum(ser => ser.Value));
+            DisplayEnergy();
+        }
+
+        public void AddEnergy(IEnumerable<DSLOGEntry> entries)
+        {
+            if (entries == null && EnergyCache.Count > 0) return;
+            for (int i = 0; i < 16; i++)
+            {
+                EnergyCache[i] +=(entries.Where(en => en.Voltage < 30).Sum(en => (en.GetPDPChannel(i) * MillToHour20) * en.Voltage) * 3.6);
+            }
+            EnergyCache[-1] = EnergyCache.Where(ser=> ser.Key != -1).Sum(ser => ser.Value);
             DisplayEnergy();
         }
 
@@ -49,7 +61,7 @@ namespace DSLOG_Reader_2
 
         private void DisplayEnergy()
         {
-            treeView1.BeginUpdate();
+            //treeView1.BeginUpdate();
             ResetTreeView();
             if (EnergyCache.Count != 0 && IdToPDPGroup != null)
             {
@@ -74,7 +86,7 @@ namespace DSLOG_Reader_2
                     }
                 }
             }
-            treeView1.EndUpdate();
+            //treeView1.EndUpdate();
         }
 
         public SeriesView SeriesViewObserving { get; set; }

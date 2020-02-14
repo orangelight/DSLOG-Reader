@@ -12,6 +12,7 @@ using System.IO;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Text.RegularExpressions;
 using static DSLOG_Reader_2.MainForm;
+using System.Diagnostics;
 
 namespace DSLOG_Reader_2
 {
@@ -34,12 +35,13 @@ namespace DSLOG_Reader_2
         }
 
 
-        public void LoadLog(DSLOGFileEntry file)
+        public async void LoadLog(DSLOGFileEntry file)
         {
+            
             var fileName = $"{file.FilePath}\\{file.Name}.dsevents";
             EventsDict.Clear();
             Entries = null;
-            listViewEvents.Items.Clear();
+            //listViewEvents.Items.Clear();
             if (!File.Exists(fileName))
             {
                 return;
@@ -51,8 +53,9 @@ namespace DSLOG_Reader_2
                 return;
             }
             Entries = reader.Entries;
-            richTextBox1.Text = "";
-            AddEvents();
+            
+            //AddEvents();
+           
         }
 
         private void AddEntryToDict(double key, string value)
@@ -63,6 +66,7 @@ namespace DSLOG_Reader_2
 
         public void AddEvents(bool onlyPlot = false)
         {
+            richTextBox1.Text = "";
             if (Entries == null) return;
             
             if (MForm.GetCurrentMode() != MainMode.Events) //TODO Merge this with else for no repeated code

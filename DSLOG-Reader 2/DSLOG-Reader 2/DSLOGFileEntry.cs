@@ -103,7 +103,7 @@ namespace DSLOG_Reader_2
             return true;
         }
 
-        private void SetSeconds()
+        public void SetSeconds()
         {
             Seconds = ((new FileInfo(FilePath + "\\" + Name + ".dslog").Length - 19) / 35) / 50;
         }

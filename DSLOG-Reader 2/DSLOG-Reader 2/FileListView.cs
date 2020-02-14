@@ -13,6 +13,7 @@ using DSLOG_Reader_Library;
 using DSLOG_Reader_2.Properties;
 using System.Threading;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 
 namespace DSLOG_Reader_2
 {
@@ -33,6 +34,7 @@ namespace DSLOG_Reader_2
         private Dictionary<string, int[]> IdToPDPGroup = new Dictionary<string, int[]>();
         private Dictionary<string, string> Series = new Dictionary<string, string>();
         private bool AllowFillInEventNames = true;
+        private volatile bool LoadingLog = false;
         public FileListView()
         {
             InitializeComponent();
@@ -173,12 +175,19 @@ namespace DSLOG_Reader_2
             }
         }
 
-        private void GraphLog(DSLOGFileEntry file)
+        private async void GraphLog(DSLOGFileEntry file)
         {
             if (MainChart !=null && file != null && file.Valid)
             {
-                MainChart.LoadLog(file);
-                EventView.LoadLog(file);
+                while (LoadingLog) Application.DoEvents();
+               
+                LoadingLog = true;
+                var tc = Task.Run(() =>{ MainChart.LoadLog(file);});
+                var te = Task.Run(() => { EventView.LoadLog(file); });
+                await tc;
+                await te;
+                EventView.AddEvents();
+                LoadingLog = false;
             }
         }
 
@@ -280,6 +289,7 @@ namespace DSLOG_Reader_2
                 if (LogUpdateQueue.TryDequeue(out file))
                 {
                     FileInfo fileInfo = new FileInfo($"{Path}\\{file}.dslog");
+                    if (!fileInfo.Exists) continue;
                     if (fileInfo.Length < 100)
                     {
                         AddBack.Add(file);
@@ -316,7 +326,11 @@ namespace DSLOG_Reader_2
                 }
                 catch (IOException ex)
                 {
-
+                    if (listView.Items[listView.Items.Count - 1].Text == entry.Name)
+                    {
+                        entry.SetSeconds();
+                        listView.Items[listView.Items.Count - 1].SubItems[2].Text = entry.Seconds.ToString();
+                    }
                 }
             }
 
@@ -341,7 +355,7 @@ namespace DSLOG_Reader_2
             string selectedEvent = filterSelectorCombo.Items[filterSelectorCombo.SelectedIndex].ToString();
             if (selectedEvent == "All Logs")
             {
-                return DSLOGFiles.Values.Where(e => !(e.Useless && filterUseless));
+                return DSLOGFiles.Values.Where(e => !(e.Useless && filterUseless) || e.Live);
             }
             else
             {
