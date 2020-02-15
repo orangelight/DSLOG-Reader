@@ -78,7 +78,7 @@ namespace DSLOG_Reader_Library
             }
             double avg = group.Average();    
             double sum = group.Sum(d => Math.Pow(d - avg, 2));    
-            return Math.Sqrt((sum) / (group.Count() - 1));
+            return Math.Sqrt((sum) / group.Count());
         }
     }
 }

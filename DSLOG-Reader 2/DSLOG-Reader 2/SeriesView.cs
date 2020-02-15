@@ -158,8 +158,7 @@ namespace DSLOG_Reader_2
 
         private void treeView_BeforeSelect(object sender, TreeViewCancelEventArgs e)
         {
-            e.Node.Checked = !e.Node.Checked;
-            DoChecking(e.Node);
+           
             e.Cancel = true;
         }
 
