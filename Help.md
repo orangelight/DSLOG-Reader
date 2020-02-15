@@ -48,7 +48,7 @@ This tab show the main graph the current log is graphed.
 ##### Zooming
 ##### Selecting what you see
 ##### Hovering over events
-
+### Log Streaming (Live)
 ### Match Time Button
 ### Reset Zoom Button
 ### Zoom into Match Button
