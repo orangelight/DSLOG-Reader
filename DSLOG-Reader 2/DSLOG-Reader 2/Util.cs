@@ -173,7 +173,7 @@ namespace DSLOG_Reader_2
         {
             foreach (var en in list)
             {
-                if (en.RobotAuto)
+                if (en.RobotAuto || en.DSAuto)
                 {
                     matchTime = en.Time;
                     return true;

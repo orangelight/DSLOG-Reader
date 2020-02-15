@@ -34,6 +34,7 @@
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.textBoxSearch = new System.Windows.Forms.TextBox();
+            this.buttonCodeOutput = new System.Windows.Forms.Button();
             this.buttonImportant = new System.Windows.Forms.Button();
             this.buttonDup = new System.Windows.Forms.Button();
             this.buttonJoystick = new System.Windows.Forms.Button();
@@ -94,11 +95,26 @@
             // textBoxSearch
             // 
             this.textBoxSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxSearch.Location = new System.Drawing.Point(587, 0);
+            this.textBoxSearch.Location = new System.Drawing.Point(564, 0);
             this.textBoxSearch.Name = "textBoxSearch";
             this.textBoxSearch.Size = new System.Drawing.Size(211, 20);
             this.textBoxSearch.TabIndex = 4;
             this.textBoxSearch.TextChanged += new System.EventHandler(this.textBoxSearch_TextChanged);
+            // 
+            // buttonCodeOutput
+            // 
+            this.buttonCodeOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCodeOutput.BackColor = System.Drawing.Color.Red;
+            this.buttonCodeOutput.BackgroundImage = global::DSLOG_Reader_2.Properties.Resources.Output_16x;
+            this.buttonCodeOutput.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.buttonCodeOutput.FlatAppearance.BorderSize = 0;
+            this.buttonCodeOutput.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonCodeOutput.Location = new System.Drawing.Point(800, -1);
+            this.buttonCodeOutput.Name = "buttonCodeOutput";
+            this.buttonCodeOutput.Size = new System.Drawing.Size(23, 23);
+            this.buttonCodeOutput.TabIndex = 6;
+            this.buttonCodeOutput.UseVisualStyleBackColor = false;
+            this.buttonCodeOutput.Click += new System.EventHandler(this.buttonCodeOutput_Click);
             // 
             // buttonImportant
             // 
@@ -108,7 +124,7 @@
             this.buttonImportant.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.buttonImportant.FlatAppearance.BorderSize = 0;
             this.buttonImportant.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonImportant.Location = new System.Drawing.Point(800, -1);
+            this.buttonImportant.Location = new System.Drawing.Point(777, -1);
             this.buttonImportant.Name = "buttonImportant";
             this.buttonImportant.Size = new System.Drawing.Size(23, 23);
             this.buttonImportant.TabIndex = 5;
@@ -152,6 +168,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.Controls.Add(this.buttonCodeOutput);
             this.Controls.Add(this.buttonImportant);
             this.Controls.Add(this.textBoxSearch);
             this.Controls.Add(this.buttonDup);
@@ -177,5 +194,6 @@
         private System.Windows.Forms.Button buttonDup;
         private System.Windows.Forms.TextBox textBoxSearch;
         private System.Windows.Forms.Button buttonImportant;
+        private System.Windows.Forms.Button buttonCodeOutput;
     }
 }

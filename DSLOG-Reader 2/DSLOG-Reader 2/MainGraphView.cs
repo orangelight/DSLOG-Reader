@@ -395,8 +395,19 @@ namespace DSLOG_Reader_2
                     DateTime startTime = StartTime.AddMilliseconds(-StartTime.Millisecond).AddSeconds(secInv).AddMilliseconds(MatchTime.Millisecond).AddSeconds(-offSet).AddSeconds(-secInv);
                     while (startTime < EndTime)
                     {
-                        CustomLabel l = new CustomLabel(startTime.AddSeconds(secInv).ToOADate(), startTime.AddSeconds(-secInv).ToOADate(), $"{((startTime - MatchTime).TotalMilliseconds / 1000.0).ToString("0.###")}", 0, LabelMarkStyle.None);
-                        l.ForeColor = Color.WhiteSmoke;
+                        double newTime = (startTime - MatchTime).TotalMilliseconds / 1000.0;
+                        CustomLabel l = new CustomLabel(startTime.AddSeconds(secInv).ToOADate(), startTime.AddSeconds(-secInv).ToOADate(), $"{newTime.ToString("0.###")}", 0, LabelMarkStyle.None);
+
+                        if (newTime >= 0 && newTime <= 15)
+                        {
+                            l.ForeColor = Color.Lime;
+                            //l.Text = (15.0 - newTime).ToString("0.###");
+                        }
+                        else if (newTime > 15 && newTime <= 150)
+                        {
+                            l.ForeColor = Color.Cyan;
+                            //l.Text = (135.0 - (newTime-15.0)).ToString("0.###");
+                        }
                         l.GridTicks = GridTickTypes.All;
                         chart.ChartAreas[0].AxisX.CustomLabels.Add(l);
                         startTime = startTime.AddSeconds(secInv);
@@ -488,6 +499,8 @@ namespace DSLOG_Reader_2
                         series.Add(s.Name, s);
                     }
                     chart.Series.Clear();
+                    chart.Series.Add(series[DSAttConstants.Messages]);
+                    series.Remove(DSAttConstants.Messages);
                 }));
 
                 var t1 = Task.Run(() =>
@@ -731,7 +744,6 @@ namespace DSLOG_Reader_2
 
         public void ClearMessages()
         {
-            WaitForLoadingPlotting();
             Util.ClearPointsQuick(chart.Series[DSAttConstants.Messages]);
         }
 
@@ -1040,12 +1052,43 @@ namespace DSLOG_Reader_2
         public void SetCursorPosition(double d)
         {
            //TODO move view to see position when not in view
+
                 chart.ChartAreas[0].CursorX.SetCursorPosition(d);
                 SetCursorLineRed();
                
                 ProbeView.SetProbe(GetEntryAt(d));
+                MoveViewToCursor();
 
-            
+
+        }
+
+        private void MoveViewToCursor()
+        {
+            var area = chart.ChartAreas[0];
+            double pos = chart.ChartAreas[0].CursorX.Position;
+            if (LogEntries != null && !Double.IsNaN(chart.ChartAreas[0].CursorX.Position) && pos >= area.AxisX.Minimum && pos <= area.AxisX.Maximum)
+            {
+                if (pos <= area.AxisX.ScaleView.ViewMinimum || pos >= area.AxisX.ScaleView.ViewMaximum)
+                {
+                    double size = area.AxisX.ScaleView.Size;
+                    if (Double.IsNaN(size))
+                    {
+                        return;
+                    }
+                    if (size/2+pos > area.AxisX.Maximum)
+                    {
+                        area.AxisX.ScaleView.Zoom(area.AxisX.Maximum - size, area.AxisX.Maximum - .000001);
+                    }
+                    else if ( pos - size / 2 < area.AxisX.Minimum)
+                    {
+                        area.AxisX.ScaleView.Zoom(area.AxisX.Minimum + .000001, area.AxisX.Minimum+size);
+                    }
+                    else
+                    {
+                        area.AxisX.ScaleView.Zoom(pos - size / 2, pos + size / 2);
+                    }
+                }
+            }
         }
 
         private void buttonAnalysis_Click(object sender, EventArgs e)

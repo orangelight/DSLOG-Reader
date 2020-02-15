@@ -236,6 +236,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="logo2.ico" />
+    <None Include="Resources\Output_16x.png" />
     <None Include="Resources\Important_16x.png" />
     <None Include="Resources\OpenFolder_16x.png" />
     <None Include="Resources\OpenFile_16x.png" />
