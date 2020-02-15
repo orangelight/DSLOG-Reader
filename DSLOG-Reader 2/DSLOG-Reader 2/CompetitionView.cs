@@ -165,7 +165,7 @@ namespace DSLOG_Reader_2
         private void PlotMatches()
         {
             if (backgroundWorkerReadMatches.IsBusy || Plotting) return;
-            if (Matches.Count == 0) return;
+            if (Matches.Count == 0 || MatchReaders.Count == 0) return;
             Plotting = true;
             xLabelOffset = 0;
             Util.ClearPointsQuick(chart.Series[0]);

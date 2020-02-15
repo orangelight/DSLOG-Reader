@@ -244,7 +244,6 @@ namespace DSLOG_Reader_2
             string dslogFile = $"{logInfo.FilePath}\\{logInfo.Name}.dslog";
             chart.Invoke((Action)(() =>
             {
-                
                 StopStreaming();
                 LogStreamer = null;
                 buttonAnalysis.Enabled = false;
@@ -306,7 +305,7 @@ namespace DSLOG_Reader_2
                     {
                         labelFileInfo.Text = labelFileInfo.Text + $" ({logInfo.EventName} {logInfo.MatchType.ToString()} {logInfo.FMSMatchNum})";
                         labelFileInfo.BackColor = logInfo.GetMatchTypeColor();
-                        buttonAnalysis.Enabled = true;
+                        //buttonAnalysis.Enabled = true;
                         SetUpMatchTime();
                     }
                     else

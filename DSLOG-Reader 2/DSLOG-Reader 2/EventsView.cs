@@ -109,7 +109,7 @@ namespace DSLOG_Reader_2
                     var NoJoyText = RemoveJoyStickMessages(entryText);
                     if (!NoJoyText.Contains(Filter, StringComparison.OrdinalIgnoreCase)) continue;
                     if (string.IsNullOrWhiteSpace(NoJoyText)) continue;
-                    entryText = NoJoyText.Replace("   ", " ").Replace("   ", " ");
+                    entryText = Regex.Replace(NoJoyText, @"\s+", " ");
                 }
                 if (FilterCodeOutput)
                 {
