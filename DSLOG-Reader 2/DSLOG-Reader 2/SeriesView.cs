@@ -35,6 +35,8 @@ namespace DSLOG_Reader_2
             Observers = new List<SeriesViewObserver>();
             Profiles = new GroupProfiles();
             NonEditGroups = new SeriesGroupNodes();
+            toolTip.SetToolTip(comboBoxProfiles, "Change PDP Profile");
+            toolTip.SetToolTip(buttonEditGroups, "Edit PDP Profiles");
 
         }
 

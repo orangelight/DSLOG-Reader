@@ -28,10 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SeriesView));
             this.treeView = new DSLOG_Reader_2.SeriesView.SeriesTreeView();
             this.buttonEditGroups = new System.Windows.Forms.Button();
             this.comboBoxProfiles = new System.Windows.Forms.ComboBox();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // treeView
@@ -93,5 +95,6 @@
         private System.Windows.Forms.Button buttonEditGroups;
         private SeriesTreeView treeView;
         private System.Windows.Forms.ComboBox comboBoxProfiles;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }

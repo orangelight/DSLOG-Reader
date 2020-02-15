@@ -33,6 +33,11 @@ namespace DSLOG_Reader_2
         {
             InitializeComponent();
             listViewEvents.DoubleBuffered(true);
+            toolTip.SetToolTip(buttonCodeOutput, "Remove Code Output");
+            toolTip.SetToolTip(buttonDup, "Filter Duplicated Events");
+            toolTip.SetToolTip(buttonImportant, "Filter Important Events");
+            toolTip.SetToolTip(buttonJoystick, "Remove Joystick Output");
+            toolTip.SetToolTip(textBoxSearch, "Search for Event");
         }
 
 

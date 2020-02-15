@@ -45,7 +45,7 @@ namespace DSLOG_Reader_2
                 SaveFileDialog saveFile = new SaveFileDialog();
                 saveFile.Filter = "CSV File|*.csv";
                 saveFile.Title = "Save the Exported CSV";
-                if ((CurrentMode == MainMode.Chart && saveFile.ShowDialog() == DialogResult.OK && ExportChartCSV(saveFile.FileName))
+                if ((CurrentMode == MainMode.Graph && saveFile.ShowDialog() == DialogResult.OK && ExportChartCSV(saveFile.FileName))
                     || (CurrentMode == MainMode.Events && saveFile.ShowDialog() == DialogResult.OK &&  ExportEventsCSV(saveFile.FileName)))
                 {
                     MessageBox.Show("Export to CSV Complete!");
@@ -55,7 +55,7 @@ namespace DSLOG_Reader_2
             }
             else if (selectedItem == "Clipboard")
             {
-                if ((CurrentMode == MainMode.Chart && ExportChartClipboard()) 
+                if ((CurrentMode == MainMode.Graph && ExportChartClipboard()) 
                     || (CurrentMode == MainMode.Events && ExportEventsClipboard()))
                 {
                     MessageBox.Show("Export to Clipboard Complete!");
@@ -68,7 +68,7 @@ namespace DSLOG_Reader_2
                 SaveFileDialog saveFile = new SaveFileDialog();
                 saveFile.Filter = "PNG FIle|*.png";
                 saveFile.Title = "Save the PNG Image";
-                if (CurrentMode == MainMode.Chart && saveFile.ShowDialog() == DialogResult.OK && ExportChartImage(saveFile.FileName)
+                if (CurrentMode == MainMode.Graph && saveFile.ShowDialog() == DialogResult.OK && ExportChartImage(saveFile.FileName)
                     ||CurrentMode == MainMode.Compititon && saveFile.ShowDialog() == DialogResult.OK && ExportCompImage(saveFile.FileName))
                 {
                     MessageBox.Show("Export to Image Complete!");

@@ -46,7 +46,7 @@
             this.buttonOpenFile = new System.Windows.Forms.Button();
             this.buttonBulkExport = new System.Windows.Forms.Button();
             this.buttonFilter = new System.Windows.Forms.Button();
-            this.buttonRefreash = new System.Windows.Forms.Button();
+            this.buttonRefresh = new System.Windows.Forms.Button();
             this.buttonSettings = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -188,15 +188,15 @@
             this.buttonFilter.UseVisualStyleBackColor = true;
             this.buttonFilter.Click += new System.EventHandler(this.buttonFilter_Click);
             // 
-            // buttonRefreash
+            // buttonRefresh
             // 
-            this.buttonRefreash.Image = global::DSLOG_Reader_2.Properties.Resources.Refresh_grey_16xMD;
-            this.buttonRefreash.Location = new System.Drawing.Point(56, -1);
-            this.buttonRefreash.Name = "buttonRefreash";
-            this.buttonRefreash.Size = new System.Drawing.Size(29, 23);
-            this.buttonRefreash.TabIndex = 4;
-            this.buttonRefreash.UseVisualStyleBackColor = true;
-            this.buttonRefreash.Click += new System.EventHandler(this.buttonRefreash_Click);
+            this.buttonRefresh.Image = global::DSLOG_Reader_2.Properties.Resources.Refresh_grey_16xMD;
+            this.buttonRefresh.Location = new System.Drawing.Point(56, -1);
+            this.buttonRefresh.Name = "buttonRefresh";
+            this.buttonRefresh.Size = new System.Drawing.Size(29, 23);
+            this.buttonRefresh.TabIndex = 4;
+            this.buttonRefresh.UseVisualStyleBackColor = true;
+            this.buttonRefresh.Click += new System.EventHandler(this.buttonRefreash_Click);
             // 
             // buttonSettings
             // 
@@ -217,7 +217,7 @@
             this.Controls.Add(this.buttonOpenFile);
             this.Controls.Add(this.buttonBulkExport);
             this.Controls.Add(this.buttonFilter);
-            this.Controls.Add(this.buttonRefreash);
+            this.Controls.Add(this.buttonRefresh);
             this.Controls.Add(this.textBoxPath);
             this.Controls.Add(this.buttonSettings);
             this.Controls.Add(this.filterSelectorCombo);
@@ -242,7 +242,7 @@
         private System.Windows.Forms.Timer timerScrollToBottom;
         private System.Windows.Forms.Button buttonSettings;
         private System.Windows.Forms.TextBox textBoxPath;
-        private System.Windows.Forms.Button buttonRefreash;
+        private System.Windows.Forms.Button buttonRefresh;
         private System.Windows.Forms.Button buttonFilter;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Timer timerFileUpdate;

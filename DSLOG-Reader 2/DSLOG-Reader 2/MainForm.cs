@@ -15,7 +15,7 @@ namespace DSLOG_Reader_2
 
         public enum MainMode
         {
-            Chart,
+            Graph,
             Events,
             Compititon
         }
@@ -83,8 +83,8 @@ namespace DSLOG_Reader_2
         {
             if (tabControlRight.SelectedIndex == 0)
             {
-                exportView1.SetMode(MainMode.Chart);
-                eventsView1.SetMode(MainMode.Chart);
+                exportView1.SetMode(MainMode.Graph);
+                eventsView1.SetMode(MainMode.Graph);
 
             }
             if (tabControlRight.SelectedIndex == 1)
@@ -103,7 +103,7 @@ namespace DSLOG_Reader_2
         {
             if (tabControlRight.SelectedIndex == 0)
             {
-                return MainMode.Chart;
+                return MainMode.Graph;
 
             }
             if (tabControlRight.SelectedIndex == 1)
@@ -114,7 +114,7 @@ namespace DSLOG_Reader_2
             {
                 return MainMode.Compititon;
             }
-            return MainMode.Chart;
+            return MainMode.Graph;
         }
 
         public void SetRightTabIndex(int index)

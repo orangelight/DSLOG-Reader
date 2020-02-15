@@ -143,6 +143,7 @@
             this.probeView1.AutoScroll = true;
             this.probeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.probeView1.Location = new System.Drawing.Point(3, 3);
+            this.probeView1.MainGraph = null;
             this.probeView1.Margin = new System.Windows.Forms.Padding(4);
             this.probeView1.Name = "probeView1";
             this.probeView1.SeriesViewObserving = null;

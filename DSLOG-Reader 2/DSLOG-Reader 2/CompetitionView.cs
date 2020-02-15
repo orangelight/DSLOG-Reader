@@ -39,6 +39,7 @@ namespace DSLOG_Reader_2
             SetSeries();
             SetYLabels();
             comboBoxMode.SelectedIndex = 0;
+            toolTip.SetToolTip(comboBoxMode, "Robot Mode");
         }
 
         public void SetEnabledSeries(TreeNodeCollection groups)
@@ -150,6 +151,7 @@ namespace DSLOG_Reader_2
                 while (backgroundWorkerReadMatches.IsBusy || Plotting)
                     Application.DoEvents();
             }
+            SeriesViewObserving.Enabled = false;
             backgroundWorkerReadMatches.RunWorkerAsync();
         }
 
@@ -164,7 +166,7 @@ namespace DSLOG_Reader_2
 
         private void PlotMatches()
         {
-            if (backgroundWorkerReadMatches.IsBusy || Plotting) return;
+            if (backgroundWorkerReadMatches.IsBusy) return;
             if (Matches.Count == 0 || MatchReaders.Count == 0) return;
             Plotting = true;
             xLabelOffset = 0;
@@ -365,7 +367,9 @@ namespace DSLOG_Reader_2
 
         private void backgroundWorkerReadMatches_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            
             if (!e.Cancelled) PlotMatches();
+            SeriesViewObserving.Enabled = true;
         }
 
         private void backgroundWorkerReadMatches_ProgressChanged(object sender, ProgressChangedEventArgs e)

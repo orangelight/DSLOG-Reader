@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.listViewEvents = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -38,6 +39,7 @@
             this.buttonImportant = new System.Windows.Forms.Button();
             this.buttonDup = new System.Windows.Forms.Button();
             this.buttonJoystick = new System.Windows.Forms.Button();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // richTextBox1
@@ -195,5 +197,6 @@
         private System.Windows.Forms.TextBox textBoxSearch;
         private System.Windows.Forms.Button buttonImportant;
         private System.Windows.Forms.Button buttonCodeOutput;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }

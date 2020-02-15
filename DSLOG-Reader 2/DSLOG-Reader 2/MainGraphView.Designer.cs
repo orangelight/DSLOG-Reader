@@ -40,6 +40,7 @@
             this.buttonAutoScroll = new System.Windows.Forms.Button();
             this.buttonMatchTime = new System.Windows.Forms.Button();
             this.labelTimeInView = new System.Windows.Forms.Label();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
             this.SuspendLayout();
             // 
@@ -251,5 +252,6 @@
         private System.Windows.Forms.Button buttonAnalysis;
         private System.Windows.Forms.Button buttonMatchTime;
         private System.Windows.Forms.Label labelTimeInView;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }

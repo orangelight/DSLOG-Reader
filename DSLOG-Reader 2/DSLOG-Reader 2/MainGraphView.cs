@@ -48,6 +48,12 @@ namespace DSLOG_Reader_2
             CanUseMatchTime = false;
             UseMatchTime = false;
             InitSeriesSettings();
+            toolTip.SetToolTip(buttonAnalysis, "Match Analysis (not done)");
+            toolTip.SetToolTip(buttonAutoScroll, "Stream Log Autoscroll");
+            toolTip.SetToolTip(buttonFindMatch, "Zoom into Match");
+            toolTip.SetToolTip(buttonMatchTime, "Use Match Time");
+            toolTip.SetToolTip(buttonResetZoom, "Reset Zoom");
+            
             
         }
 
@@ -93,10 +99,7 @@ namespace DSLOG_Reader_2
             WaitForLoadingPlotting();
             IdToPDPGroup = new Dictionary<string, int[]>();
             //ClearGraph();
-            if (LogInfo != null)
-            {
-                RemoveDeltaTotalSeries();
-            }
+            RemoveDeltaTotalSeries();
 
             //chart.Series.Clear();
             if (!InitBasic)
@@ -527,7 +530,7 @@ namespace DSLOG_Reader_2
                 chart.Invoke((Action)(() =>
                 {
                     chart.ChartAreas[0].AxisX.Maximum = LogEntries.Last().Time.ToOADate();
-                    if (AutoScrollLive) chart.ChartAreas[0].AxisX.ScaleView.Scroll(LogEntries.Last().Time.ToOADate());
+                    if (AutoScrollLive && buttonAutoScroll.BackColor == Color.Lime) chart.ChartAreas[0].AxisX.ScaleView.Scroll(LogEntries.Last().Time.ToOADate());
                     foreach (var s in series)
                     {
                         chart.Series[s.Key] = s.Value;

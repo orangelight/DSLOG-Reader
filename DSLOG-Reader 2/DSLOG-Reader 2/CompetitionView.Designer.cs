@@ -28,12 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.comboBoxMode = new System.Windows.Forms.ComboBox();
             this.backgroundWorkerReadMatches = new System.ComponentModel.BackgroundWorker();
             this.progressBarEvents = new System.Windows.Forms.ProgressBar();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
             this.SuspendLayout();
             // 
@@ -138,5 +140,6 @@
         private System.Windows.Forms.ComboBox comboBoxMode;
         private System.ComponentModel.BackgroundWorker backgroundWorkerReadMatches;
         private System.Windows.Forms.ProgressBar progressBarEvents;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }

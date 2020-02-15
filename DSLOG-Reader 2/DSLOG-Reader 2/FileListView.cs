@@ -41,6 +41,12 @@ namespace DSLOG_Reader_2
             DSLOGFiles = new Dictionary<string, DSLOGFileEntry>();
             LogUpdateQueue = new ConcurrentQueue<string>();
             toolTip1.SetToolTip(buttonFilter, "Filter Useless Logs");
+            toolTip1.SetToolTip(buttonBulkExport, "Bulk Export Logs");
+            toolTip1.SetToolTip(buttonChangePath, "Open Folder");
+            toolTip1.SetToolTip(buttonOpenFile, "Open Log File");
+            toolTip1.SetToolTip(buttonRefresh, "Refresh Logs");
+            toolTip1.SetToolTip(buttonSettings, "Open Settings");
+            toolTip1.SetToolTip(filterSelectorCombo, "Filter Logs by Event");
             listView.DoubleBuffered(true);
         }
 
@@ -180,12 +186,13 @@ namespace DSLOG_Reader_2
             if (MainChart !=null && file != null && file.Valid)
             {
                 while (LoadingLog) Application.DoEvents();
-               
+                SeriesViewObserving.Enabled = false;
                 LoadingLog = true;
                 var tc = Task.Run(() =>{ MainChart.LoadLog(file);});
                 var te = Task.Run(() => { EventView.LoadLog(file); });
                 await tc;
                 await te;
+                SeriesViewObserving.Enabled = true;
                 EventView.AddEvents();
                 LoadingLog = false;
             }

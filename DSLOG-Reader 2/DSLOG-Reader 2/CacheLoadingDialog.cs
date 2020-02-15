@@ -65,10 +65,7 @@ namespace DSLOG_Reader_2
                     if (entry.Useless) UselessFiles++;
                 }
                 int num = (int)(100.0 * ((double)EntryNum++ / (double)Files.Count()));
-                if (num > lastNum)
-                {
-                    backgroundWorker1.ReportProgress(num);
-                }
+                backgroundWorker1.ReportProgress(num);
                 
             });
 
