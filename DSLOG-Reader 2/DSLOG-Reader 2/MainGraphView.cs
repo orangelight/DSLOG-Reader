@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.IO;
 using DSLOG_Reader_Library;
-using System.Diagnostics;
 
 namespace DSLOG_Reader_2
 {
@@ -240,6 +237,7 @@ namespace DSLOG_Reader_2
         }
         public void LoadLog(DSLOGFileEntry logInfo)
         {
+            if (logInfo == null) return;
             WaitForLoadingPlotting();
 
             LoadingLog = true;
@@ -276,6 +274,7 @@ namespace DSLOG_Reader_2
                     } catch (Exception ex)
                     {
                         MessageBox.Show("Log Corrupted!");
+                        LoadingLog = false;
                         return;
                     }
                     
@@ -285,6 +284,7 @@ namespace DSLOG_Reader_2
 
                 if (reader.Version != 3)
                 {
+                    LoadingLog = false;
                     return;
                 }
                 chart.Invoke((Action)(() =>
@@ -339,6 +339,11 @@ namespace DSLOG_Reader_2
                     }
                 }));
                 SetAutoScrollColor();
+            }
+            else
+            {
+                LoadingLog = false;
+                MessageBox.Show("Log Corrupted!");
             }
            
         }

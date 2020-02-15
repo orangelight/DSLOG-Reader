@@ -4,15 +4,12 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using DSLOG_Reader_Library;
 using System.IO;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Text.RegularExpressions;
 using static DSLOG_Reader_2.MainForm;
-using System.Diagnostics;
 
 namespace DSLOG_Reader_2
 {
@@ -53,19 +50,26 @@ namespace DSLOG_Reader_2
                 return;
             }
             DSEVENTSReader reader = new DSEVENTSReader(fileName);
-            reader.Read();
+            try
+            {
+                reader.Read();
+            } catch(Exception ex)
+            {
+                MessageBox.Show("dsevent file corrupted!");
+                return;
+            }
+         
             if (reader.Version != 3)
             {
                 return;
             }
             Entries = reader.Entries;
-            
-            //AddEvents();
            
         }
 
         private void AddEntryToDict(double key, string value)
         {
+            if (EventsDict == null) return;
             if (!EventsDict.ContainsKey(key)) EventsDict[key] = new List<string>();
             EventsDict[key].Add(value);
         }

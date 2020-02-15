@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using DSLOG_Reader_Library;
 
@@ -55,7 +52,7 @@ namespace DSLOG_Reader_2
             try
             {
                 SetSeconds();
-                if (!SetTime() || !SetFMS() || !SetUseless())
+                if (!SetTime() || !SetFMS() || !SetUseless() || !CheckVersion())
                 {
                     Useless = true;
                     return false;
@@ -69,6 +66,12 @@ namespace DSLOG_Reader_2
             }
            Live = CheckLive();
             return true;
+        }
+        private bool CheckVersion()
+        {
+            DSLOGReader reader = new DSLOGReader(FilePath + "\\" + Name + ".dslog");
+            reader.OnlyReadMetaData();
+            return reader.Version == 3;
         }
         private bool CheckLive()
         {
@@ -361,6 +364,7 @@ namespace DSLOG_Reader_2
             StringBuilder sb = new StringBuilder();
             foreach(var entry in NewEntries)
             {
+                if (entry == null) continue;
                 if (((entry.FMSFilledIn && entry.EventName == "???") || (entry.FMSFilledIn && Math.Abs((entry.StartTime-DateTime.Now).TotalDays) < 2)) || !entry.Valid || entry.Live) continue;
                 sb.Append(entry.ToCacheEntry());
                 sb.Append("\n");

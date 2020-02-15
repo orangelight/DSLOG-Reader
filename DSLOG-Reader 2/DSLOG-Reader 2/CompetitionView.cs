@@ -180,6 +180,7 @@ namespace DSLOG_Reader_2
             for (int i = 0; i < Matches.Count; i++)
             {
                 var reader = MatchReaders[i];
+                if (reader == null) continue;
                 var match = Matches[i];
                 if (reader.Entries.Where(en => en.RobotAuto || en.RobotTele || en.Brownout).Count() < 10)
                 {
@@ -353,8 +354,18 @@ namespace DSLOG_Reader_2
             double matchCount = Matches.Count;
             foreach (var match in Matches)
             {
+                
                 DSLOGReader reader = new DSLOGReader($"{FileView.GetPath()}\\{match.Name}.dslog");
-                reader.Read();
+                try
+                {
+                    reader.Read();
+                }
+                catch (Exception ex)
+                {
+                    MatchReaders.Add(null);
+                    continue;
+                }
+                
                 MatchReaders.Add(reader);
                 backgroundWorkerReadMatches.ReportProgress((int)((((double)++num)/Matches.Count)*100.0));
                 if (backgroundWorkerReadMatches.CancellationPending)

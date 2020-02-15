@@ -1,19 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-using System.Globalization;
-using DSLOG_Reader_Library;
 using DSLOG_Reader_2.Properties;
-using System.Threading;
 using System.Collections.Concurrent;
-using System.Diagnostics;
 
 namespace DSLOG_Reader_2
 {
@@ -55,7 +48,6 @@ namespace DSLOG_Reader_2
 
         public void LoadFiles()
         {
-            
             firstColumnResize = true;
             listView.Items.Clear();
             DSLOGFiles.Clear();

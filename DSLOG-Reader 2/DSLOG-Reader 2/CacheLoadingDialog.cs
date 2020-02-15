@@ -60,9 +60,12 @@ namespace DSLOG_Reader_2
                 else
                 {
                     entry = Cache.AddEntry(name, Path);
-
-                    fileEntryList.Add(entry);
-                    if (entry.Useless) UselessFiles++;
+                    if (entry != null)
+                    {
+                        fileEntryList.Add(entry);
+                        if (entry.Useless) UselessFiles++;
+                    }
+                   
                 }
                 int num = (int)(100.0 * ((double)EntryNum++ / (double)Files.Count()));
                 backgroundWorker1.ReportProgress(num);
