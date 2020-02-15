@@ -48,7 +48,7 @@
             this.comboBoxExportType.Location = new System.Drawing.Point(1, 21);
             this.comboBoxExportType.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxExportType.Name = "comboBoxExportType";
-            this.comboBoxExportType.Size = new System.Drawing.Size(176, 21);
+            this.comboBoxExportType.Size = new System.Drawing.Size(180, 21);
             this.comboBoxExportType.TabIndex = 0;
             // 
             // buttonExport
@@ -58,7 +58,7 @@
             this.buttonExport.Location = new System.Drawing.Point(1, 47);
             this.buttonExport.Margin = new System.Windows.Forms.Padding(4);
             this.buttonExport.Name = "buttonExport";
-            this.buttonExport.Size = new System.Drawing.Size(176, 28);
+            this.buttonExport.Size = new System.Drawing.Size(180, 28);
             this.buttonExport.TabIndex = 1;
             this.buttonExport.Text = "Export";
             this.buttonExport.UseVisualStyleBackColor = true;
@@ -89,7 +89,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonBulk.Location = new System.Drawing.Point(1, 269);
             this.buttonBulk.Name = "buttonBulk";
-            this.buttonBulk.Size = new System.Drawing.Size(176, 62);
+            this.buttonBulk.Size = new System.Drawing.Size(180, 62);
             this.buttonBulk.TabIndex = 4;
             this.buttonBulk.Text = "Bulk Export";
             this.buttonBulk.UseVisualStyleBackColor = true;
@@ -97,8 +97,7 @@
             // 
             // ExportView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.Controls.Add(this.buttonBulk);
             this.Controls.Add(this.labelMode);
             this.Controls.Add(this.labelTotalCol);

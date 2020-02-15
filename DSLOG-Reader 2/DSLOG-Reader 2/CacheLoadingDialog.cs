@@ -46,7 +46,6 @@ namespace DSLOG_Reader_2
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             ConcurrentBag<DSLOGFileEntry> fileEntryList = new ConcurrentBag<DSLOGFileEntry>();
-            int lastNum = -1;
             Parallel.ForEach(Files, (file) =>
             {
                 DSLOGFileEntry entry;

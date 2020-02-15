@@ -168,8 +168,7 @@
             // 
             // EventsView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.Controls.Add(this.buttonCodeOutput);
             this.Controls.Add(this.buttonImportant);
             this.Controls.Add(this.textBoxSearch);
