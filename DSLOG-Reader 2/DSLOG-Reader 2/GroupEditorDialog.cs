@@ -504,7 +504,7 @@ namespace DSLOG_Reader_2
 
         private void treeViewPDP_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
         {
-            if (e.Node != null && (e.Label.Contains(":") || !e.Node.Name.StartsWith(DSAttConstants.DeltaPrefix) || !e.Node.Name.StartsWith(DSAttConstants.TotalPrefix)))
+            if (e.Node != null && e.Label != null && (e.Label.Contains(":") || e.Node.Name.StartsWith(DSAttConstants.DeltaPrefix) || e.Node.Name.StartsWith(DSAttConstants.TotalPrefix)))
             {
                 e.CancelEdit = true;
                 return;
