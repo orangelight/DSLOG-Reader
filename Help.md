@@ -1,4 +1,5 @@
 
+
 # Help
 
 This is a help document for DSLOG Reader. The document is organized by tab (e.g. Log Files, Graph Info, etc..)
@@ -43,6 +44,8 @@ Logs that are currently being written to (Live) will appear as Lime green
 ![enter image description here](https://i.imgur.com/Pb6P7gl.png)
 ## Bulk Export Button
 ![enter image description here](https://i.imgur.com/TdoiPJj.png)
+
+![enter image description here](https://i.imgur.com/ZIEO6xf.png)
 ## Settings Button
 ![enter image description here](https://i.imgur.com/l8LNUtM.png)
 
@@ -98,39 +101,89 @@ The Profiles are saved to where the executable is in a file called ".dslogprofil
 ## Probe Tab
 Click the graph to get the information at the point(should see red line). It only shows the information that is enabled in the series selector.
 ## Energy Tab
+The Energy tab shows how much energy each PDP slot has used throughout the log.
 ## Export Tab
-
+The Export tab has tree modes, the current mode depends on what tab you are in (Graph, Events, Competition).
+##### Graph Mode
+In this mode the log can be exported to CSV, the clipboard, or Image. ** Note when you export to CSV or clipboard only the values in view will be exported not the whole log**
+##### Events Mode
+The events can only export as a CSV
+##### Competition Mode
+The competition mode can only export as an Image
 # Graph Tab
 This tab shows the main graph the current log is graphed.
 ## Graph
+This is where the data from the dslog file is displayed
 #### Probing
+To probe the graph simply click on the spot you want to know the values, only the series enabled will show up in the probe tab
 #### Zooming
-#### Selecting what you see
-#### Hovering over events
+To zoom click and drag the area you want to see
+#### Hovering Over Events
+![enter image description here](https://i.imgur.com/yf5UGoR.png)
+
+If you hover over one of the event points on the graph you can see what the event is at the bottom of the Graph Info tab.
+#### The Y Axis
+![enter image description here](https://i.imgur.com/DuYIyK3.png)
+
+**The numbers in parentheses are only for Total PDP and group totals not for regular PDP slots and group deltas**
 ## Log Streaming (Live)
+When the reader is streaming a log file the top bar will turn green, Autoscroll can also be turned on.
 ## Match Time Button
+![enter image description here](https://i.imgur.com/qhK9NiL.png)
+
+The button sets the X axis labels to be time from match start
+
+![enter image description here](https://i.imgur.com/NUJyC1K.png)
+
+The match time button only works with logs connected to FMS and that have an auto.
 ## Reset Zoom Button
+![enter image description here](https://i.imgur.com/nvwqmRw.png)
+
+Resets zoom to view full log
 ## Zoom into Match Button
+![enter image description here](https://i.imgur.com/qu8Owm9.png)
+
+Finds and zooms into match
 ## Live Autoscroll Button
+![enter image description here](https://i.imgur.com/5vakhnJ.png)
+
+When reader is streaming this button allows Autoscroll to be enabled (when zoomed in the graph stays to the right side)
 
 # Events Tab
 This tab shows all of the events in the log that is loaded
 ## Event List
+![enter image description here](https://i.imgur.com/U1gpXBf.png)
+
+The color of the DS Time column depends on what mode the robot is in when the event occurred (gray for disabled, blue teleop, green auto) 
+
+![enter image description here](https://i.imgur.com/yf5UGoR.png)
 ### Selecting Event item
+![enter image description here](https://i.imgur.com/LCuGjic.png)
 ### Double Clicking Event Item
 Double clicking an event item will switch to the Graph Tab and set the probe to be where the event is.
 
 ## Event Search
+![enter image description here](https://i.imgur.com/hY66jpH.png)
+
 ## Filter Important Button
+![enter image description here](https://i.imgur.com/LuFn5mZ.png)
+
 ## Filter Code Output Button
+![enter image description here](https://i.imgur.com/AWC3wxp.png)
+
 ## Filter Duplicated Output
+![enter image description here](https://i.imgur.com/0uNzyp0.png)
+
 ## Filter Joystick Output
+![enter image description here](https://i.imgur.com/MuQWaWK.png)
 
 # Competition Tab 
 This tab only shows up if there is at least one log where the FMS is connected (bold in log file list).
 ## Selecting an Event
+![enter image description here](https://i.imgur.com/O0HYNbT.png)
+
  To select an Event use the Event filter in the Log Files Tab
 ## Mode Selection
-
+![enter image description here](https://i.imgur.com/XmSsvDH.png)
  
 
