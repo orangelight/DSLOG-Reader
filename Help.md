@@ -6,7 +6,7 @@ This is a help document for DSLOG Reader. The document is organized by tab (e.g.
 # Bugs/Crashes
 If your program has crashed or you found a bug please report it in the issues or DM on ChiefDelphi.
 # Log Caching
-In order to increase performance in the Log Files Tab..
+In order to increase performance in the Log Files Tab the information for logs. The cache is stored in the same directory as the logs.
 # Log Files Tab
 The Log Files Tab shows all log files in the selected path (Default is C:\Users\Public\Documents\FRC\Log Files). Simply clicking on a item in the list will load the log.
 ## Log List
@@ -40,6 +40,7 @@ Logs that are currently being written to (Live) will appear as Lime green
 ![enter image description here](https://i.imgur.com/Lx2H5ki.png)
 ## Filter Useless Logs Button
 ![enter image description here](https://i.imgur.com/jh6U2wE.png)
+A log is defined useless if it less than 20 seconds or for FMS matches if the robot is never connected.
 ## Filter Logs By Event
 ![enter image description here](https://i.imgur.com/Pb6P7gl.png)
 ## Bulk Export Button
