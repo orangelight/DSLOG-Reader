@@ -100,7 +100,7 @@ namespace DSLOG_Reader_2
             var tempDict = new Dictionary<string, DSLOGFileEntry>();
             Files.ForEach(en => tempDict.Add(en.Name, en));
             TotalExported = 0;
-            Parallel.ForEach(CheckedFiles, (file) =>
+            Parallel.ForEach(CheckedFiles, (file, state) =>
             {
                 DSLOGFileEntry entry;
                 if (tempDict.TryGetValue(file, out entry))
@@ -112,8 +112,16 @@ namespace DSLOG_Reader_2
                         if (File.Exists(dsFile))
                         {
                             DSLOGReader reader = new DSLOGReader(dsFile);
-                            reader.Read();
-                            
+                            try
+                            {
+                                reader.Read();
+                            }
+                            catch (Exception ex)
+                            {
+                                return;
+                            }
+
+
 
                             if (entry.IsFMSMatch)
                             {
@@ -147,7 +155,14 @@ namespace DSLOG_Reader_2
                         if (File.Exists(dsFile))
                         {
                             DSEVENTSReader reader = new DSEVENTSReader(dsFile);
-                            reader.Read();
+                            try
+                            {
+                                reader.Read();
+                            }
+                            catch (Exception ex)
+                            {
+                                return;
+                            }
 
                             if (entry.IsFMSMatch)
                             {
@@ -173,6 +188,12 @@ namespace DSLOG_Reader_2
                             }
                         }
                     }
+
+                }
+                if (backgroundWorkerExport.CancellationPending)
+                {
+                    e.Cancel = true;
+                    state.Break();
                 }
                 int precent = (int)((double)++TotalExported / CheckedFiles.Count * 100.0);
                 backgroundWorkerExport.ReportProgress(precent);
@@ -190,7 +211,14 @@ namespace DSLOG_Reader_2
 
         private void backgroundWorkerExport_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            MessageBox.Show("Export Done!");
+            if (!e.Cancelled) MessageBox.Show("Export Done!");
+            this.Close();
+        }
+
+        private void buttonCancel_Click(object sender, EventArgs e)
+        {
+            backgroundWorkerExport.CancelAsync();
+
         }
     }
 }

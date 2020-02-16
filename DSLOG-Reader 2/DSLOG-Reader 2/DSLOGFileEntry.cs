@@ -320,7 +320,7 @@ namespace DSLOG_Reader_2
     public class DSLOGFileEntryCache
     {
         private ConcurrentDictionary<string, DSLOGFileEntry> Cache;
-        private List<DSLOGFileEntry> NewEntries;
+        private ConcurrentBag<DSLOGFileEntry> NewEntries;
         public string FilePath { get; private set; }
 
         public bool New { get; private set; }
@@ -344,7 +344,7 @@ namespace DSLOG_Reader_2
                 New = true;
             }
             FilePath = file;
-            NewEntries = new List<DSLOGFileEntry>();
+            NewEntries = new ConcurrentBag<DSLOGFileEntry>();
         }
 
         public bool TryGetEntry(string name, out DSLOGFileEntry entry)
@@ -370,7 +370,6 @@ namespace DSLOG_Reader_2
                 sb.Append("\n");
             }
             File.AppendAllText(FilePath, sb.ToString());
-            NewEntries.Clear();
         }
     }
 }

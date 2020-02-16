@@ -132,6 +132,7 @@
             this.buttonCancel.TabIndex = 3;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
+            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
             // backgroundWorkerExport
             // 
@@ -254,7 +255,6 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(595, 344);
             this.Controls.Add(this.checkBoxMatchTime);
             this.Controls.Add(this.label1);
