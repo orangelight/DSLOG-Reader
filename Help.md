@@ -71,6 +71,7 @@ To open the Profile Editor click the cog icon In the Graph Info Tab.
 Once open, the **default profile cannot edited** so I new one must be made.
 #### Creating a new Profile
 Creating a new profile can either be done by creating one from scratch by clicking the Add Profile button or from another profile by clicking the Copy Profile Button
+
 ![enter image description here](https://i.imgur.com/L5qIZL1.png)
 
 #### Changing Profile Name
