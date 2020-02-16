@@ -1,5 +1,5 @@
-# DSLOG-Reader
-Some images
-![](https://i.imgur.com/kKVSG3O.png)
-![](https://i.imgur.com/YTOFQsa.png)
-![](https://i.imgur.com/yD27o9f.png)
+# DSLOG-Reader 2
+An alternate driver station log viewer
+![](https://i.imgur.com/3d4BfYe.png)
+![](https://i.imgur.com/L3H9ajT.png)
+
