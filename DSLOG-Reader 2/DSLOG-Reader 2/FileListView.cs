@@ -86,19 +86,19 @@ namespace DSLOG_Reader_2
             {
                 if (string.IsNullOrWhiteSpace(match.EventName) || match.FMSFilledIn)
                 {
-                    var nearestEvent = fmsMatches.Where(e => !string.IsNullOrWhiteSpace(e.EventName)).OrderBy(e => Math.Abs((e.StartTime - match.StartTime).Ticks)).First();
-                    TimeSpan span = nearestEvent.StartTime - match.StartTime;
-                    if (Math.Abs((span).TotalDays) < 4)
+                    var events= fmsMatches.Where(e => !string.IsNullOrWhiteSpace(e.EventName));
+                    if (events.Count() != 0)
                     {
-                        //if (match.MatchType == nearestEvent.MatchType && ((span.TotalSeconds < 0 && match.FMSMatchNum < nearestEvent.FMSMatchNum) || (span.TotalSeconds > 0 && match.FMSMatchNum > nearestEvent.FMSMatchNum)))
-                        //{
-                        //    continue;
-                        //}
-
-                        match.EventName = nearestEvent.EventName;
-                        match.FMSFilledIn = true;
-                        continue;
+                        var nearestEvent = events.OrderBy(e => Math.Abs((e.StartTime - match.StartTime).Ticks)).First();
+                        TimeSpan span = nearestEvent.StartTime - match.StartTime;
+                        if (Math.Abs((span).TotalDays) < 4)
+                        {
+                            match.EventName = nearestEvent.EventName;
+                            match.FMSFilledIn = true;
+                            continue;
+                        }
                     }
+                    
                     match.FMSFilledIn = true;
                     match.EventName = "???";
                 }
