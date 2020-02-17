@@ -197,39 +197,51 @@ namespace DSLOG_Reader_2
         {
             int pFrom = entry.Data.IndexOf("Warning <Code> 44008 <radioLostEvents>  ") + "Warning <Code> 44008 <radioLostEvents>  ".Length;
             int pTo = entry.Data.IndexOf("\r<Description>FRC:  Robot radio detection times.");
+            if (pTo < 0 || pFrom < 0 || pTo <= pFrom) return;
             string processedData = entry.Data.Substring(pFrom, pTo - pFrom).Replace("<radioSeenEvents>", "~");
             string[] dataInArray = processedData.Split('~');
             if (!dataInArray[0].Trim().Equals(""))
             {
-                double[] arrayLost = Array.ConvertAll(dataInArray[0].Trim().Split(','), Double.Parse);
-                foreach (double d in arrayLost)
-                {
-                    DateTime newTime = entry.Time.AddSeconds(-d);
-                    DataPoint pRL = new DataPoint(newTime.ToOADate(), 14.7);
-                    pRL.Color = Color.Yellow;
-                    pRL.MarkerSize = 6;
-                    pRL.MarkerStyle = MarkerStyle.Square;
-                    pRL.YValues[0] = 14.7;
-                    GraphView.AddMessage(pRL);
-                    AddEntryToDict(newTime.ToOADate(), "Radio Lost");
-                }
+                
+                    foreach (var num in dataInArray[0].Trim().Split(','))
+                    {
+                        double lostTime = 0;
+                        if (double.TryParse(num, out lostTime))
+                        {
+                            DateTime newTime = entry.Time.AddSeconds(-lostTime);
+                            DataPoint pRL = new DataPoint(newTime.ToOADate(), 14.7);
+                            pRL.Color = Color.Yellow;
+                            pRL.MarkerSize = 6;
+                            pRL.MarkerStyle = MarkerStyle.Square;
+                            pRL.YValues[0] = 14.7;
+                            GraphView.AddMessage(pRL);
+                            AddEntryToDict(newTime.ToOADate(), "Radio Lost");
+                        }
+                    }
+                
             }
             if (dataInArray.Length > 1)
             {
                 if (!dataInArray[1].Trim().Equals(""))
                 {
-                    double[] arrayLost = Array.ConvertAll(dataInArray[1].Trim().Split('<')[0].Split(','), Double.Parse);
-                    foreach (double d in arrayLost)
-                    {
-                        DateTime newTime = entry.Time.AddSeconds(-d);
-                        DataPoint pRL = new DataPoint(newTime.ToOADate(), 14.7);
-                        pRL.Color = Color.Lime;
-                        pRL.MarkerSize = 6;
-                        pRL.MarkerStyle = MarkerStyle.Square;
-                        pRL.YValues[0] = 14.7;
-                        GraphView.AddMessage(pRL);
-                        AddEntryToDict(newTime.ToOADate(), "Radio Seen");
-                    }
+                        if (dataInArray[1].Trim().Split('<').Length == 0) return;
+                        foreach (var num in dataInArray[1].Trim().Split('<')[0].Split(','))
+                        {
+                            double seenTime = 0;
+                            if (double.TryParse(num, out seenTime))
+                            {
+                                DateTime newTime = entry.Time.AddSeconds(-seenTime);
+                                DataPoint pRL = new DataPoint(newTime.ToOADate(), 14.7);
+                                pRL.Color = Color.Lime;
+                                pRL.MarkerSize = 6;
+                                pRL.MarkerStyle = MarkerStyle.Square;
+                                pRL.YValues[0] = 14.7;
+                                GraphView.AddMessage(pRL);
+                                AddEntryToDict(newTime.ToOADate(), "Radio Seen");
+                            }
+                        }
+                    
+                    
                 }
             }
         }
