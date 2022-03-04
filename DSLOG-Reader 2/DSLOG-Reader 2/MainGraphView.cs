@@ -268,22 +268,22 @@ namespace DSLOG_Reader_2
                 else
                 {
                     reader = new DSLOGReader(dslogFile);
-                    //try
-                    //{
+                    try
+                    {
                         reader.Read();
-                    //} catch (Exception ex)
-                    //{
-                    //    throw ex;
-                    //    MessageBox.Show("Log Corrupted!");
-                    //    //LoadingLog = false;
-                    //    //return;
-                    //}
-                    
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Log Corrupted!");
+                        LoadingLog = false;
+                        return;
+                    }
+
                 }
                
                 
 
-                if (reader.Version != 3 && reader.Version != 4)
+                if (reader.Version != 4)
                 {
                     LoadingLog = false;
                     return;
