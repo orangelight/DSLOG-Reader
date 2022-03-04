@@ -27,11 +27,11 @@ namespace DSLOG_Reader_Library
         {
             while (!StopSignal)
             {
-                if (reader.BaseStream.Length - reader.BaseStream.Position >= 35)
+                if (reader.BaseStream.Length - reader.BaseStream.Position >= 50)
                 {
                     while (reader.BaseStream.Position != reader.BaseStream.Length)
                     {
-                        Queue.Enqueue(ReadEntry());
+                        Queue.Enqueue(ReadEntryV4());
                     }
                     Thread.Sleep(21);
                 }

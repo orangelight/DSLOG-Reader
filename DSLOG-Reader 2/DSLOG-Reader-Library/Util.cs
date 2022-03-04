@@ -20,5 +20,11 @@ namespace DSLOG_Reader_Library
 
             return epoch.AddSeconds((double)offset / UInt64.MaxValue);
         }
+
+        public static uint ReadUInt32Little(this BigEndianBinaryReader reader)
+        {
+            if (!BitConverter.IsLittleEndian) return reader.ReadUInt32();
+            return BitConverter.ToUInt32(reader.ReadBytes(sizeof(UInt32)), 0);
+        }
     }
 }

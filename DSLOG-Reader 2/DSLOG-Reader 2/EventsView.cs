@@ -59,7 +59,7 @@ namespace DSLOG_Reader_2
                 return;
             }
          
-            if (reader.Version != 3)
+            if (reader.Version != 3 && reader.Version != 4)
             {
                 return;
             }

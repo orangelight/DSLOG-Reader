@@ -44,7 +44,7 @@ namespace DSLOG_Reader_Library
         {
             if (i >= PdpValues.Length)
             {
-                throw new IndexOutOfRangeException();
+                return 0;
             }
             return PdpValues[i];
         }
@@ -64,7 +64,7 @@ namespace DSLOG_Reader_Library
             double sum = 0;
             foreach(int slot in slots)
             {
-                sum += PdpValues[slot];
+                sum += GetPDPChannel(slot);
             }
             return sum;
         }

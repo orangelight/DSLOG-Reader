@@ -66,36 +66,23 @@ namespace DSLOG_Reader_2
             comms.Childern.Add(new SeriesChildNode(DSAttConstants.LostPackets, "Lost Packets", Color.Chocolate));
 
 
-            SeriesGroupNode pdp03 = new SeriesGroupNode("grouppdp03", "PDP (0-3) 40A", SystemColors.ControlLightLight);
-            SeriesGroupNode pdp47 = new SeriesGroupNode("grouppdp47", "PDP (4-7) 30A", SystemColors.ControlLightLight);
-            SeriesGroupNode pdp811 = new SeriesGroupNode("grouppdp811", "PDP (8-11) 30A", SystemColors.ControlLightLight);
-            SeriesGroupNode pdp1215 = new SeriesGroupNode("grouppdp1215", "PDP (12-15) 40A", SystemColors.ControlLightLight);
-            List<SeriesChildNode> pdps = new List<SeriesChildNode>();
-            for(int i = 0; i < 16; i++)
+            SeriesGroupNode groupNode = null;
+            SeriesGroupNodes defG = new SeriesGroupNodes();
+            for (int i = 0; i < 24; i++)
             {
-                if (i < 4)
+                if (groupNode == null)
                 {
-                    pdp03.Childern.Add(new SeriesChildNode($"{DSAttConstants.PDPPrefix}{i}", $"PDP {i}", Util.PdpColors[i]));
+                    groupNode = new SeriesGroupNode($"grouppdp{i}{i + 4}", $"PDP ({i}-{i + 4}", SystemColors.ControlLightLight);
                 }
-                else if(i < 8)
+
+
+                groupNode.Childern.Add(new SeriesChildNode($"{DSAttConstants.PDPPrefix}{i}", $"PDP {i}", Util.PdpColors[i]));
+                if (groupNode.Childern.Count == 4)
                 {
-                    pdp47.Childern.Add(new SeriesChildNode($"{DSAttConstants.PDPPrefix}{i}", $"PDP {i}", Util.PdpColors[i]));
-                }
-                else if (i < 12)
-                {
-                    pdp811.Childern.Add(new SeriesChildNode($"{DSAttConstants.PDPPrefix}{i}", $"PDP {i}", Util.PdpColors[i]));
-                }
-                else
-                {
-                    pdp1215.Childern.Add(new SeriesChildNode($"{DSAttConstants.PDPPrefix}{i}", $"PDP {i}", Util.PdpColors[i]));
+                    defG.Add(groupNode);
+                    groupNode = null;
                 }
             }
-
-            SeriesGroupNodes defG = new SeriesGroupNodes();
-            defG.Add(pdp03);
-            defG.Add(pdp47);
-            defG.Add(pdp811);
-            defG.Add(pdp1215);
             
 
             SeriesGroupNode other = new SeriesGroupNode("other", "Other", SystemColors.ControlLightLight);
@@ -113,10 +100,10 @@ namespace DSLOG_Reader_2
             treeView.Nodes.Add(comms.ToTreeNode());
             treeView.Nodes.Add(basic.ToTreeNode());
             treeView.Nodes.Add(robotMode.ToTreeNode());
-            treeView.Nodes.Add(pdp03.ToTreeNode());
-            treeView.Nodes.Add(pdp47.ToTreeNode());
-            treeView.Nodes.Add(pdp811.ToTreeNode());
-            treeView.Nodes.Add(pdp1215.ToTreeNode());
+            foreach (var node in defG)
+            {
+                treeView.Nodes.Add(node.ToTreeNode());
+            }
             treeView.Nodes.Add(other.ToTreeNode());
 
             treeView.ItemHeight = 20;
@@ -133,7 +120,6 @@ namespace DSLOG_Reader_2
                 {
                     MessageBox.Show($"Profile file is corrupted! {ex.Message}");
                     Profiles.Clear();
-                    Profiles.Add(new GroupProfile("Default", defG));
                 }
                 finally
                 {
@@ -147,7 +133,6 @@ namespace DSLOG_Reader_2
                 Profiles.Clear();
                 Profiles.Add(new GroupProfile("Default", defG));
             }
-            
             comboBoxProfiles.Items.Clear();
             comboBoxProfiles.Items.AddRange(Profiles.Select(e=> e.Name).ToArray());
             comboBoxProfiles.SelectedIndex = 0;

@@ -51,8 +51,12 @@ namespace DSLOG_Reader_2
         {
             try
             {
-                SetSeconds();
-                if (!SetTime() || !SetFMS() || !SetUseless() || !CheckVersion())
+                string dslogPath = FilePath + "\\" + Name + ".dslog";
+                DSLOGReader reader = new DSLOGReader(FilePath + "\\" + Name + ".dslog");
+                reader.OnlyReadMetaData();
+                if (reader.Version != 4) return false;
+                SetSeconds(reader.PDPType);
+                if (!SetTime(reader) || !SetFMS() || !SetUseless())
                 {
                     Useless = true;
                     return false;
@@ -67,12 +71,6 @@ namespace DSLOG_Reader_2
            Live = CheckLive();
             return true;
         }
-        private bool CheckVersion()
-        {
-            DSLOGReader reader = new DSLOGReader(FilePath + "\\" + Name + ".dslog");
-            reader.OnlyReadMetaData();
-            return reader.Version == 3;
-        }
         private bool CheckLive()
         {
             if (StartTime == null || (StartTime - DateTime.Now).Duration().TotalHours > 6) return false;
@@ -86,17 +84,11 @@ namespace DSLOG_Reader_2
             }
             return false;
         }
-        private bool SetTime()
+        private bool SetTime(DSLOGReader reader)
         {
             DateTime sTime;
             if (!DateTime.TryParseExact(Name, "yyyy_MM_dd HH_mm_ss ddd", CultureInfo.InvariantCulture, DateTimeStyles.None, out sTime))
             {
-                DSLOGReader reader = new DSLOGReader(FilePath + "\\" + Name + ".dslog");
-                reader.OnlyReadMetaData();
-                if (reader.Version != 3)
-                {
-                    return false;
-                }
                 StartTime = reader.StartTime;
             }
             else
@@ -106,9 +98,21 @@ namespace DSLOG_Reader_2
             return true;
         }
 
-        public void SetSeconds()
+        public void SetSeconds(PDPType pdpType)
         {
-            Seconds = ((new FileInfo(FilePath + "\\" + Name + ".dslog").Length - 19) / 35) / 50;
+            if (pdpType == PDPType.CTRE)
+            {
+                Seconds = ((new FileInfo(FilePath + "\\" + Name + ".dslog").Length - 19) / 39) / 50;
+            }
+            else if (pdpType == PDPType.REV)
+            {
+                Seconds = ((new FileInfo(FilePath + "\\" + Name + ".dslog").Length - 19) / 47) / 50;
+            }
+            else
+            {
+                Seconds = ((new FileInfo(FilePath + "\\" + Name + ".dslog").Length - 19) / 43) / 50; // Take the average because it is close enough
+            }
+            
         }
 
         private bool SetFMS()
@@ -118,7 +122,7 @@ namespace DSLOG_Reader_2
             {
                 DSEVENTSReader reader = new DSEVENTSReader(dseventsPath);
                 reader.ReadForFMS();
-                if (reader.Version == 3)
+                if (reader.Version == 4)
                 {
                     StringBuilder sb = new StringBuilder();
                     foreach (DSEVENTSEntry en in reader.Entries)
@@ -185,12 +189,8 @@ namespace DSLOG_Reader_2
                     Useless = true;
                     return true;
                 }
-                if (IsFMSMatch)
-                {
                     DSLOGReader reader = new DSLOGReader(dslogPath);
                     reader.Read();
-                    if (reader.Version == 3)
-                    {
 
                         foreach (var entry in reader.Entries)
                         {
@@ -201,16 +201,6 @@ namespace DSLOG_Reader_2
                             }
                         }
                         Useless = true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    Useless = false;
-                }
                 
                 return true;
             }

@@ -35,11 +35,10 @@ namespace DSLOG_Reader_Library
             reader.Close();
         }
 
-        protected void ReadMetadata()
+        protected virtual void ReadMetadata()
         {
             if (reader == null) return;//Throw something
             Version = reader.ReadInt32();
-            if (Version != 3) return;
             StartTime = Util.FromLVTime(reader.ReadInt64(), reader.ReadUInt64());
         }
 
@@ -55,11 +54,19 @@ namespace DSLOG_Reader_Library
             }
             reader = new BigEndianBinaryReader(File.Open(Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
             ReadMetadata();
-            if (Version != 3) return false;
+            if (Version != 4) return false;
             ReadEntries(onlfms);
             return true;
         }
 
         protected abstract void ReadEntries(bool onlfms = false);
+
+    }
+
+    public enum PDPType
+    {
+        Unknown,
+        CTRE,
+        REV,
     }
 }

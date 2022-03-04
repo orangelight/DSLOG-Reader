@@ -327,7 +327,7 @@ namespace DSLOG_Reader_2
                 {
                     if (listView.Items[listView.Items.Count - 1].Text == entry.Name)
                     {
-                        entry.SetSeconds();
+                        entry.SetSeconds(DSLOG_Reader_Library.PDPType.Unknown);
                         listView.Items[listView.Items.Count - 1].SubItems[2].Text = entry.Seconds.ToString();
                     }
                 }

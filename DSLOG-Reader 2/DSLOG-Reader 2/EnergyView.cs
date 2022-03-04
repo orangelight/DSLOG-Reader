@@ -26,7 +26,7 @@ namespace DSLOG_Reader_2
         {
             EnergyCache.Clear();
             if (entries == null) return;
-            for (int i = 0; i < 16; i++)
+            for (int i = 0; i < 24; i++)
             {
                 EnergyCache.Add(i, entries.Where(en=> en.Voltage < 30).Sum(en => (en.GetPDPChannel(i) * MillToHour20) * en.Voltage)*3.6);
             }

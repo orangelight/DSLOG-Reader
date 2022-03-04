@@ -10,7 +10,9 @@ namespace DSLOG_Reader_Library
     {
         public const int EntryDistanceMs = 20;
 
-       
+        public PDPType PDPType { get; private set; }
+
+
         public readonly List<DSLOGEntry> Entries;
         private int EntryNum;
         public DSLOGReader(string path) : base(path)
@@ -28,17 +30,47 @@ namespace DSLOG_Reader_Library
             
         }
 
+        protected override void ReadMetadata()
+        {
+            base.ReadMetadata();
+            PDPType = (Version == 4) ? ParsePDPType() : PDPType.CTRE;
+
+        }
+
+        protected PDPType ParsePDPType()
+        {
+            reader.BaseStream.Seek(13, SeekOrigin.Current);
+            byte pdpTypeId = reader.ReadByte();
+            reader.BaseStream.Seek(-14, SeekOrigin.Current);
+            if (pdpTypeId == 33) return PDPType.REV;
+            if (pdpTypeId == 25) return PDPType.CTRE;
+            return PDPType.Unknown;
+        }
+
         protected override void ReadEntries(bool fms = false)
         {
             while (reader.BaseStream.Position != reader.BaseStream.Length)
             {
-                Entries.Add(ReadEntry());
+                Entries.Add(ReadEntryV4());
             }
         }
 
-        protected DSLOGEntry ReadEntry()
+
+        // So rev code is 0, 0, 33, 1 (last might be id?)
+        // CTRE is 0, 0, 25, 0  (last might be id?)
+        // Rev uses 30 bytes for pdp + only has temp (not volt or restist)
+        // CTRE uses 21 + voltage + resist + temp
+        protected DSLOGEntry ReadEntryV4()
         {
-            return new DSLOGEntry(TripTimeToDouble(reader.ReadByte()), PacketLossToDouble(reader.ReadSByte()), VoltageToDouble(reader.ReadUInt16()), RoboRioCPUToDouble(reader.ReadByte()), StatusFlagsToBooleanArray(reader.ReadByte()), CANUtilToDouble(reader.ReadByte()), WifidBToDouble(reader.ReadByte()), BandwidthToDouble(reader.ReadUInt16()), reader.ReadByte(), PDPValuesToArrayList(reader.ReadBytes(21)), reader.ReadByte(), (double)(reader.ReadByte())*0.0736, reader.ReadByte(), StartTime.AddMilliseconds(EntryDistanceMs * EntryNum++));
+            if (this.PDPType == PDPType.CTRE)
+            {
+                return new DSLOGEntry(TripTimeToDouble(reader.ReadByte()), PacketLossToDouble(reader.ReadSByte()), VoltageToDouble(reader.ReadUInt16()), RoboRioCPUToDouble(reader.ReadByte()), StatusFlagsToBooleanArray(reader.ReadByte()), CANUtilToDouble(reader.ReadByte()), WifidBToDouble(reader.ReadByte()), BandwidthToDouble(reader.ReadUInt16()), reader.ReadByte(), ReadCTREPDP(), reader.ReadByte(), (double)(reader.ReadByte()) * 0.0736, reader.ReadByte(), StartTime.AddMilliseconds(EntryDistanceMs * EntryNum++));
+            } else if (this.PDPType == PDPType.REV)
+            {
+                return new DSLOGEntry(TripTimeToDouble(reader.ReadByte()), PacketLossToDouble(reader.ReadSByte()), VoltageToDouble(reader.ReadUInt16()), RoboRioCPUToDouble(reader.ReadByte()), StatusFlagsToBooleanArray(reader.ReadByte()), CANUtilToDouble(reader.ReadByte()), WifidBToDouble(reader.ReadByte()), BandwidthToDouble(reader.ReadUInt16()), reader.ReadByte(), ReadRevPDH(), 0, 0, reader.ReadByte(), StartTime.AddMilliseconds(EntryDistanceMs * EntryNum++));
+            }
+            return null;
+            
         }
 
         //Import methods
@@ -82,47 +114,56 @@ namespace DSLOG_Reader_Library
         {
             return (double)i * .00390625d;
         }
-        protected double[] PDPValuesToArrayList(byte[] ba)
+
+        private double[] ReadRevPDH()
         {
-            double[] d = new double[16];
-            for (int s = 0; s < 5; s++)
+            reader.ReadBytes(4); //Skip over pdp type id
+            var ints = new uint[7];
+
+            for (int i = 0; i < 6; ++i)
             {
-                if (s % 2 == 0)
-                {
-                    byte[] b5 = new byte[5];
-                    Array.Copy(ba, s * 4, b5, 0, 5);
-                    for (int n = 0; n < 4; ++n)
-                    {
-                        if (n == 0)
-                        {
-                            d[(s * 3) + n] = (double)(Convert.ToUInt16(b5[0] << 2) + Convert.ToUInt16(b5[1] >> 6)) * .125d;
-                        }
-                        else
-                        {
-                            d[(s * 3) + n] = (double)(Convert.ToUInt16(((UInt16)((byte)(b5[n] << (n * 2)))) << 2) + Convert.ToUInt16(b5[n + 1] >> (6 - (n * 2)))) * .125d;
-                        }
-                    }
-                }
-                else
-                {
-                    byte[] b3 = new byte[3];
-                    Array.Copy(ba, (s * 4) + 1, b3, 0, 3);
-                    for (int n = 0; n < 2; ++n)
-                    {
-                        if (n == 0)
-                        {
-                            d[((s * 3) + 1) + n] = (double)(Convert.ToUInt16(b3[0] << 2) + Convert.ToUInt16(b3[1] >> 6)) * .125d;
-                        }
-                        else
-                        {
-                            d[((s * 3) + 1) + n] = (double)(Convert.ToUInt16(((UInt16)((byte)(b3[1] << 2))) << 2) + Convert.ToUInt16(b3[2] >> 4)) * .125d;
-                        }
-                    }
-                }
+                ints[i] = reader.ReadUInt32Little();
+            }
+            ints[6] = BitConverter.ToUInt32(reader.ReadBytes(3).Concat(new byte[] { 0 }).ToArray(), 0); //TODO: Check for endness for bit converter
+            var dataBytes = reader.ReadBytes(4);
+
+            double[] d = new double[24];
+            for (int i = 0; i < 20; ++i)
+            {
+                var dataIndex = i / 3;
+                var dataOffset = i % 3;
+                var data = ints[dataIndex];
+                var num = data << (32 - ((dataOffset + 1) * 10));
+                num = num >> 22;
+                d[i] = num / 8.0d;
+            }
+            for (int i = 0; i < 4; ++i)
+            {
+                d[i + 20] = dataBytes[i] / 16.0d;
             }
             return d;
         }
 
+        private double[] ReadCTREPDP()
+        {
+            if (this.Version == 4) reader.ReadBytes(4); //Skip over pdp type id
+            var longs = new ulong[3];
+            double[] d = new double[16];
+            longs[0] = reader.ReadUInt64();
+            longs[1] = reader.ReadUInt64();
+            longs[2] = BitConverter.ToUInt64(reader.ReadBytes(5).Concat(new byte[] { 0, 0, 0 }).Reverse().ToArray(), 0); //TODO: Check for endness for bit converter
+            
+            for (int i = 0; i < 16; ++i)
+            {
+                var dataIndex = i / 6;
+                var dataOffset = i % 6;
+                var data = longs[dataIndex];
+                var num = data << (dataOffset * 10);
+                num = num >> (54);
+                d[i] = num / 8.0d;
+            }
+            return d;
+        }
         protected IEnumerable<bool> GetBits(byte b)
         {
             for (int i = 0; i < 8; i++)

@@ -268,21 +268,22 @@ namespace DSLOG_Reader_2
                 else
                 {
                     reader = new DSLOGReader(dslogFile);
-                    try
-                    {
+                    //try
+                    //{
                         reader.Read();
-                    } catch (Exception ex)
-                    {
-                        MessageBox.Show("Log Corrupted!");
-                        LoadingLog = false;
-                        return;
-                    }
+                    //} catch (Exception ex)
+                    //{
+                    //    throw ex;
+                    //    MessageBox.Show("Log Corrupted!");
+                    //    //LoadingLog = false;
+                    //    //return;
+                    //}
                     
                 }
                
                 
 
-                if (reader.Version != 3)
+                if (reader.Version != 3 && reader.Version != 4)
                 {
                     LoadingLog = false;
                     return;
@@ -630,7 +631,7 @@ namespace DSLOG_Reader_2
 
                 if (index_l == 0 || index_l == end - 1)
                 {
-                    for (int i = 0; i < 16; i++)
+                    for (int i = 0; i < 24; i++)
                     {
                         series[DSAttConstants.PDPPrefix + i].Points.AddXY(entryTime, en.GetPDPChannel(i));
                     }
@@ -641,7 +642,7 @@ namespace DSLOG_Reader_2
                     var nextEn = LogEntries.ElementAt(index_l + 1);
                     //Checks if value is differnt around it so we don't plot everypoint
 
-                    for (int i = 0; i < 16; i++)
+                    for (int i = 0; i < 24; i++)
                     {
                         if (lastEn.GetPDPChannel(i) != en.GetPDPChannel(i) || nextEn.GetPDPChannel(i) != en.GetPDPChannel(i))
                         {
