@@ -23,17 +23,19 @@ namespace DSLOG_Reader_Library
 
         public override void Read()
         {
-            if (ReadFile())
+            ReadFile();
+            if (PDPType == PDPType.Unknown)
             {
-                reader.Close();
+                throw new Exception("PDP not supported");
             }
-            
+            reader.Close();
+
         }
 
         protected override void ReadMetadata()
         {
             base.ReadMetadata();
-            PDPType = (Version == 4) ? ParsePDPType() : PDPType.CTRE;
+            PDPType = (Version == 4) ? ParsePDPType() : PDPType.Unknown;
 
         }
 
@@ -47,12 +49,16 @@ namespace DSLOG_Reader_Library
             return PDPType.Unknown;
         }
 
-        protected override void ReadEntries(bool fms = false)
+        protected override bool ReadEntries(bool fms = false)
         {
             while (reader.BaseStream.Position != reader.BaseStream.Length)
             {
-                Entries.Add(ReadEntryV4());
+                var entry = ReadEntryV4();
+                if (entry == null) return false;
+                Entries.Add(entry);
             }
+
+            return true;
         }
 
 

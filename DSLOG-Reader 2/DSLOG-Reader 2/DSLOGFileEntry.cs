@@ -54,7 +54,11 @@ namespace DSLOG_Reader_2
                 string dslogPath = FilePath + "\\" + Name + ".dslog";
                 DSLOGReader reader = new DSLOGReader(FilePath + "\\" + Name + ".dslog");
                 reader.OnlyReadMetaData();
-                if (reader.Version != 4) return false;
+                if (reader.Version != 4 || reader.PDPType == PDPType.Unknown)
+                {
+                    Useless = true;
+                    return false;
+                }
                 SetSeconds(reader.PDPType);
                 if (!SetTime(reader) || !SetFMS() || !SetUseless())
                 {

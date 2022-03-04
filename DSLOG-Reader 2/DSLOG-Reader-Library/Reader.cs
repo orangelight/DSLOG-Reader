@@ -55,11 +55,10 @@ namespace DSLOG_Reader_Library
             reader = new BigEndianBinaryReader(File.Open(Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
             ReadMetadata();
             if (Version != 4) return false;
-            ReadEntries(onlfms);
-            return true;
+            return ReadEntries(onlfms);
         }
 
-        protected abstract void ReadEntries(bool onlfms = false);
+        protected abstract bool ReadEntries(bool onlfms = false);
 
     }
 

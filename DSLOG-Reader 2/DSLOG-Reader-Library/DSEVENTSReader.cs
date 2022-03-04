@@ -33,7 +33,7 @@ namespace DSLOG_Reader_Library
             }
         }
 
-        protected override void ReadEntries(bool fms = false)
+        protected override bool ReadEntries(bool fms = false)
         {
             bool isFMSMatch = false;
             bool haveName = false;
@@ -71,6 +71,8 @@ namespace DSLOG_Reader_Library
                 }
                 
             }
+
+            return true;
         }
 
         protected DSEVENTSEntry ReadEntry()
