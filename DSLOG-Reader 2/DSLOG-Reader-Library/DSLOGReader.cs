@@ -124,7 +124,7 @@ namespace DSLOG_Reader_Library
             {
                 ints[i] = reader.ReadUInt32Little();
             }
-            ints[6] = BitConverter.ToUInt32(reader.ReadBytes(3).Concat(new byte[] { 0 }).ToArray(), 0); //TODO: Check for endness for bit converter
+            ints[6] = BitConverter.ToUInt32(reader.ReadBytes(3).Concat(new byte[] { 0 }).ToArray(), 0);
             var dataBytes = reader.ReadBytes(4);
 
             double[] d = new double[24];
@@ -151,7 +151,7 @@ namespace DSLOG_Reader_Library
             double[] d = new double[16];
             longs[0] = reader.ReadUInt64();
             longs[1] = reader.ReadUInt64();
-            longs[2] = BitConverter.ToUInt64(reader.ReadBytes(5).Concat(new byte[] { 0, 0, 0 }).Reverse().ToArray(), 0); //TODO: Check for endness for bit converter
+            longs[2] = BitConverter.ToUInt64(reader.ReadBytes(5).Concat(new byte[] { 0, 0, 0 }).Reverse().ToArray(), 0);
             
             for (int i = 0; i < 16; ++i)
             {
