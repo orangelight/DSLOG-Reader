@@ -112,6 +112,10 @@ namespace DSLOG_Reader_2
             {
                 Seconds = ((new FileInfo(FilePath + "\\" + Name + ".dslog").Length - 19) / 47) / 50;
             }
+            else if(pdpType == PDPType.None)
+            {
+                Seconds = ((new FileInfo(FilePath + "\\" + Name + ".dslog").Length - 19) / 15) / 50;
+            }
             else
             {
                 Seconds = ((new FileInfo(FilePath + "\\" + Name + ".dslog").Length - 19) / 43) / 50; // Take the average because it is close enough
@@ -193,19 +197,21 @@ namespace DSLOG_Reader_2
                     Useless = true;
                     return true;
                 }
+                if (IsFMSMatch)
+                {
                     DSLOGReader reader = new DSLOGReader(dslogPath);
                     reader.Read();
-
-                        foreach (var entry in reader.Entries)
+               
+                    foreach (var entry in reader.Entries)
+                    {
+                        if (entry.RobotAuto || entry.RobotTele || entry.DSAuto || entry.DSTele)
                         {
-                            if (entry.RobotAuto || entry.RobotTele || entry.DSAuto || entry.DSTele)
-                            {
-                                Useless = false;
-                                return true;
-                            }
+                            Useless = false;
+                            return true;
                         }
-                        Useless = true;
-                
+                    }
+                    Useless = true;
+                }
                 return true;
             }
             return false;

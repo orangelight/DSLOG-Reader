@@ -46,6 +46,7 @@ namespace DSLOG_Reader_Library
             reader.BaseStream.Seek(-14, SeekOrigin.Current);
             if (pdpTypeId == 33) return PDPType.REV;
             if (pdpTypeId == 25) return PDPType.CTRE;
+            if (pdpTypeId == 0) return PDPType.None;
             return PDPType.Unknown;
         }
 
@@ -74,6 +75,10 @@ namespace DSLOG_Reader_Library
             } else if (this.PDPType == PDPType.REV)
             {
                 return new DSLOGEntry(TripTimeToDouble(reader.ReadByte()), PacketLossToDouble(reader.ReadSByte()), VoltageToDouble(reader.ReadUInt16()), RoboRioCPUToDouble(reader.ReadByte()), StatusFlagsToBooleanArray(reader.ReadByte()), CANUtilToDouble(reader.ReadByte()), WifidBToDouble(reader.ReadByte()), BandwidthToDouble(reader.ReadUInt16()), reader.ReadByte(), ReadRevPDH(), 0, 0, reader.ReadByte(), StartTime.AddMilliseconds(EntryDistanceMs * EntryNum++));
+            }
+            else if(this.PDPType == PDPType.None)
+            {
+                return new DSLOGEntry(TripTimeToDouble(reader.ReadByte()), PacketLossToDouble(reader.ReadSByte()), VoltageToDouble(reader.ReadUInt16()), RoboRioCPUToDouble(reader.ReadByte()), StatusFlagsToBooleanArray(reader.ReadByte()), CANUtilToDouble(reader.ReadByte()), WifidBToDouble(reader.ReadByte()), BandwidthToDouble(reader.ReadUInt16()), reader.ReadByte(), ReadNonePDP(), 0, 0, 0, StartTime.AddMilliseconds(EntryDistanceMs * EntryNum++));
             }
             return null;
             
@@ -169,6 +174,12 @@ namespace DSLOG_Reader_Library
                 d[i] = num / 8.0d;
             }
             return d;
+        }
+
+        private double[] ReadNonePDP()
+        {
+            reader.ReadBytes(3); //Skip over pdp type id
+            return new double[0];
         }
         protected IEnumerable<bool> GetBits(byte b)
         {

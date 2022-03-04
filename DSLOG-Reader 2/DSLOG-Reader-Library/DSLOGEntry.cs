@@ -74,7 +74,7 @@ namespace DSLOG_Reader_Library
             List<double> group = new List<double>();
             foreach(int slot in slots)
             {
-                group.Add(PdpValues[slot]);
+                group.Add(GetPDPChannel(slot));
             }
             double avg = group.Average();    
             double sum = group.Sum(d => Math.Pow(d - avg, 2));    

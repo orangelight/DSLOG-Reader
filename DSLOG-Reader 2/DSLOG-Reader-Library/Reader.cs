@@ -67,5 +67,6 @@ namespace DSLOG_Reader_Library
         Unknown,
         CTRE,
         REV,
+        None,
     }
 }
