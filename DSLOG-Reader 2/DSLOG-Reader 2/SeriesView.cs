@@ -72,7 +72,7 @@ namespace DSLOG_Reader_2
             {
                 if (groupNode == null)
                 {
-                    groupNode = new SeriesGroupNode($"grouppdp{i}{i + 4}", $"PDP ({i}-{i + 4}", SystemColors.ControlLightLight);
+                    groupNode = new SeriesGroupNode($"grouppdp{i}{i + 4}", $"PDP ({i}-{i + 4})", SystemColors.ControlLightLight);
                 }
 
 
