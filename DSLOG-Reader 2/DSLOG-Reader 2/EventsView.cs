@@ -26,6 +26,11 @@ namespace DSLOG_Reader_2
         private bool RefreshEvents = false;
         private bool FilterCodeOutput = false;
         List<DSEVENTSEntry> Entries;
+
+        Regex ImportantRegex = new Regex("(ERROR)|(<flags> [1-2])|(<Code> -44009)|(<Code> 44008)|(<Code> 44004)|(Warning)", RegexOptions.Compiled);
+        Regex CodeFilterRegex = new Regex(@"<TagVersion>[0-9]+ <time> -?(\d+:)?\d+\.\d+ <message>((?!<TagVersion>).)*", RegexOptions.Compiled);
+        Regex JoystickRegex = new Regex(@"(Info Joystick [0-9]+: \(.*?\)[0-9]+ axes, [0-9]+ buttons, [0-9]+ POVs\.)|(<TagVersion>1 <time> (\d+:)?-?\d+\.\d+ <count> 1 <flags> 0 <Code> 1 <details> Joystick (Button|axis|POV)? \d+ on port \d+ not available, check if controller is plugged in <location> .*? <stack>)|(<TagVersion>1 <time> (\d+:)?-?\d+\.\d+ <message> Warning at .*?: Joystick (Button|axis|POV)? \d on port \d not available, check if controller is plugged in)", RegexOptions.Compiled);
+
         public EventsView()
         {
             InitializeComponent();
@@ -52,7 +57,7 @@ namespace DSLOG_Reader_2
             DSEVENTSReader reader = new DSEVENTSReader(fileName);
             try
             {
-                reader.Read();
+                reader.ReadAndParse();
             } catch(Exception ex)
             {
                 MessageBox.Show("dsevent file corrupted!");
@@ -98,91 +103,176 @@ namespace DSLOG_Reader_2
             EventsDict = new Dictionary<double, List<string>>();
             foreach (var entry in Entries.Where(e => e.Data.Contains(Filter, StringComparison.OrdinalIgnoreCase)))
             {
-                DataPoint po = new DataPoint(entry.Time.ToOADate(), 15);
-                po.MarkerSize = 6;
-                ListViewItem item = new ListViewItem();
-                item.UseItemStyleForSubItems = false;
-                if (GraphView.CanUseMatchTime && GraphView.UseMatchTime)
-                {
-                    item.Text = ((entry.Time - GraphView.MatchTime).TotalMilliseconds / 1000.0).ToString("0.###");
-                }
-                else
-                {
-                    item.Text = entry.Time.ToString("h:mm:ss.fff tt");
-                }
+               
+                if (entry.SubEntries != null && entry.SubEntries.Count > 0) {
+                    var filterSubEnties = entry.SubEntries.Where(e => e.Message.Contains(Filter, StringComparison.OrdinalIgnoreCase));
+                    foreach(var subEntry in filterSubEnties)
+                    {
+                        ListViewItem item = new ListViewItem();
+                        item.UseItemStyleForSubItems = false;
+                        if (GraphView.CanUseMatchTime && GraphView.UseMatchTime)
+                        {
+                            item.Text = ((subEntry.Time - GraphView.MatchTime).TotalMilliseconds / 1000.0).ToString("0.###");
+                        }
+                        else
+                        {
+                            item.Text = subEntry.Time.ToString("h:mm:ss.fff tt");
+                        }
 
-                string entryText = entry.Data;
-                if (FilterImportant && !IsMessageImportant(entryText)) continue;
-                if (RemoveJoystick)
-                {
-                    var NoJoyText = RemoveJoyStickMessages(entryText);
-                    if (!NoJoyText.Contains(Filter, StringComparison.OrdinalIgnoreCase)) continue;
-                    if (string.IsNullOrWhiteSpace(NoJoyText)) continue;
-                    entryText = Regex.Replace(NoJoyText, @"\s+", " ");
-                }
-                if (FilterCodeOutput)
-                {
-                    entryText = Regex.Replace(entryText, @"<TagVersion>[0-9]+ <time> -?(\d+:)?\d+\.\d+ <message>((?!<TagVersion>).)*", "").Trim();
-                    if (!entryText.Contains(Filter, StringComparison.OrdinalIgnoreCase)) continue;
-                    if (string.IsNullOrWhiteSpace(entryText)) continue;
+                        string entryText = subEntry.Message;
+                        if (FilterImportant && !IsMessageImportant(entryText)) continue;
+                        if (RemoveJoystick)
+                        {
+                            var NoJoyText = RemoveJoyStickMessages(entryText);
+                            if (!NoJoyText.Contains(Filter, StringComparison.OrdinalIgnoreCase)) continue;
+                            if (string.IsNullOrWhiteSpace(NoJoyText)) continue;
+                            entryText = Regex.Replace(NoJoyText, @"\s+", " ", RegexOptions.Compiled);
+                        }
+                        if (FilterCodeOutput)
+                        {
+                            entryText = CodeFilterRegex.Replace(entryText, "").Trim();
+                            if (!entryText.Contains(Filter, StringComparison.OrdinalIgnoreCase)) continue;
+                            if (string.IsNullOrWhiteSpace(entryText)) continue;
 
-                }
-                if (FilterRepeated && (dupDict.ContainsKey(entryText) && (dupDict[entryText] - entry.Time).Duration().TotalSeconds < 4.0))
-                {
-                    continue;
-                }
-                else
-                {
-                    dupDict[entryText] = entry.Time;
-                }
+                        }
+                        if (FilterRepeated && (dupDict.ContainsKey(entryText) && (dupDict[entryText] - subEntry.Time).Duration().TotalSeconds < 4.0))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            dupDict[entryText] = subEntry.Time;
+                        }
 
+                        var mode = GraphView.GetEntryAt(subEntry.Time.ToOADate());
+
+                        item.SubItems[0].BackColor = Color.DarkGray;
+                        if (mode != null)
+                        {
+                            if (mode.DSAuto) item.SubItems[0].BackColor = Color.Lime;
+                            else if (mode.DSTele) item.SubItems[0].BackColor = Color.Cyan;
+                        }
+
+                        if (MForm.GetCurrentMode() == MainMode.Events)
+                        {
+                            listViewEvents.Items.Add(item);
+                        }
+
+
+
+                        item.SubItems.Add(entryText);
+                        if (entryText.Contains("ERROR") || entryText.Contains("<flags> 1"))
+                        {
+                            item.SubItems[1].BackColor = Color.Red;
+          
+                        }
+                        else if (entryText.Contains("<Code> 44004 "))
+                        {
+                            item.SubItems[1].BackColor = Color.SandyBrown;
+                            
+                        }
+                        else if (entryText.Contains("<Code> 44008 "))
+                        {
+                            AddRadioEvents(entry); // TODO
+                            item.SubItems[1].BackColor = Color.Khaki;
+
+                        }
+                        else if (entryText.Contains("Warning") || entryText.Contains("<flags> 2") || entryText.Contains("<Code> -44009 "))
+                        {
+                            item.SubItems[1].BackColor = Color.Khaki;
+                        }
+                        item.SubItems.Add("" + subEntry.Time.ToOADate());
+                    }
+                } else
+                {
+                    DataPoint po = new DataPoint(entry.Time.ToOADate(), 15);
+                    po.MarkerSize = 6;
+                    ListViewItem item = new ListViewItem();
+                    item.UseItemStyleForSubItems = false;
+                    if (GraphView.CanUseMatchTime && GraphView.UseMatchTime)
+                    {
+                        item.Text = ((entry.Time - GraphView.MatchTime).TotalMilliseconds / 1000.0).ToString("0.###");
+                    }
+                    else
+                    {
+                        item.Text = entry.Time.ToString("h:mm:ss.fff tt");
+                    }
+
+                    string entryText = entry.Data;
+                    if (FilterImportant && !IsMessageImportant(entryText)) continue;
+                    if (RemoveJoystick)
+                    {
+                        var NoJoyText = RemoveJoyStickMessages(entryText);
+                        if (!NoJoyText.Contains(Filter, StringComparison.OrdinalIgnoreCase)) continue;
+                        if (string.IsNullOrWhiteSpace(NoJoyText)) continue;
+                        entryText = Regex.Replace(NoJoyText, @"\s+", " ", RegexOptions.Compiled);
+                    }
+                    if (FilterCodeOutput)
+                    {
+                        entryText = CodeFilterRegex.Replace(entryText, "").Trim();
+                        if (!entryText.Contains(Filter, StringComparison.OrdinalIgnoreCase)) continue;
+                        if (string.IsNullOrWhiteSpace(entryText)) continue;
+
+                    }
+                    if (FilterRepeated && (dupDict.ContainsKey(entryText) && (dupDict[entryText] - entry.Time).Duration().TotalSeconds < 4.0))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        dupDict[entryText] = entry.Time;
+                    }
+
+
+
+
+                    item.SubItems.Add(entryText);
+
+                    if (entry.Data.Contains("ERROR") || entry.Data.Contains("<flags> 1"))
+                    {
+                        item.SubItems[1].BackColor = Color.Red;
+                        po.Color = Color.Red;
+                        po.YValues[0] = 14.7;
+                    }
+                    else if (entry.Data.Contains("<Code> 44004 "))
+                    {
+                        item.SubItems[1].BackColor = Color.SandyBrown;
+                        po.Color = Color.SandyBrown;
+                        po.MarkerStyle = MarkerStyle.Square;
+                        po.YValues[0] = 14.7;
+                    }
+                    else if (entry.Data.Contains("<Code> 44008 "))
+                    {
+                        AddRadioEvents(entry);
+                        item.SubItems[1].BackColor = Color.Khaki;
+                        po.Color = Color.Khaki;
+                        po.YValues[0] = 14.7;
+                    }
+                    else if (entry.Data.Contains("Warning") || entry.Data.Contains("<flags> 2") || entry.Data.Contains("<Code> -44009 "))
+                    {
+                        item.SubItems[1].BackColor = Color.Khaki;
+                        po.Color = Color.Khaki;
+                        po.YValues[0] = 14.7;
+                    }
+                    item.SubItems.Add("" + entry.Time.ToOADate());
+                    var mode = GraphView.GetEntryAt(entry.Time.ToOADate());
+
+                    item.SubItems[0].BackColor = Color.DarkGray;
+                    if (mode != null)
+                    {
+                        if (mode.DSAuto) item.SubItems[0].BackColor = Color.Lime;
+                        else if (mode.DSTele) item.SubItems[0].BackColor = Color.Cyan;
+                    }
+
+                    if (MForm.GetCurrentMode() == MainMode.Events)
+                    {
+                        listViewEvents.Items.Add(item);
+                    }
+                    GraphView.AddMessage(po);
+                    AddEntryToDict(entry.Time.ToOADate(), entryText);
+                }
                 
                 
-
-                item.SubItems.Add(entryText);
-
-                if (entry.Data.Contains("ERROR") || entry.Data.Contains("<flags> 1"))
-                {
-                    item.SubItems[1].BackColor = Color.Red;
-                    po.Color = Color.Red;
-                    po.YValues[0] = 14.7;
-                }
-                else if (entry.Data.Contains("<Code> 44004 "))
-                {
-                    item.SubItems[1].BackColor = Color.SandyBrown;
-                    po.Color = Color.SandyBrown;
-                    po.MarkerStyle = MarkerStyle.Square;
-                    po.YValues[0] = 14.7;
-                }
-                else if (entry.Data.Contains("<Code> 44008 "))
-                {
-                    AddRadioEvents(entry);
-                    item.SubItems[1].BackColor = Color.Khaki;
-                    po.Color = Color.Khaki;
-                    po.YValues[0] = 14.7;
-                }
-                else if (entry.Data.Contains("Warning") || entry.Data.Contains("<flags> 2") || entry.Data.Contains("<Code> -44009 "))
-                {
-                    item.SubItems[1].BackColor = Color.Khaki;
-                    po.Color = Color.Khaki;
-                    po.YValues[0] = 14.7;
-                }
-                item.SubItems.Add("" + entry.Time.ToOADate());
-                var mode = GraphView.GetEntryAt(entry.Time.ToOADate());
-
-                item.SubItems[0].BackColor = Color.DarkGray;
-                if (mode != null)
-                {
-                    if (mode.DSAuto) item.SubItems[0].BackColor = Color.Lime;
-                    else if (mode.DSTele) item.SubItems[0].BackColor = Color.Cyan;
-                }
-
-                if (MForm.GetCurrentMode() == MainMode.Events)
-                {
-                    listViewEvents.Items.Add(item);
-                }
-                GraphView.AddMessage(po);
-                AddEntryToDict(entry.Time.ToOADate(), entryText);
             }
 
             if (MForm.GetCurrentMode() == MainMode.Events)
@@ -256,7 +346,7 @@ namespace DSLOG_Reader_2
 
         private string RemoveJoyStickMessages(string message)
         {
-            return Regex.Replace(message, @"(Info Joystick [0-9]+: \(.*?\)[0-9]+ axes, [0-9]+ buttons, [0-9]+ POVs\.)|(<TagVersion>1 <time> (\d+:)?-?\d+\.\d+ <count> 1 <flags> 0 <Code> 1 <details> Joystick (Button|axis|POV)? \d+ on port \d+ not available, check if controller is plugged in <location> .*? <stack>)|(<TagVersion>1 <time> (\d+:)?-?\d+\.\d+ <message> Warning at .*?: Joystick (Button|axis|POV)? \d on port \d not available, check if controller is plugged in)", "").Trim();
+            return JoystickRegex.Replace(message, "").Trim();
         }
 
         private void ListViewEvents_SelectedIndexChanged(object sender, EventArgs e)
@@ -350,9 +440,10 @@ namespace DSLOG_Reader_2
 
         }
 
+        
         private bool IsMessageImportant(string data)
         {
-            return Regex.Match(data, "(ERROR)|(<flags> [1-2])|(<Code> -44009)|(<Code> 44008)|(<Code> 44004)|(Warning)").Captures.Count > 0;
+            return ImportantRegex.Match(data).Captures.Count > 0;
         }
 
         private void buttonImportant_Click(object sender, EventArgs e)

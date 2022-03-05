@@ -50,7 +50,7 @@ namespace DSLOG_Reader_Library
             return PDPType.Unknown;
         }
 
-        protected override bool ReadEntries(bool fms = false)
+        protected override bool ReadEntries()
         {
             while (reader.BaseStream.Position != reader.BaseStream.Length)
             {
