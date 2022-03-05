@@ -40,6 +40,7 @@
             this.buttonDup = new System.Windows.Forms.Button();
             this.buttonJoystick = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // richTextBox1
@@ -166,9 +167,20 @@
             this.buttonJoystick.UseVisualStyleBackColor = false;
             this.buttonJoystick.Click += new System.EventHandler(this.buttonJoystick_Click);
             // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(483, 3);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(80, 13);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "Search Events:";
+            // 
             // EventsView
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.buttonCodeOutput);
             this.Controls.Add(this.buttonImportant);
             this.Controls.Add(this.textBoxSearch);
@@ -197,5 +209,6 @@
         private System.Windows.Forms.Button buttonImportant;
         private System.Windows.Forms.Button buttonCodeOutput;
         private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.Label label1;
     }
 }

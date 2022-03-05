@@ -485,7 +485,7 @@ namespace DSLOG_Reader_2
             SaveProfile();
             OK = true;
             XmlSerializer profilesSerializer = new XmlSerializer(typeof(GroupProfiles));
-            var fileStream = new StreamWriter(".dslogprofiles.xml", false);
+            var fileStream = new StreamWriter(Util.ProfilesFile, false);
             profilesSerializer.Serialize(fileStream, Profiles);
             fileStream.Close();
             this.Close();

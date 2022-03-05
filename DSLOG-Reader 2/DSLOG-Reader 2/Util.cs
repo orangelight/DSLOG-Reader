@@ -14,6 +14,8 @@ namespace DSLOG_Reader_2
 {
     public static class Util
     {
+
+        public const string ProfilesFile = ".dslogprofiles22.xml";
         public static string GetLast(this string source, int tail_length)
         {
             if (tail_length >= source.Length)

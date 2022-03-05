@@ -109,13 +109,13 @@ namespace DSLOG_Reader_2
 
             treeView.ItemHeight = 20;
             treeView.ExpandAll();
-            if (File.Exists(".dslogprofiles.xml"))
+            if (File.Exists(Util.ProfilesFile))
             {
                 FileStream fileStream = null;
                 try
                 {
                     XmlSerializer profilesSerializer = new XmlSerializer(typeof(GroupProfiles));
-                    fileStream = new FileStream(".dslogprofiles.xml", FileMode.Open);
+                    fileStream = new FileStream(Util.ProfilesFile, FileMode.Open);
                     Profiles = (GroupProfiles)profilesSerializer.Deserialize(fileStream);
                 } catch(Exception ex)
                 {
