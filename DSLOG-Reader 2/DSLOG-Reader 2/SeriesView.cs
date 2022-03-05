@@ -55,9 +55,10 @@ namespace DSLOG_Reader_2
            
             
             SeriesGroupNode basic = new SeriesGroupNode("basic", "Basic", SystemColors.ControlLightLight);
+            basic.Childern.Add(new SeriesChildNode(DSAttConstants.CANUtil, "CAN", Color.Silver));
             basic.Childern.Add(new SeriesChildNode(DSAttConstants.Voltage, "Voltage", Color.Yellow));
             basic.Childern.Add(new SeriesChildNode(DSAttConstants.RoboRIOCPU, "roboRIO CPU", Color.Red));
-            basic.Childern.Add(new SeriesChildNode(DSAttConstants.CANUtil, "CAN", Color.Silver));
+            
            
 
 
