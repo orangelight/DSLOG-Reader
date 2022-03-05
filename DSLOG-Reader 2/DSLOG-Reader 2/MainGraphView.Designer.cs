@@ -34,7 +34,6 @@
             this.GraphCorsorLine = new System.Windows.Forms.Timer(this.components);
             this.labelFileInfo = new System.Windows.Forms.Label();
             this.timerStream = new System.Windows.Forms.Timer(this.components);
-            this.buttonAnalysis = new System.Windows.Forms.Button();
             this.buttonResetZoom = new System.Windows.Forms.Button();
             this.buttonFindMatch = new System.Windows.Forms.Button();
             this.buttonAutoScroll = new System.Windows.Forms.Button();
@@ -139,20 +138,6 @@
             this.timerStream.Interval = 200;
             this.timerStream.Tick += new System.EventHandler(this.timerStream_Tick);
             // 
-            // buttonAnalysis
-            // 
-            this.buttonAnalysis.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonAnalysis.BackColor = System.Drawing.SystemColors.Control;
-            this.buttonAnalysis.BackgroundImage = global::DSLOG_Reader_2.Properties.Resources.Analysis_16x;
-            this.buttonAnalysis.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.buttonAnalysis.Enabled = false;
-            this.buttonAnalysis.Location = new System.Drawing.Point(1015, -1);
-            this.buttonAnalysis.Name = "buttonAnalysis";
-            this.buttonAnalysis.Size = new System.Drawing.Size(23, 23);
-            this.buttonAnalysis.TabIndex = 5;
-            this.buttonAnalysis.UseVisualStyleBackColor = false;
-            this.buttonAnalysis.Click += new System.EventHandler(this.buttonAnalysis_Click);
-            // 
             // buttonResetZoom
             // 
             this.buttonResetZoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -203,7 +188,7 @@
             this.buttonMatchTime.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.buttonMatchTime.FlatAppearance.BorderSize = 0;
             this.buttonMatchTime.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonMatchTime.Location = new System.Drawing.Point(992, -1);
+            this.buttonMatchTime.Location = new System.Drawing.Point(1014, -1);
             this.buttonMatchTime.Name = "buttonMatchTime";
             this.buttonMatchTime.Size = new System.Drawing.Size(23, 23);
             this.buttonMatchTime.TabIndex = 6;
@@ -213,7 +198,7 @@
             // labelTimeInView
             // 
             this.labelTimeInView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelTimeInView.Location = new System.Drawing.Point(834, 3);
+            this.labelTimeInView.Location = new System.Drawing.Point(856, 3);
             this.labelTimeInView.Name = "labelTimeInView";
             this.labelTimeInView.Size = new System.Drawing.Size(152, 15);
             this.labelTimeInView.TabIndex = 7;
@@ -225,7 +210,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.Controls.Add(this.labelTimeInView);
             this.Controls.Add(this.buttonMatchTime);
-            this.Controls.Add(this.buttonAnalysis);
             this.Controls.Add(this.buttonResetZoom);
             this.Controls.Add(this.buttonFindMatch);
             this.Controls.Add(this.buttonAutoScroll);
@@ -248,7 +232,6 @@
         private System.Windows.Forms.Button buttonAutoScroll;
         private System.Windows.Forms.Button buttonFindMatch;
         private System.Windows.Forms.Button buttonResetZoom;
-        private System.Windows.Forms.Button buttonAnalysis;
         private System.Windows.Forms.Button buttonMatchTime;
         private System.Windows.Forms.Label labelTimeInView;
         private System.Windows.Forms.ToolTip toolTip;

@@ -217,6 +217,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainGraphView.resx">
       <DependentUpon>MainGraphView.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ProbeView.resx">
       <DependentUpon>ProbeView.cs</DependentUpon>

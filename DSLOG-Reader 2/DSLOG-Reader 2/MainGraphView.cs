@@ -45,7 +45,6 @@ namespace DSLOG_Reader_2
             CanUseMatchTime = false;
             UseMatchTime = false;
             InitSeriesSettings();
-            toolTip.SetToolTip(buttonAnalysis, "Match Analysis (not done)");
             toolTip.SetToolTip(buttonAutoScroll, "Stream Log Autoscroll");
             toolTip.SetToolTip(buttonFindMatch, "Zoom into Match");
             toolTip.SetToolTip(buttonMatchTime, "Use Match Time");
@@ -247,7 +246,6 @@ namespace DSLOG_Reader_2
             {
                 StopStreaming();
                 LogStreamer = null;
-                buttonAnalysis.Enabled = false;
                 InitChart();
                 LogEntries = null;
                 ClearInfoLabel();
