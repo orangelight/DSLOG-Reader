@@ -26,6 +26,11 @@ namespace DSLOG_Reader_2
         private bool RefreshEvents = false;
         private bool FilterCodeOutput = false;
         List<DSEVENTSEntry> Entries;
+
+        Regex ImportantRegex = new Regex("(ERROR)|(<flags> [1-2])|(<Code> -44009)|(<Code> 44008)|(<Code> 44004)|(Warning)", RegexOptions.Compiled);
+        Regex CodeFilterRegex = new Regex(@"<TagVersion>[0-9]+ <time> -?(\d+:)?\d+\.\d+ <message>((?!<TagVersion>).)*", RegexOptions.Compiled);
+        Regex JoystickRegex = new Regex(@"(Info Joystick [0-9]+: \(.*?\)[0-9]+ axes, [0-9]+ buttons, [0-9]+ POVs\.)|(<TagVersion>1 <time> (\d+:)?-?\d+\.\d+ <count> 1 <flags> 0 <Code> 1 <details> Joystick (Button|axis|POV)? \d+ on port \d+ not available, check if controller is plugged in <location> .*? <stack>)|(<TagVersion>1 <time> (\d+:)?-?\d+\.\d+ <message> Warning at .*?: Joystick (Button|axis|POV)? \d on port \d not available, check if controller is plugged in)", RegexOptions.Compiled);
+
         public EventsView()
         {
             InitializeComponent();
@@ -118,11 +123,11 @@ namespace DSLOG_Reader_2
                     var NoJoyText = RemoveJoyStickMessages(entryText);
                     if (!NoJoyText.Contains(Filter, StringComparison.OrdinalIgnoreCase)) continue;
                     if (string.IsNullOrWhiteSpace(NoJoyText)) continue;
-                    entryText = Regex.Replace(NoJoyText, @"\s+", " ");
+                    entryText = Regex.Replace(NoJoyText, @"\s+", " ", RegexOptions.Compiled);
                 }
                 if (FilterCodeOutput)
                 {
-                    entryText = Regex.Replace(entryText, @"<TagVersion>[0-9]+ <time> -?(\d+:)?\d+\.\d+ <message>((?!<TagVersion>).)*", "").Trim();
+                    entryText = CodeFilterRegex.Replace(entryText, "").Trim();
                     if (!entryText.Contains(Filter, StringComparison.OrdinalIgnoreCase)) continue;
                     if (string.IsNullOrWhiteSpace(entryText)) continue;
 
@@ -256,7 +261,7 @@ namespace DSLOG_Reader_2
 
         private string RemoveJoyStickMessages(string message)
         {
-            return Regex.Replace(message, @"(Info Joystick [0-9]+: \(.*?\)[0-9]+ axes, [0-9]+ buttons, [0-9]+ POVs\.)|(<TagVersion>1 <time> (\d+:)?-?\d+\.\d+ <count> 1 <flags> 0 <Code> 1 <details> Joystick (Button|axis|POV)? \d+ on port \d+ not available, check if controller is plugged in <location> .*? <stack>)|(<TagVersion>1 <time> (\d+:)?-?\d+\.\d+ <message> Warning at .*?: Joystick (Button|axis|POV)? \d on port \d not available, check if controller is plugged in)", "").Trim();
+            return JoystickRegex.Replace(message, "").Trim();
         }
 
         private void ListViewEvents_SelectedIndexChanged(object sender, EventArgs e)
@@ -352,7 +357,7 @@ namespace DSLOG_Reader_2
 
         private bool IsMessageImportant(string data)
         {
-            return Regex.Match(data, "(ERROR)|(<flags> [1-2])|(<Code> -44009)|(<Code> 44008)|(<Code> 44004)|(Warning)").Captures.Count > 0;
+            return ImportantRegex.Match(data).Captures.Count > 0;
         }
 
         private void buttonImportant_Click(object sender, EventArgs e)

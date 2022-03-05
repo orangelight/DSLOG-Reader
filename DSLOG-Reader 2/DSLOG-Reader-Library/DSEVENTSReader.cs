@@ -10,7 +10,9 @@ namespace DSLOG_Reader_Library
     {
         public readonly List<DSEVENTSEntry> Entries;
 
-
+        private Regex FMSMatchRegex = new Regex(@"(FMS Connected:)|(FMS Event Name:)|(FMS Disconnect)|(FMS-GOOD FRC)", RegexOptions.Compiled);
+        private Regex FMSEventRegex = new Regex(@"(FMS Connected:)|(FMS Event Name:)", RegexOptions.Compiled);
+        private bool ReadOnlyFms = false;
 
         public DSEVENTSReader(string path) : base(path)
         {
@@ -27,20 +29,21 @@ namespace DSLOG_Reader_Library
 
         public void ReadForFMS()
         {
-            if (ReadFile(true))
+            ReadOnlyFms = true;
+            if (ReadFile())
             {
                 reader.Close();
             }
         }
 
-        protected override bool ReadEntries(bool fms = false)
+        protected override bool ReadEntries()
         {
             bool isFMSMatch = false;
             bool haveName = false;
             bool haveNum = false;
             while (reader.BaseStream.Position != reader.BaseStream.Length)
             {
-                if (!fms)
+                if (!ReadOnlyFms)
                 {
                     Entries.Add(ReadEntry());
                 }
@@ -50,7 +53,7 @@ namespace DSLOG_Reader_Library
                     var entry = ReadEntry();
                     if (!isFMSMatch)
                     {
-                        if (Regex.Match(entry.Data, "(FMS Connected:)|(FMS Event Name:)|(FMS Disconnect)|(FMS-GOOD FRC)").Success)
+                        if (FMSMatchRegex.Match(entry.Data).Success)
                         {
                             isFMSMatch = true;
                             if (entry.Data.Contains("FMS Connected:")) haveNum = true;
@@ -60,7 +63,7 @@ namespace DSLOG_Reader_Library
                     }
                     else
                     {
-                        if (Regex.Match(entry.Data, "(FMS Connected:)|(FMS Event Name:)").Success)
+                        if (FMSEventRegex.Match(entry.Data).Success)
                         {
                             if (entry.Data.Contains("FMS Connected:")) haveNum = true;
                             if (entry.Data.Contains("FMS Event Name:")) haveName = true;

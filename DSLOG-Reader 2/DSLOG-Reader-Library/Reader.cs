@@ -42,7 +42,7 @@ namespace DSLOG_Reader_Library
             StartTime = Util.FromLVTime(reader.ReadInt64(), reader.ReadUInt64());
         }
 
-        protected bool ReadFile(bool onlfms = false)
+        protected bool ReadFile()
         {
             if (reader != null)
             {
@@ -55,10 +55,10 @@ namespace DSLOG_Reader_Library
             reader = new BigEndianBinaryReader(File.Open(Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
             ReadMetadata();
             if (Version != 4) return false;
-            return ReadEntries(onlfms);
+            return ReadEntries();
         }
 
-        protected abstract bool ReadEntries(bool onlfms = false);
+        protected abstract bool ReadEntries();
 
     }
 
