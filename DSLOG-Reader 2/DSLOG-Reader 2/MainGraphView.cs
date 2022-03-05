@@ -174,10 +174,9 @@ namespace DSLOG_Reader_2
                         newSeries.BorderDashStyle = ChartDashStyle.Dash;
                         deltaTotalSeries[node.Name] = newSeries;
                     }
-                    else
+                    if (node.Name.StartsWith(DSAttConstants.PDPPrefix))
                     {
-                       // var newSeries = MakeSeriesFromSettings(SeriesSettings["lines"], node);
-                        //chart.Series.Add(newSeries);
+                        chart.Series[node.Name].Color = node.Color;
                     }
                     
                 }

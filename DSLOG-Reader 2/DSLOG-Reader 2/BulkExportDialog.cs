@@ -39,6 +39,7 @@ namespace DSLOG_Reader_2
             labelIntro.Text = $"All logs on left will be exported to CSV using the {ProfileName} profile selected in the Graph tab with all series enabled";
             foreach (var file in Files)
             {
+                if (!file.Valid) continue;
                 var item = file.ToListViewItem(UseFilledInEvents);
                 item.Checked = true;
                 listView.Items.Add(item);

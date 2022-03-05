@@ -121,6 +121,7 @@ namespace DSLOG_Reader_2
                 {
                     MessageBox.Show($"Profile file is corrupted! {ex.Message}");
                     Profiles.Clear();
+                    Profiles.Add(new GroupProfile("Default", defG));
                 }
                 finally
                 {
