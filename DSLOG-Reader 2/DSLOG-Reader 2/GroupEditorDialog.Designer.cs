@@ -48,6 +48,8 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -61,11 +63,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.treeViewPDP.HideSelection = false;
             this.treeViewPDP.LabelEdit = true;
-            this.treeViewPDP.Location = new System.Drawing.Point(193, 6);
+            this.treeViewPDP.Location = new System.Drawing.Point(192, 12);
             this.treeViewPDP.Name = "treeViewPDP";
             this.treeViewPDP.ShowPlusMinus = false;
             this.treeViewPDP.ShowRootLines = false;
-            this.treeViewPDP.Size = new System.Drawing.Size(207, 305);
+            this.treeViewPDP.Size = new System.Drawing.Size(207, 327);
             this.treeViewPDP.TabIndex = 0;
             this.treeViewPDP.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.treeViewPDP_AfterLabelEdit);
             this.treeViewPDP.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeViewPDP_BeforeCollapse);
@@ -201,7 +203,7 @@
             // buttonOkay
             // 
             this.buttonOkay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOkay.Location = new System.Drawing.Point(243, 317);
+            this.buttonOkay.Location = new System.Drawing.Point(243, 358);
             this.buttonOkay.Name = "buttonOkay";
             this.buttonOkay.Size = new System.Drawing.Size(75, 22);
             this.buttonOkay.TabIndex = 15;
@@ -236,7 +238,7 @@
             // buttonCancel
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCancel.Location = new System.Drawing.Point(324, 317);
+            this.buttonCancel.Location = new System.Drawing.Point(324, 358);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 22);
             this.buttonCancel.TabIndex = 18;
@@ -259,11 +261,31 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Profile";
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(9, 342);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(114, 13);
+            this.label2.TabIndex = 20;
+            this.label2.Text = "Create new Pofile then";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(9, 358);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(183, 13);
+            this.label3.TabIndex = 21;
+            this.label3.Text = "double click pdp/group names to edit";
+            // 
             // GroupEditorDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(403, 343);
+            this.ClientSize = new System.Drawing.Size(403, 384);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.groupBox2);
@@ -272,7 +294,7 @@
             this.Controls.Add(this.treeViewPDP);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(419, 382);
+            this.MinimumSize = new System.Drawing.Size(419, 423);
             this.Name = "GroupEditorDialog";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -285,6 +307,7 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -309,5 +332,7 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
     }
 }
