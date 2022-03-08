@@ -58,7 +58,7 @@ namespace DSLOG_Reader_2
             if (Directory.Exists(Path))
             {
                
-                DSLOGFileEntryCache cache = new DSLOGFileEntryCache($"{Path}\\.dslog.cache");
+                DSLOGFileEntryCache cache = new DSLOGFileEntryCache($"{Path}\\.dslog2.2.cache");
                 CacheLoadingDialog dialog = new CacheLoadingDialog(cache, DSLOGFiles, Path);
                 dialog.ShowDialog();
                 FillInMissingFMSEventInfo();
