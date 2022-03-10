@@ -325,7 +325,9 @@ namespace DSLOG_Reader_2
                     SetEnergy();
 
                     chart.ChartAreas[0].AxisX.ScaleView.ZoomReset();
-                    
+                    chart.ChartAreas[0].AxisY2.ScaleView.ZoomReset();
+                    this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = false;
+
                 }));
                 LoadingLog = false;
                 labelFileInfo.Invoke((Action)(() => {
@@ -371,7 +373,7 @@ namespace DSLOG_Reader_2
         }
         private void InitChart()
         {
-            chart.ChartAreas[0].AxisX.ScaleView.ZoomReset(100);
+            ResetZoom();
             ClearGraph();
         }
         private void ClearGraph()
@@ -827,7 +829,7 @@ namespace DSLOG_Reader_2
         private void Chart_CursorPositionChanged(object sender, CursorEventArgs e)
         {
             if (LoadingLog || PlottingLog) return;
-            if (LogEntries != null)
+            if (LogEntries != null && e.Axis == this.chart.ChartAreas[0].AxisX)
             {
                 SetCursorPosition(e.NewPosition);
             }
@@ -876,6 +878,8 @@ namespace DSLOG_Reader_2
         private void ResetZoom()
         {
             chart.ChartAreas[0].AxisX.ScaleView.ZoomReset(100);
+            chart.ChartAreas[0].AxisY2.ScaleView.ZoomReset(100);
+            this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = false;
         }
 
         private void timerStream_Tick(object sender, EventArgs e)
@@ -1100,6 +1104,22 @@ namespace DSLOG_Reader_2
         {
             DiagnosticDialog diagnosticDialog = new DiagnosticDialog();
             diagnosticDialog.Show();
+        }
+
+        private void chart_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.ShiftKey && !this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled)
+            {
+                this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
+            }
+        }
+
+        private void chart_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.ShiftKey)
+            {
+                this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = false;
+            }
         }
 
         public DSLOGEntry GetEntryAt(double d)

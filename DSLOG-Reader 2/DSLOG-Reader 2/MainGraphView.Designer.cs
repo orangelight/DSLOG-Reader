@@ -96,6 +96,9 @@
             chartArea1.AxisY2.Title = "Latency ms, Packet Loss %, roboRIO CPU %, CAN %, PDP A (Total PDP)";
             chartArea1.AxisY2.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             chartArea1.AxisY2.TitleForeColor = System.Drawing.Color.WhiteSmoke;
+            chartArea1.AxisY2.ScrollBar.BackColor = System.Drawing.Color.DimGray;
+            chartArea1.AxisY2.ScrollBar.ButtonColor = System.Drawing.Color.Gray;
+            chartArea1.AxisY2.ScrollBar.LineColor = System.Drawing.Color.DarkGray;
             chartArea1.BackColor = System.Drawing.Color.Black;
             chartArea1.CursorX.Interval = 20D;
             chartArea1.CursorX.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
@@ -103,6 +106,7 @@
             chartArea1.CursorX.IsUserEnabled = true;
             chartArea1.CursorX.IsUserSelectionEnabled = true;
             chartArea1.CursorX.LineWidth = 2;
+            chartArea1.CursorY.AxisType = System.Windows.Forms.DataVisualization.Charting.AxisType.Secondary;
             chartArea1.Name = "ChartArea";
             chartArea1.Position.Auto = false;
             chartArea1.Position.Height = 100F;
@@ -117,6 +121,8 @@
             this.chart.AxisViewChanging += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.Chart_AxisViewChanging);
             this.chart.AxisViewChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.Chart_AxisViewChanged);
             this.chart.AxisScrollBarClicked += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ScrollBarEventArgs>(this.chart_AxisScrollBarClicked);
+            this.chart.KeyDown += new System.Windows.Forms.KeyEventHandler(this.chart_KeyDown);
+            this.chart.KeyUp += new System.Windows.Forms.KeyEventHandler(this.chart_KeyUp);
             this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Chart_MouseMove);
             // 
             // GraphCorsorLine
