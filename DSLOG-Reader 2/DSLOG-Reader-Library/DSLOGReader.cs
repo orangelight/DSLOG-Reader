@@ -10,7 +10,7 @@ namespace DSLOG_Reader_Library
     {
         public const int EntryDistanceMs = 20;
 
-        public PDPType PDPType { get; private set; }
+        public PDPType StartingPDPType { get; private set; }
 
 
         public readonly List<DSLOGEntry> Entries;
@@ -24,7 +24,7 @@ namespace DSLOG_Reader_Library
         public override void Read()
         {
             ReadFile();
-            if (PDPType == PDPType.Unknown)
+            if (StartingPDPType == PDPType.Unknown)
             {
                 throw new Exception("PDP not supported");
             }
@@ -35,7 +35,7 @@ namespace DSLOG_Reader_Library
         protected override void ReadMetadata()
         {
             base.ReadMetadata();
-            PDPType = (Version == 4) ? ParsePDPType() : PDPType.Unknown;
+            StartingPDPType = (Version == 4) ? ParsePDPType() : PDPType.Unknown;
 
         }
 
@@ -44,9 +44,14 @@ namespace DSLOG_Reader_Library
             reader.BaseStream.Seek(13, SeekOrigin.Current);
             byte pdpTypeId = reader.ReadByte();
             reader.BaseStream.Seek(-14, SeekOrigin.Current);
-            if (pdpTypeId == 33) return PDPType.REV;
-            if (pdpTypeId == 25) return PDPType.CTRE;
-            if (pdpTypeId == 0) return PDPType.None;
+            return GetPdpTypeFromId(pdpTypeId);
+        }
+
+        private PDPType GetPdpTypeFromId(byte id)
+        {
+            if (id == 33) return PDPType.REV;
+            if (id == 25) return PDPType.CTRE;
+            if (id == 0) return PDPType.None;
             return PDPType.Unknown;
         }
 
@@ -69,19 +74,20 @@ namespace DSLOG_Reader_Library
         // CTRE uses 21 + voltage + resist + temp
         protected DSLOGEntry ReadEntryV4()
         {
-            if (this.PDPType == PDPType.CTRE)
-            {
-                return new DSLOGEntry(TripTimeToDouble(reader.ReadByte()), PacketLossToDouble(reader.ReadSByte()), VoltageToDouble(reader.ReadUInt16()), RoboRioCPUToDouble(reader.ReadByte()), StatusFlagsToBooleanArray(reader.ReadByte()), CANUtilToDouble(reader.ReadByte()), WifidBToDouble(reader.ReadByte()), BandwidthToDouble(reader.ReadUInt16()), reader.ReadByte(), ReadCTREPDP(), reader.ReadByte(), (double)(reader.ReadByte()) * 0.0736, reader.ReadByte(), StartTime.AddMilliseconds(EntryDistanceMs * EntryNum++));
-            } else if (this.PDPType == PDPType.REV)
-            {
-                return new DSLOGEntry(TripTimeToDouble(reader.ReadByte()), PacketLossToDouble(reader.ReadSByte()), VoltageToDouble(reader.ReadUInt16()), RoboRioCPUToDouble(reader.ReadByte()), StatusFlagsToBooleanArray(reader.ReadByte()), CANUtilToDouble(reader.ReadByte()), WifidBToDouble(reader.ReadByte()), BandwidthToDouble(reader.ReadUInt16()), reader.ReadByte(), ReadRevPDH(), 0, 0, reader.ReadByte(), StartTime.AddMilliseconds(EntryDistanceMs * EntryNum++));
-            }
-            else if(this.PDPType == PDPType.None)
-            {
-                return new DSLOGEntry(TripTimeToDouble(reader.ReadByte()), PacketLossToDouble(reader.ReadSByte()), VoltageToDouble(reader.ReadUInt16()), RoboRioCPUToDouble(reader.ReadByte()), StatusFlagsToBooleanArray(reader.ReadByte()), CANUtilToDouble(reader.ReadByte()), WifidBToDouble(reader.ReadByte()), BandwidthToDouble(reader.ReadUInt16()), reader.ReadByte(), ReadNonePDP(), 0, 0, 0, StartTime.AddMilliseconds(EntryDistanceMs * EntryNum++));
-            }
-            return null;
-            
+
+            var tripTime = TripTimeToDouble(reader.ReadByte());
+            var packetLoss = PacketLossToDouble(reader.ReadSByte());
+            var voltage = VoltageToDouble(reader.ReadUInt16());
+            var rio = RoboRioCPUToDouble(reader.ReadByte());
+            var status = StatusFlagsToBooleanArray(reader.ReadByte());
+            var can = CANUtilToDouble(reader.ReadByte());
+            var wifi = WifidBToDouble(reader.ReadByte());
+            var bandwidth = BandwidthToDouble(reader.ReadUInt16());
+            var pdpId = reader.ReadByte();
+            var pdpData = ReadPdpData();
+            if (!pdpData.HasValue) return null;
+            var time = StartTime.AddMilliseconds(EntryDistanceMs * EntryNum++);
+            return new DSLOGEntry(tripTime, packetLoss, voltage, rio, status, can, wifi, bandwidth, pdpId, pdpData.Value.data, pdpData.Value.res, pdpData.Value.volt, pdpData.Value.temp, time);
         }
 
         //Import methods
@@ -126,9 +132,29 @@ namespace DSLOG_Reader_Library
             return (double)i * .00390625d;
         }
 
+        private (double[] data, double res, double volt, double temp)? ReadPdpData()
+        {
+            var pdpMetaData = reader.ReadBytes(3);
+            var pdpType = GetPdpTypeFromId(pdpMetaData[2]);
+            if (pdpType == PDPType.CTRE)
+            {
+                reader.ReadByte(); // Read id
+                return (ReadCTREPDP(), reader.ReadByte(), (double)(reader.ReadByte()) * 0.0736, reader.ReadByte());
+            }
+            else if (pdpType == PDPType.REV)
+            {
+                reader.ReadByte(); // Read id
+                return (ReadRevPDH(), 0, 0, reader.ReadByte());
+            }
+            else if (pdpType == PDPType.None)
+            {
+                return (new double[0], 0, 0, 0);
+            }
+            return null;
+        }
+
         private double[] ReadRevPDH()
         {
-            reader.ReadBytes(4); //Skip over pdp type id
             var ints = new uint[7];
 
             for (int i = 0; i < 6; ++i)
@@ -157,7 +183,6 @@ namespace DSLOG_Reader_Library
 
         private double[] ReadCTREPDP()
         {
-            if (this.Version == 4) reader.ReadBytes(4); //Skip over pdp type id
             var longs = new ulong[3];
             double[] d = new double[16];
             longs[0] = reader.ReadUInt64();
@@ -176,11 +201,6 @@ namespace DSLOG_Reader_Library
             return d;
         }
 
-        private double[] ReadNonePDP()
-        {
-            reader.ReadBytes(3); //Skip over pdp type id
-            return new double[0];
-        }
         protected IEnumerable<bool> GetBits(byte b)
         {
             for (int i = 0; i < 8; i++)

@@ -32,7 +32,18 @@ namespace DSLOG_Reader_Tests
             Assert.IsTrue(reader.Entries[0].Data == "<TagVersion>1 <time> 04.803 <message> ********** Robot program starting ********** ");
         }
 
-
+        [TestMethod]
+        public void TestReadMultiPdpType()
+        {
+            var reader = new DSLOGReader("TestFiles\\2022_03_19 12_55_56 Sat.dslog");
+            reader.Read();
+            Assert.IsTrue(reader.Version == 4);
+            foreach (var entry in reader.Entries)
+            {
+                Assert.IsFalse(entry.Watchdog);
+                Assert.IsFalse(entry.Brownout);
+            }
+        }
 
         [TestMethod]
         public void TestReadMetadata()
