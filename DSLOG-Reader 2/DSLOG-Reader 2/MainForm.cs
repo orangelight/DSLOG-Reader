@@ -26,7 +26,7 @@ namespace DSLOG_Reader_2
             fileListView.CompView = competitionView1;
             fileListView.MainChart = mainGraphView;
             fileListView.EventView = eventsView1;
-            fileListView.SetPath(@"C:\Users\Public\Documents\FRC\Log Files");
+            fileListView.SetPath(@"C:\Users\Public\Documents\FRC\Log Files\DSLogs");
             fileListView.LoadFiles();
             seriesView.AddObserver(mainGraphView);
             seriesView.AddObserver(exportView1);
