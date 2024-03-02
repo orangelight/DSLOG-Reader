@@ -330,7 +330,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(904, 257);
             this.Name = "MainForm";
-            this.Text = "DSLOG Reader 2.2";
+            this.Text = "DSLOG Reader 2.3";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.tabControlLeft.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
